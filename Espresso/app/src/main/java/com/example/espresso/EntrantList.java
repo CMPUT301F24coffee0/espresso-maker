@@ -1,3 +1,8 @@
+package com.example.espresso;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * EntrantList class manages the list of all entrants to an event, categorized by status.
  * It handles the entry and exit of entrants from the list and receives notifications for changes.
