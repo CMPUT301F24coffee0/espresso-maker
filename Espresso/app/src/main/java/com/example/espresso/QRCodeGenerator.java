@@ -1,4 +1,5 @@
 package com.example.espresso;
+// Source: https://www.geeksforgeeks.org/how-to-generate-qr-code-in-android/
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
