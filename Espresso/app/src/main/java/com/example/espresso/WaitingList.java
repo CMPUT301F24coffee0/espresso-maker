@@ -37,6 +37,62 @@ public class WaitingList {
     }
 
     /**
+     * Query for an entrant by name.
+     * @param name The name of the entrant to search for.
+     * @return The Entrant object if found, null otherwise.
+     */
+    public Entrant getEntrantByName(String name) {
+        for (Entrant entrant : entrants) {
+            if (entrant.getName().equalsIgnoreCase(name)) {
+                return entrant;
+            }
+        }
+        return null; 
+    }
+
+    /**
+     * Query for an entrant by email.
+     * @param email The email of the entrant to search for.
+     * @return The Entrant object if found, null otherwise.
+     */
+    public Entrant getEntrantByEmail(String email) {
+        for (Entrant entrant : entrants) {
+            if (entrant.getEmail().equalsIgnoreCase(email)) {
+                return entrant;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Query for an entrant by phone number.
+     * @param phoneNumber The phone number of the entrant to search for.
+     * @return The Entrant object if found, null otherwise.
+     */
+    public Entrant getEntrantByPhoneNumber(String phoneNumber) {
+        for (Entrant entrant : entrants) {
+            if (entrant.getPhoneNumber().isPresent() && entrant.getPhoneNumber().get().equals(phoneNumber)) {
+                return entrant;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Query for an entrant by profile picture UUID.
+     * @param profilePictureID The UUID of the profile picture.
+     * @return The Entrant object if found, null otherwise.
+     */
+    public Entrant getEntrantByProfilePictureID(UUID profilePictureID) {
+        for (Entrant entrant : entrants) {
+            if (entrant.getProfilePictureID().isPresent() && entrant.getProfilePictureID().get().equals(profilePictureID)) {
+                return entrant;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Updates the entrant lists in Firebase.
      */
     public void updateFirebase() {
