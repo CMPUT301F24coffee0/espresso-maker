@@ -1,3 +1,5 @@
+package com.example.espresso;
+
 /**
  * The QRCode class stores a unique QR code associated with an event.
  * The QR code can be used to view event details or sign up for the event.
