@@ -72,7 +72,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
@@ -85,6 +85,7 @@
                 android:id="@+id/full_name"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/text_input_field_shape"
                 android:fontFamily="sans-serif"
                 android:hint="Full name"
@@ -138,6 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/text_input_field_shape"
                 android:hint="Facility's name"
                 android:inputType="textPassword"
@@ -166,7 +168,7 @@
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.92" />
+            app:layout_constraintVertical_bias="0.915" />
 
         <!-- Already have account - Log in -->
         <TextView
@@ -180,6 +182,7 @@
             android:textAlignment="center"
             android:textColor="@color/blueGrey"
             android:textSize="18sp"
+            android:clickable="true"
             app:layout_constraintTop_toBottomOf="@+id/AdminSignUpButton"
             tools:layout_editor_absoluteX="15dp" />
 
