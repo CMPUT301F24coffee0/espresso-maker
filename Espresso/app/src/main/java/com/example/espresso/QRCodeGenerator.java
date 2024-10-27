@@ -8,9 +8,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.UUID;
 
@@ -41,9 +38,6 @@ public class QRCodeGenerator extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize UI elements
-        qrCodeIV = findViewById(R.id.idIVQrcode);
-        generateQrBtn = findViewById(R.id.idBtnGenerateQR);
 
         // Set onClick listener for the button to generate the QR code
         generateQrBtn.setOnClickListener(new View.OnClickListener() {
@@ -67,14 +61,5 @@ public class QRCodeGenerator extends AppCompatActivity {
     private void generateQRCodeForEvent() {
         String eventID = UUID.randomUUID().toString(); // Use UUID for unique event ID
 
-        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-        try {
-            // Generate a QR code bitmap with the event ID
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(eventID, BarcodeFormat.QR_CODE, 400, 400);
-            qrCodeIV.setImageBitmap(bitmap); // Display the generated QR code in the ImageView
-            Toast.makeText(QRCodeGenerator.this, "QR Code Generated for Event: " + eventID, Toast.LENGTH_SHORT).show();
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
     }
 }
