@@ -1,6 +1,7 @@
 package com.example.espresso;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class WaitingList {
     private ArrayList<Entrant> entrants;
