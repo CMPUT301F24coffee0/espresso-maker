@@ -47,6 +47,7 @@ public class sign_up_org_admin extends AppCompatActivity {
         signUpButton_admin.setOnClickListener(v -> {
             if (inputConstraint() && isVisible()) {
                 // Proceed with sign-up logic for database then start new activity for organizer screen based on facility name field visibility screen
+
             }
 
             else if (inputConstraint() && !isVisible()) {
@@ -59,8 +60,8 @@ public class sign_up_org_admin extends AppCompatActivity {
     private void selectAdminTab() {
         adminTab.setBackgroundResource(R.drawable.selected_tab_selector);
         organizerTab.setBackgroundResource(R.drawable.unselected_tab_selector);
-        adminTab.setTextColor(getResources().getColor(R.color.black));
-        organizerTab.setTextColor(getResources().getColor(R.color.blueGrey));
+        adminTab.setTextColor(getResources().getColor(R.color.black, getTheme()));
+        organizerTab.setTextColor(getResources().getColor(R.color.blueGrey, getTheme()));
         facilityNameField.setVisibility(View.GONE);
     }
 
