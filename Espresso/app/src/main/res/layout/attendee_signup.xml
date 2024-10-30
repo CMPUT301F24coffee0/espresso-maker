@@ -95,7 +95,7 @@
 
         <!-- Sign Up Button -->
         <Button
-            android:id="@+id/AdminSignUpButton"
+            android:id="@+id/attendeeSignUpButton"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_row="4"
@@ -120,15 +120,16 @@
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="12dp"
+            android:clickable="true"
             android:fontFamily="sans-serif-light"
             android:text="@string/log_in"
             android:textAlignment="center"
             android:textColor="@color/blueGrey"
             android:textSize="18sp"
-            android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/AdminSignUpButton"
-            tools:layout_editor_absoluteX="15dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/attendeeSignUpButton" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
