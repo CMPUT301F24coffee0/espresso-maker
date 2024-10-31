@@ -34,7 +34,7 @@
         <LinearLayout
             android:id="@+id/tabs_layout"
             android:layout_width="320dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="40dp"
             android:background="@drawable/unselected_tab_selector"
             android:gravity="center"
@@ -61,11 +61,11 @@
                 android:id="@+id/organizer_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:clickable="true"
                 android:gravity="center"
-                android:paddingHorizontal="30dp"
-                android:paddingVertical="10dp"
+                android:paddingHorizontal="40dp"
+                android:paddingVertical="5dp"
                 android:text="Organizer"
                 android:textColor="@color/blueGrey"
                 android:textSize="18sp" />
