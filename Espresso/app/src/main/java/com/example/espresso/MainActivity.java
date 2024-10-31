@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.start_up);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.landing_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -54,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        adm_sign_in_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignIn.class);
+                startActivity(intent);
+            }
+        });
 
         create_acc_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +79,12 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser == null){
             // Print out that use is not sign in
             Log.i("auth","User is not signed in.");
+
         } else {
             // Print out that user is signed in
             Log.i("auth","User is signed in.");
+            //FirebaseAuth.getInstance().signOut();
+
             // Check user type from Firebase
             // Redirect to appropriate activity
         }

@@ -14,14 +14,12 @@
         <!-- Page Title/Name -->
 
         <!-- Input Fields -->
-
-        <!-- Sign In Button -->
         <TextView
             android:id="@+id/page_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="48dp"
             android:fontFamily="sans-serif-medium"
             android:text="Sign In"
             android:textAlignment="center"
@@ -33,19 +31,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="42dp"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/AdminSignUpButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/page_name"
-            app:layout_constraintVertical_bias="0.274">
+            app:layout_constraintTop_toBottomOf="@+id/page_name">
 
             <EditText
                 android:id="@+id/email_address"
@@ -75,6 +71,7 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
+        <!-- Sign In Button -->
         <Button
             android:id="@+id/AdminSignUpButton"
             android:layout_width="300dp"
