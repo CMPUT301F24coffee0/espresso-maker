@@ -6,7 +6,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class attendee_signup extends AppCompatActivity {
+public class AttendeeSignIn extends AppCompatActivity {
     private EditText firstNameField, lastNameField, emailAddressField, phoneNumField;
     private Button signUpButton;
 

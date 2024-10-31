@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/landing_page"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
@@ -13,172 +12,172 @@
         android:background="@color/white"
         tools:context=".views.StartUp">
 
-        <GridLayout
-            android:id="@+id/gridLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:columnCount="1"
-            android:rowCount="5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.615">
+<!--        <GridLayout-->
+<!--            android:id="@+id/gridLayout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:columnCount="1"-->
+<!--            android:rowCount="5"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.495"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.615">-->
 
-            <Button
-                android:id="@+id/AttendeeSignInButton"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/blue"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="15dp"
-                android:text="Attendee"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+<!--            <Button-->
+<!--                android:id="@+id/AttendeeSignInButton"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_row="1"-->
+<!--                android:layout_column="0"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:backgroundTint="@color/blue"-->
+<!--                android:paddingHorizontal="40dp"-->
+<!--                android:paddingVertical="15dp"-->
+<!--                android:text="Attendee"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20sp" />-->
 
-            <Button
-                android:id="@+id/OrganizerSignInButton"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/blue"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="15dp"
-                android:text="Organizer"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+<!--            <Button-->
+<!--                android:id="@+id/OrganizerSignInButton"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_row="2"-->
+<!--                android:layout_column="0"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:backgroundTint="@color/blue"-->
+<!--                android:paddingHorizontal="40dp"-->
+<!--                android:paddingVertical="15dp"-->
+<!--                android:text="Organizer"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20sp" />-->
 
-            <Button
-                android:id="@+id/AdminSignInButton"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="0"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/blue"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="15dp"
-                android:text="Admin"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+<!--            <Button-->
+<!--                android:id="@+id/AdminSignInButton"-->
+<!--                android:layout_width="300dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_row="3"-->
+<!--                android:layout_column="0"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:backgroundTint="@color/blue"-->
+<!--                android:paddingHorizontal="40dp"-->
+<!--                android:paddingVertical="15dp"-->
+<!--                android:text="Admin"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="20sp" />-->
 
-        </GridLayout>
+<!--        </GridLayout>-->
 
-        <TextView
-            android:id="@+id/or_create_account_text"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Or"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/CreateAccountButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+<!--        <TextView-->
+<!--            android:id="@+id/or_create_account_text"-->
+<!--            android:layout_width="400dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_row="4"-->
+<!--            android:layout_column="0"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="7dp"-->
+<!--            android:layout_marginBottom="7dp"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:text="Or"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="34sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/CreateAccountButton"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />-->
 
-        <Button
-            android:id="@+id/CreateAccountButton"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/blue"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="15dp"
-            android:text="Create Account"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.886" />
+<!--        <Button-->
+<!--            android:id="@+id/CreateAccountButton"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_row="4"-->
+<!--            android:layout_column="0"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:backgroundTint="@color/blue"-->
+<!--            android:paddingHorizontal="40dp"-->
+<!--            android:paddingVertical="15dp"-->
+<!--            android:text="Create Account"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="20sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.495"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.886" />-->
 
-        <TextView
-            android:id="@+id/app_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-black"
-            android:text="Espresso"
-            android:textAlignment="center"
-            android:textColor="@color/darkBrown"
-            android:textSize="50sp"
-            app:layout_constraintBottom_toTopOf="@+id/slogan"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/app_name"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:fontFamily="sans-serif-black"-->
+<!--            android:text="Espresso"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/darkBrown"-->
+<!--            android:textSize="50sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/slogan"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="145dp"
-            android:layout_height="131dp"
-            app:layout_constraintBottom_toTopOf="@+id/app_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/espresso_app_logo_transparent_background_cmput_301" />
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView"-->
+<!--            android:layout_width="145dp"-->
+<!--            android:layout_height="131dp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/app_name"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/espresso_app_logo_transparent_background_cmput_301" />-->
 
-        <TextView
-            android:id="@+id/slogan"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-medium"
-            android:text="Your ticket to fair event access."
-            android:textAlignment="center"
-            android:textColor="@color/lightBrown"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/sign_in_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/slogan"-->
+<!--            android:layout_width="400dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:text="Your ticket to fair event access."-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/lightBrown"-->
+<!--            android:textSize="30sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/sign_in_text"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <TextView
-            android:id="@+id/sign_in_text"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="7dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Sign in"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+<!--        <TextView-->
+<!--            android:id="@+id/sign_in_text"-->
+<!--            android:layout_width="400dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginBottom="7dp"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:text="Sign in"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="34sp"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/gridLayout"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/terms_policy"
-            android:textAlignment="textStart"
-            android:textColor="@color/grey"
-            android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/CreateAccountButton" />
+<!--        <TextView-->
+<!--            android:id="@+id/textView3"-->
+<!--            android:layout_width="380dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:fontFamily="sans-serif-light"-->
+<!--            android:text="@string/terms_policy"-->
+<!--            android:textAlignment="textStart"-->
+<!--            android:textColor="@color/grey"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="italic"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/CreateAccountButton" />-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
