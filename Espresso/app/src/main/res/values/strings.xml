@@ -3,4 +3,9 @@
     <string name="terms_policy">By continuing, you agree to the Terms of Use and Privacy Policy.</string>
     <string name="log_in">Already have an account? Log in.</string>
     <string name="sign_up">Don\'t have an account? Sign up.</string>
+    <string name="title_activity_drawer">drawer_act</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_my_events">My Events</string>
+    <string name="menu_scan_qr">Scan QR</string>
+    <string name="menu_profile">Profile</string>
 </resources>

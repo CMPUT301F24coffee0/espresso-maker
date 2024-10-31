@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home_attendee"
+            android:icon="@drawable/home"
+            android:title="@string/menu_home" />
+
+        <item
+            android:id="@+id/nav_my_events_attendee"
+            android:icon="@drawable/my_events"
+            android:title="@string/menu_my_events" />
+
+        <item
+            android:id="@+id/nav_scan_qr_attendee"
+            android:icon="@drawable/camera_scan_qr"
+            android:title="@string/menu_scan_qr" />
+
+        <item
+            android:id="@+id/nav_profile_attendee"
+            android:icon="@drawable/profile"
+            android:title="@string/menu_profile" />
+    </group>
+</menu>
