@@ -71,4 +71,8 @@ public class EntrantList {
     public void updateFirebase() {
         // Placeholder for Firebase db update logic
     }
+
+    public void removeAcceptedEntrant(Entrant declinedEntrant) {
+        acceptedEntrants.remove(declinedEntrant);
+    }
 }

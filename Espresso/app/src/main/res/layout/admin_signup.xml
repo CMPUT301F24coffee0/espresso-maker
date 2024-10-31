@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,21 +13,24 @@
         android:background="@color/white">
 
         <!-- Page Title/Name -->
+
+        <!-- Tabs for "Admin" and "Organizer" -->
         <TextView
             android:id="@+id/page_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
             android:text="Sign Up"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="40sp"
             android:textStyle="bold"
-            tools:layout_editor_absoluteX="136dp"
-            tools:layout_editor_absoluteY="30dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Tabs for "Admin" and "Organizer" -->
         <LinearLayout
             android:id="@+id/tabs_layout"
             android:layout_width="320dp"
@@ -69,8 +73,8 @@
 
         <!-- Input Fields -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="405dp"
+            android:layout_height="415dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
             android:gravity="center"
@@ -133,9 +137,28 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
+
+            <!-- Facility's Name Field -->
+            <EditText
+                android:id="@+id/facility_name"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/text_input_field_shape"
+                android:hint="Facility's Name"
+                android:inputType="text"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/blueGrey"
+                android:textSize="16sp"
+                android:visibility="gone" /> <!-- Initially hidden -->
+
         </LinearLayout>
 
         <!-- Sign Up Button -->
+
+        <!-- Already have account - Log in -->
         <Button
             android:id="@+id/AdminSignUpButton"
             android:layout_width="300dp"
@@ -154,24 +177,22 @@
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.856" />
+            app:layout_constraintVertical_bias="0.911" />
 
-        <!-- Already have account - Log in -->
         <TextView
             android:id="@+id/log_in_text"
             android:layout_width="380dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
             android:fontFamily="sans-serif-light"
             android:text="@string/log_in"
             android:textAlignment="center"
             android:textColor="@color/blueGrey"
             android:textSize="18sp"
-            android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/AdminSignUpButton"
-            tools:layout_editor_absoluteX="15dp" />
-
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AdminSignUpButton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

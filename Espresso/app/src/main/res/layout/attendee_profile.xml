@@ -53,7 +53,7 @@
             android:id="@+id/attendee_pfp"
             android:layout_width="74dp"
             android:layout_height="71dp"
-            app:srcCompat="@drawable/letter_D_pfp"
+            app:srcCompat="@drawable/letter_d_pfp"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="129dp" />
 

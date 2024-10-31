@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/landing_page"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
@@ -78,13 +79,17 @@
             android:layout_row="4"
             android:layout_column="0"
             android:layout_gravity="center"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
             android:fontFamily="sans-serif-medium"
             android:text="Or"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="34sp"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="539dp" />
+            app:layout_constraintBottom_toTopOf="@+id/CreateAccountButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
 
         <Button
             android:id="@+id/CreateAccountButton"
@@ -116,16 +121,19 @@
             android:textAlignment="center"
             android:textColor="@color/darkBrown"
             android:textSize="50sp"
-            tools:layout_editor_absoluteX="102dp"
-            tools:layout_editor_absoluteY="93dp" />
+            app:layout_constraintBottom_toTopOf="@+id/slogan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="145dp"
             android:layout_height="131dp"
-            app:srcCompat="@drawable/espresso_app_logo_transparent_background_cmput_301"
-            tools:layout_editor_absoluteX="156dp"
-            tools:layout_editor_absoluteY="0dp" />
+            app:layout_constraintBottom_toTopOf="@+id/app_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/espresso_app_logo_transparent_background_cmput_301" />
 
         <TextView
             android:id="@+id/slogan"
@@ -137,21 +145,24 @@
             android:textAlignment="center"
             android:textColor="@color/lightBrown"
             android:textSize="30sp"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="170dp" />
+            app:layout_constraintBottom_toTopOf="@+id/sign_in_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/sign_in_text"
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="7dp"
             android:fontFamily="sans-serif-medium"
             android:text="Sign in"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="34sp"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="267dp" />
+            app:layout_constraintBottom_toTopOf="@+id/gridLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView3"
@@ -164,8 +175,10 @@
             android:textColor="@color/grey"
             android:textSize="18sp"
             android:textStyle="italic"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="670dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/CreateAccountButton" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

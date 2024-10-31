@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "99953928368",
+    "project_id": "espresso-46c29",
+    "storage_bucket": "espresso-46c29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99953928368:android:a19611a804872b9193b375",
+        "android_client_info": {
+          "package_name": "com.example.espresso"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm6Uv3f-4yU5M3Ia3TmpcPF4-AiAFcnhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
