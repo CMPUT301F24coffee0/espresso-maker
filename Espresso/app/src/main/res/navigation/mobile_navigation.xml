@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home_attendee"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home_attendee" />
+
+    <fragment
+        android:id="@+id/nav_my_events_attendee"
+        android:label="@string/menu_my_events"
+        tools:layout="@layout/fragment_my_events_attendee" />
+
+    <fragment
+        android:id="@+id/nav_scan_qr_attendee"
+        android:label="@string/menu_scan_qr"
+        tools:layout="@layout/fragment_scan_qr_attendee" />
+
+    <fragment
+        android:id="@+id/nav_profile_attendee"
+        android:label="string/fragment_profile_attendee"
+        tools:layout="@layout/fragment_profile_attendee" />
+
+</navigation>
