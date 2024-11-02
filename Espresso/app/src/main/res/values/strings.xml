@@ -8,4 +8,23 @@
     <string name="menu_my_events">My Events</string>
     <string name="menu_scan_qr">Scan QR</string>
     <string name="menu_profile">Profile</string>
+
+
+    <string name="title_activity_organizer_drawer">organizer_drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android S.</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home_admin">Home</string>
+    <string name="menu_users_admin">Users</string>
+    <string name="menu_facilities_admin">Facilities</string>
+    <string name="menu_images_admin">Images</string>
+    <string name="menu_profile_admin">Profile</string>
+
+    <string name="menu_home_organizer">Home</string>
+    <string name="menu_facilities_organizer">Facilities</string>
+    <string name="menu_profile_organizer">Profile</string>
 </resources>
