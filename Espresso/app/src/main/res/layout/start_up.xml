@@ -24,7 +24,7 @@
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.615">
+            app:layout_constraintVertical_bias="0.793">
 
             <Button
                 android:id="@+id/AttendeeSignInButton"
@@ -33,7 +33,7 @@
                 android:layout_row="1"
                 android:layout_column="0"
                 android:layout_gravity="center"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
                 android:text="Attendee"
@@ -48,7 +48,7 @@
                 android:layout_column="0"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
                 android:text="Organizer"
@@ -63,7 +63,7 @@
                 android:layout_column="0"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
                 android:text="Admin"
@@ -73,49 +73,11 @@
         </GridLayout>
 
         <TextView
-            android:id="@+id/or_create_account_text"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Or"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/CreateAccountButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
-
-        <Button
-            android:id="@+id/CreateAccountButton"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/blue"
-            android:paddingHorizontal="40dp"
-            android:paddingVertical="15dp"
-            android:text="Create Account"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.886" />
-
-        <TextView
             android:id="@+id/app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
             android:fontFamily="sans-serif-black"
             android:text="Espresso"
             android:textAlignment="center"
@@ -123,6 +85,7 @@
             android:textSize="50sp"
             app:layout_constraintBottom_toTopOf="@+id/slogan"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
@@ -140,6 +103,7 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="48dp"
             android:fontFamily="sans-serif-medium"
             android:text="Your ticket to fair event access."
             android:textAlignment="center"
@@ -147,6 +111,7 @@
             android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/sign_in_text"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.454"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -154,7 +119,7 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="7dp"
+            android:layout_marginBottom="40dp"
             android:fontFamily="sans-serif-medium"
             android:text="Sign in"
             android:textAlignment="center"
@@ -162,6 +127,7 @@
             android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/gridLayout"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.454"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -177,8 +143,7 @@
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/CreateAccountButton" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
