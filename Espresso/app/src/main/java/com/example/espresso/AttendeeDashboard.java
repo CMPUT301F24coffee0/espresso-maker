@@ -49,39 +49,40 @@ public class AttendeeDashboard extends AppCompatActivity {
             return true;
         });
 
+        List<Event> events = new ArrayList<>();
+        events.add(new Event("Event 1", "Date 1", "Time 1", "description 1", "deadline", 10, new Facility("hub")));
+        events.add(new Event("Event 2", "Date 2", "Time 2", "description 2", "deadline", 10, new Facility("hub")));
+        events.add(new Event("Event 3", "Date 3", "Time 3", "description 3", "deadline", 10, new Facility("hub")));
+        events.add(new Event("Event 4", "Date 4", "Time 4", "description 4", "deadline", 10, new Facility("hub")));
+
+
         ListView listView = findViewById(R.id.event_list_view);
-        EventAdapter adapter = new EventAdapter(this, getEventsName(), getEventsDate(), getEventsTime(), getEventsLocation(), getEventsImage());
+        EventAdapter adapter = new EventAdapter(this,events);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Open event details activity
+                Event clickedEvent = events.get(position);
+
+                String name = clickedEvent.getName();
+                String date = clickedEvent.getDate();
+                String time = clickedEvent.getTime();
+                String location = clickedEvent.getFacility();
+
+                Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location);
+
+                // Optionally, start a new activity to display event details
+//                Intent intent = new Intent(AttendeeProfile.this, EventDetailsActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("date", date);
+//                intent.putExtra("time", time);
+//                intent.putExtra("location", location);
+//                intent.putExtra("imageResourceId", imageResourceId);
+//                startActivity(intent);
             }
         });
     }
 
-    private String[] getEventsName() {
-        String[] events = {"Event 1", "Event 2", "Event 3"};
-        return events;
-    }
 
-    private String[] getEventsDate() {
-        String[] events = {"nov 10th, 2023", "dec 10th, 2023", "feb 10th, 2023"};
-        return events;
-    }
-
-    private String[] getEventsTime() {
-        String[] events = {"10:00 AM", "9:00 AM", "3:00 PM"};
-        return events;
-    }
-
-    private String[] getEventsLocation() {
-        String[] events = {"Los Angeles", "New York", "Toronto"};
-        return events;
-    }
-
-    private String[] getEventsImage() {
-        String[] events = {"https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww", "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww", "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww"};
-        return events;
-    }
 }
