@@ -8,53 +8,58 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class EventAdapter extends BaseAdapter {
     Context context;
-    String[] name;
-    String[] date;
-    String[] time;
-    String[] location;
-    String[] image;
+    List<Event> events;
     LayoutInflater inflater;
 
-    public EventAdapter(Context c, String[] name, String[] date, String[] time, String[] location, String[] image){
+    public EventAdapter(Context c, List<Event> events){
         this.context = c;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.location = location;
-        this.image = image;
+        this.events = events;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return name.length;
+        return events.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return events.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.event_item, null);
+
+        Event event = events.get(position);
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView date = (TextView) convertView.findViewById(R.id.date);
         TextView location = (TextView) convertView.findViewById(R.id.location);
-        ImageView poster = (ImageView) convertView.findViewById(R.id.poster);
-        name.setText(this.name[position]);
-        date.setText(String.format("%s %s", this.date[position], this.time[position]));
-        location.setText(this.location[position]);
-        Picasso.get().load(this.image[position]).into(poster);
+        ImageView image = (ImageView) convertView.findViewById(R.id.poster);
+
+        name.setText(event.getName());
+        date.setText(String.format("%s %s", event.getDate(), event.getTime()));
+        location.setText(event.getFacility());
+
+        // Fetch image from Firebase Storage
+        String eventId = event.getId();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storage.getReference().child("posters").child(eventId).getDownloadUrl().addOnSuccessListener(uri -> {
+            Picasso.get().load(uri).into(image);
+        });
+
         return convertView;
     }
 }
