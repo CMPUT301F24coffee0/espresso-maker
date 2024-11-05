@@ -1,19 +1,15 @@
 package com.example.espresso;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import android.widget.Toast;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,9 +19,10 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     String deviceID;
-    Button attendee_sign_in_btn, org_sign_in_btn, adm_sign_in_btn;
+    Button attendee_sign_in_btn, org_sign_in_btn, admin_sign_in_btn;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    boolean isLoggedIn = false, isAttendee = false, isOrganizer = false, isAdmin = false;
+
+    boolean isLoggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +47,6 @@ public class MainActivity extends AppCompatActivity {
                     isLoggedIn = true;
                     Log.d("auth", "User exists " + document.getData());
 
-                    String type = document.getString("type");
-                    assert type != null;
-
-                    if (type.contains("admin")) isAdmin = true;
-                    if (type.contains("attendee")) isAttendee = true;
-                    if (type.contains("organizer")) isOrganizer = true;
                 } else {
                     Log.d("auth", "User does not exist");
                     isLoggedIn = false;
@@ -65,58 +56,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        attendee_sign_in_btn = findViewById(R.id.AttendeeSignInButton);
         org_sign_in_btn = findViewById(R.id.OrganizerSignInButton);
-        adm_sign_in_btn = findViewById(R.id.AdminSignInButton);
+        admin_sign_in_btn = findViewById((R.id.AdminSignInButton));
+        attendee_sign_in_btn = findViewById(R.id.AttendeeSignInButton);
+
+        admin_sign_in_btn.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT);
+            toast.show();
+        });
 
         attendee_sign_in_btn.setOnClickListener(v -> {
             if (isLoggedIn) {
-                if (isAttendee) {
-                    // Start Attendee Dashboard
-                } else {
-                    // Create a pop-up window saying that the user is not an attendee
-                    Log.d("auth", "User is not an attendee");
-                }
+                // Start Attendee Dashboard
             } else {
                 // Create a new user
                 DocumentReference newUser = db.collection("users").document(deviceID);
+
                 Map<String, Object> docData = new HashMap<>();
-                docData.put("type", "attendee");
+                docData.put("type", "Not Admin");
                 docData.put("deviceID", deviceID);
                 docData.put("name", "P Diddy");
                 docData.put("email", null);
                 docData.put("phone", null);
                 docData.put("facility", null);
+
                 newUser.set(docData)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("add_user", "DocumentSnapshot successfully written!");
-                                // Start Attendee Dashboard
-                                isLoggedIn = true;
-                            }
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("add_user", "DocumentSnapshot successfully written!");
+                            // Start Attendee Dashboard
+                            isLoggedIn = true;
                         })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("add_user", "Error writing document", e);
-                            }
-                        });
+                        .addOnFailureListener(e -> Log.w("add_user", "Error writing document " + e));
 
             }
         });
 
         org_sign_in_btn.setOnClickListener(v -> {
             if (isLoggedIn) {
-                if (isOrganizer) {
-                    // Start Organizer Dashboard
-                } else {
-                    // Create a pop-up window saying that the user is not an attendee
-                    Log.d("auth", "User is not an organizer");
-                }
+                Intent i = new Intent(MainActivity.this, OrganizerHomeActivity.class);
+                i.putExtra("key", 0); //Optional parameters
+                MainActivity.this.startActivity(i);
+
             } else {
                 // Create a new user
                 DocumentReference newUser = db.collection("users").document(deviceID);
+
                 Map<String, Object> docData = new HashMap<>();
                 docData.put("type", "organizer");
                 docData.put("deviceID", deviceID);
@@ -124,33 +108,14 @@ public class MainActivity extends AppCompatActivity {
                 docData.put("email", null);
                 docData.put("phone", null);
                 docData.put("facility", null);
-                newUser.set(docData)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("add_user", "DocumentSnapshot successfully written!");
-                                // Start Organizer Dashboard
-                                isLoggedIn = true;
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("add_user", "Error writing document", e);
-                            }
-                        });
-            }
-        });
 
-        adm_sign_in_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoggedIn && isAdmin) {
-                    // Start Admin Dashboard
-                } else {
-                    // Create a pop-up window saying that the user is not an admin
-                    Log.d("auth", "User is not an admin");
-                }
+                newUser.set(docData)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("add_user", "DocumentSnapshot successfully written!");
+                            // Start Organizer Dashboard
+                            isLoggedIn = true;
+                        })
+                        .addOnFailureListener(e -> Log.w("add_user", "Error writing document", e));
             }
         });
     }
