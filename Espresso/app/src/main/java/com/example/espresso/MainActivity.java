@@ -82,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isLoggedIn) {
                     if (isAttendee) {
-                        // Start Attendee Dashboard
+                        // Start Attendee AttendeeDashboard
+                        Intent intent = new Intent(MainActivity.this, AttendeeDashboard.class);
+                        startActivity(intent);
                     } else {
                         // Create a pop-up window saying that the user is not an attendee
                         Log.d("auth", "User is not an attendee");
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("add_user", "DocumentSnapshot successfully written!");
-                                    // Start Attendee Dashboard
+                                    // Start Attendee AttendeeDashboard
                                     isLoggedIn = true;
                                 }
                             })
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isLoggedIn) {
                     if (isOrganizer) {
-                        // Start Organizer Dashboard
+                        // Start Organizer AttendeeDashboard
                     } else {
                         // Create a pop-up window saying that the user is not an attendee
                         Log.d("auth", "User is not an organizer");
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("add_user", "DocumentSnapshot successfully written!");
-                                    // Start Organizer Dashboard
+                                    // Start Organizer AttendeeDashboard
                                     isLoggedIn = true;
                                 }
                             })
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isLoggedIn && isAdmin) {
-                    // Start Admin Dashboard
+                    // Start Admin AttendeeDashboard
                 } else {
                     // Create a pop-up window saying that the user is not an admin
                     Log.d("auth", "User is not an admin");

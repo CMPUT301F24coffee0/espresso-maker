@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Admin Dashboard Title -->
+    <!-- Admin AttendeeDashboard Title -->
     <TextView
         android:id="@+id/admin_dashboard_title"
         android:layout_width="wrap_content"
