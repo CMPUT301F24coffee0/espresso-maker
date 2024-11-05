@@ -69,17 +69,24 @@ public class AttendeeDashboard extends AppCompatActivity {
                 String date = clickedEvent.getDate();
                 String time = clickedEvent.getTime();
                 String location = clickedEvent.getFacility();
+                String description = clickedEvent.getDescription();
+                String deadline = clickedEvent.getDeadline();
+                int capacity = clickedEvent.getCapacity();
+                String eventId = clickedEvent.getId();
 
-                Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location);
+                Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 
-                // Optionally, start a new activity to display event details
-//                Intent intent = new Intent(AttendeeProfile.this, EventDetailsActivity.class);
-//                intent.putExtra("name", name);
-//                intent.putExtra("date", date);
-//                intent.putExtra("time", time);
-//                intent.putExtra("location", location);
-//                intent.putExtra("imageResourceId", imageResourceId);
-//                startActivity(intent);
+                // Start a new activity to display event details
+                Intent intent = new Intent(AttendeeDashboard.this, EventDetails.class);
+                intent.putExtra("name", name);
+                intent.putExtra("date", date);
+                intent.putExtra("time", time);
+                intent.putExtra("location", location);
+                intent.putExtra("description", description);
+                intent.putExtra("deadline", deadline);
+                intent.putExtra("capacity", capacity);
+                intent.putExtra("eventId", eventId);
+                startActivity(intent);
             }
         });
     }
