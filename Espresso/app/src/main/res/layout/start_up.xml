@@ -17,14 +17,15 @@
             android:id="@+id/gridLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
             android:columnCount="1"
             android:rowCount="5"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.793">
+            app:layout_constraintTop_toBottomOf="@+id/slogan">
 
             <Button
                 android:id="@+id/AttendeeSignInButton"
@@ -36,7 +37,7 @@
                 android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
-                android:text="Attendee"
+                android:text="Continue as Attendee"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -51,7 +52,7 @@
                 android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
-                android:text="Organizer"
+                android:text="Continue as Organizer"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -66,7 +67,7 @@
                 android:backgroundTint="@color/lightBrown"
                 android:paddingHorizontal="40dp"
                 android:paddingVertical="15dp"
-                android:text="Admin"
+                android:text="Continue as Admin"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -77,22 +78,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="sans-serif-black"
             android:text="Espresso"
             android:textAlignment="center"
             android:textColor="@color/darkBrown"
-            android:textSize="50sp"
-            app:layout_constraintBottom_toTopOf="@+id/slogan"
+            android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="145dp"
             android:layout_height="131dp"
-            app:layout_constraintBottom_toTopOf="@+id/app_name"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -103,32 +103,16 @@
             android:layout_width="400dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="48dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="sans-serif-medium"
             android:text="Your ticket to fair event access."
             android:textAlignment="center"
             android:textColor="@color/lightBrown"
             android:textSize="30sp"
-            app:layout_constraintBottom_toTopOf="@+id/sign_in_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.454"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/sign_in_text"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="40dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Sign in"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.454"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/app_name" />
 
         <TextView
             android:id="@+id/textView3"
@@ -137,7 +121,6 @@
             android:layout_gravity="center"
             android:fontFamily="sans-serif-light"
             android:text="@string/terms_policy"
-            android:textAlignment="textStart"
             android:textColor="@color/grey"
             android:textSize="18sp"
             android:textStyle="italic"

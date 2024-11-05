@@ -131,13 +131,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/white"
-            app:labelVisibilityMode="labeled"
             app:itemIconTint="@color/blueGrey"
             app:itemTextColor="@color/blueGrey"
+            app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:menu="@menu/bottom_nav_menu_attendee" >
+            app:menu="@menu/bottom_nav_menu_attendee">
 
             <!-- Divider for Navigation Menu -->
             <View
