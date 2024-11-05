@@ -1,6 +1,7 @@
 package com.example.espresso;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +54,20 @@ public class EventAdapter extends BaseAdapter {
         date.setText(String.format("%s %s", event.getDate(), event.getTime()));
         location.setText(event.getFacility());
 
-        // Fetch image from Firebase Storage
-        String eventId = event.getId();
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        storage.getReference().child("posters").child(eventId).getDownloadUrl().addOnSuccessListener(uri -> {
-            Picasso.get().load(uri).into(image);
+        // Fetch the image URL from Firebase Storage and load it into the ImageView
+        event.getUrl(new Event.OnUrlFetchedListener() {
+            @Override
+            public void onUrlFetched(String url) {
+                if (url != null) {
+                    Log.d("ImageURL", "Fetched URL: " + url);
+                    // Use the URL as needed, e.g., load it into an ImageView with Glide or Picasso
+                    Picasso.get().load(url).into(image);
+                } else {
+                    Log.d("ImageURL", "Failed to fetch URL.");
+                }
+            }
         });
+
 
         return convertView;
     }

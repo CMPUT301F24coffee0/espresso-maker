@@ -1,5 +1,9 @@
 package com.example.espresso;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
+
+import java.net.URI;
 import java.util.UUID;
 
 public class Event {
@@ -79,5 +83,28 @@ public class Event {
      * @return  Capacity of the event.
      */
     public int getCapacity() { return capacity; }
+
+    /**
+     *  Get the URL of the poster image for the event.
+     *
+     */
+
+    public interface OnUrlFetchedListener {
+        void onUrlFetched(String url);
+    }
+
+    public void getUrl(OnUrlFetchedListener listener) {
+        // Fetch image from Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        storage.getReference().child("posters").child(this.getId()).getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    // Call the listener's method with the fetched URL
+                    listener.onUrlFetched(uri.toString());
+                })
+                .addOnFailureListener(exception -> {
+                    // Handle any errors here, such as passing a null or empty URL
+                    listener.onUrlFetched(null);
+                });
+    }
 
 }
