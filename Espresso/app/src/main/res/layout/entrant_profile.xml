@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Admin Dashboard Title -->
+    <!-- Admin AttendeeDashboard Title -->
     <TextView
         android:id="@+id/admin_dashboard_title"
         android:layout_width="wrap_content"
@@ -32,22 +32,23 @@
 
     <ImageView
         android:id="@+id/profilePic"
-        android:layout_width="43dp"
-        android:layout_height="58dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="86dp"
         app:srcCompat="@drawable/profile" />
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="99dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="74dp"
-        android:layout_marginTop="105dp"
+        android:layout_marginStart="102dp"
+        android:layout_marginTop="104dp"
+        android:textSize="25sp"
         android:text="Name" />
 
     <TextView
@@ -56,8 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="152dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="184dp"
+        android:textSize="20sp"
         android:text="Email" />
 
     <TextView
@@ -66,8 +68,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="187dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="222dp"
+        android:textSize="20sp"
         android:text="Role:" />
 
     <TextView
@@ -76,8 +79,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="266dp"
+        android:textSize="20sp"
         android:text="Phone Number" />
 
     <Button
@@ -86,8 +90,8 @@
         android:layout_height="68dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="268dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="339dp"
         android:text="Sign out"
         android:textColorLink="#00B0FD" />
 
