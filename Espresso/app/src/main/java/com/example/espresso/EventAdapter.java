@@ -9,6 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
@@ -45,29 +48,44 @@ public class EventAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.event_item, null);
 
         Event event = events.get(position);
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        TextView date = (TextView) convertView.findViewById(R.id.date);
-        TextView location = (TextView) convertView.findViewById(R.id.location);
-        ImageView image = (ImageView) convertView.findViewById(R.id.poster);
+        String deviceID = new User(context).getDeviceID();
+        // Check if user already joined the lottery
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("events").document(event.getId()).collection("participants").document(deviceID);
+        View finalConvertView = convertView;
+        View finalConvertView1 = convertView;
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    finalConvertView.setVisibility(View.GONE);
+                }
+                else {
+                    TextView name = (TextView) finalConvertView1.findViewById(R.id.name);
+                    TextView date = (TextView) finalConvertView1.findViewById(R.id.date);
+                    TextView location = (TextView) finalConvertView1.findViewById(R.id.location);
+                    ImageView image = (ImageView) finalConvertView1.findViewById(R.id.poster);
 
-        name.setText(event.getName());
-        date.setText(String.format("%s %s", event.getDate(), event.getTime()));
-        location.setText(event.getFacility());
+                    name.setText(event.getName());
+                    date.setText(String.format("%s %s", event.getDate(), event.getTime()));
+                    location.setText(event.getFacility());
 
-        // Fetch the image URL from Firebase Storage and load it into the ImageView
-        event.getUrl(new Event.OnUrlFetchedListener() {
-            @Override
-            public void onUrlFetched(String url) {
-                if (url != null) {
-                    Log.d("ImageURL", "Fetched URL: " + url);
-                    // Use the URL as needed, e.g., load it into an ImageView with Glide or Picasso
-                    Picasso.get().load(url).into(image);
-                } else {
-                    Log.d("ImageURL", "Failed to fetch URL.");
+                    // Fetch the image URL from Firebase Storage and load it into the ImageView
+                    event.getUrl(new Event.OnUrlFetchedListener() {
+                        @Override
+                        public void onUrlFetched(String url) {
+                            if (url != null) {
+                                Log.d("ImageURL", "Fetched URL: " + url);
+                                // Use the URL as needed, e.g., load it into an ImageView with Glide or Picasso
+                                Picasso.get().load(url).into(image);
+                            } else {
+                                Log.d("ImageURL", "Failed to fetch URL.");
+                            }
+                        }
+                    });
                 }
             }
         });
-
 
         return convertView;
     }

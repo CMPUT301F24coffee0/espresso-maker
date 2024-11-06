@@ -147,11 +147,20 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/enter_lottery_button"
+            android:backgroundTint="@color/lightBrown"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="160dp"
+            android:layout_gravity="center"
+            android:text="Enter the Lottery" />
+
+
     </LinearLayout>
 
     <!-- NOTE: Since there are many different button combinations,
     they are added in the activity code. -->
-
 </FrameLayout>
 
 
