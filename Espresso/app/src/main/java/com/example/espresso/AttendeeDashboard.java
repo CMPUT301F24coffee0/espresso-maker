@@ -30,6 +30,8 @@ public class AttendeeDashboard extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         // Navigation
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.events) {
@@ -50,15 +52,47 @@ public class AttendeeDashboard extends AppCompatActivity {
         });
 
         List<Event> events = new ArrayList<>();
-        events.add(new Event("Event 1", "Date 1", "Time 1", "description 1", "deadline", 10, new Facility("hub")));
-        events.add(new Event("Event 2", "Date 2", "Time 2", "description 2", "deadline", 10, new Facility("hub")));
-        events.add(new Event("Event 3", "Date 3", "Time 3", "description 3", "deadline", 10, new Facility("hub")));
-        events.add(new Event("Event 4", "Date 4", "Time 4", "description 4", "deadline", 10, new Facility("hub")));
-
-
         ListView listView = findViewById(R.id.event_list_view);
         EventAdapter adapter = new EventAdapter(this,events);
         listView.setAdapter(adapter);
+        db.collection("events").get().addOnCompleteListener( task -> {
+            if (task.isSuccessful()) {
+                Log.d("Event", "Events found");
+                for (int i = 0; i < task.getResult().size(); i++) {
+                    // Filter out events that have already joined
+                    String eventId = task.getResult().getDocuments().get(i).getId();
+                    String deviceID = new User(this).getDeviceID();
+                    db.collection("events").document(eventId).collection("participants").document(deviceID).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            if (task1.getResult().exists()) {
+                                Log.d("Event", "Event already joined: " + eventId);
+                            } else {
+
+                            }
+                        }
+                    });
+                    String name = task.getResult().getDocuments().get(i).getString("name");
+                    String date = task.getResult().getDocuments().get(i).getString("date");
+                    String time = task.getResult().getDocuments().get(i).getString("time");
+                    String location = task.getResult().getDocuments().get(i).getString("location");
+                    String description = task.getResult().getDocuments().get(i).getString("description");
+                    String deadline = task.getResult().getDocuments().get(i).getString("deadline");
+                    int capacity = task.getResult().getDocuments().get(i).getLong("capacity").intValue();
+                    events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }).addOnCompleteListener( task -> {
+            if (task.isSuccessful()) {
+                if (events.isEmpty()) {
+                    Log.d("Event", "No events found " + events.size());
+                } else {
+                    Log.d("Event", "Events found " + events.get(0).getName());
+                }
+            }
+        });
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
