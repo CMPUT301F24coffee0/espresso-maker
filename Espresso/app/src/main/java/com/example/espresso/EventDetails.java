@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -40,6 +42,16 @@ public class EventDetails extends AppCompatActivity {
         String deviceID = new User(this).getDeviceID();
         Intent intent = getIntent();
 
+        // Handle onBackPressed()
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(EventDetails.this, AttendeeDashboard.class);
+                startActivity(intent);
+            }
+        });
+
         // Retrieve the extras
         String name = intent.getStringExtra("name");
         String date = intent.getStringExtra("date");
@@ -50,7 +62,7 @@ public class EventDetails extends AppCompatActivity {
         int capacity = intent.getIntExtra("capacity", 0); // Default value is 0
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
-        DocumentReference eventRef = db.collection("events").document(eventId);
+
 
 
         Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
@@ -87,8 +99,6 @@ public class EventDetails extends AppCompatActivity {
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
 
-                            // Remove the event from the array of events
-
 
                         } else {
                             // Lottery entry failed
@@ -97,4 +107,5 @@ public class EventDetails extends AppCompatActivity {
                     });
         });
     }
+
 }
