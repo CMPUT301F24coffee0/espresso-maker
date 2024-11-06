@@ -7,7 +7,7 @@ import java.net.URI;
 import java.util.UUID;
 
 public class Event {
-    private final String id;
+    private final UUID id;
     private Facility facility;
     private String name;
     private String date;
@@ -21,7 +21,7 @@ public class Event {
      * @param facility  Facility the event takes place in.
      */
     public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility) {
-        id = name+date+time;
+        id = UUID.randomUUID();
         this.facility = facility;
         this.name = name;
         this.date = date;
@@ -36,7 +36,7 @@ public class Event {
      * @return  ID of the event.
      */
     public String getId() {
-        return id;
+        return id.toString();
     }
 
     /**
