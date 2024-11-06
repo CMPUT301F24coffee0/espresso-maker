@@ -4,12 +4,13 @@ import java.util.UUID;
 
 public class Facility {
     private final UUID id;
-
+    private String name;
     /**
      * Create a new facility.
      */
-    public Facility() {
+    public Facility(String name) {
         id = UUID.randomUUID();
+        this.name = name;
     }
 
     /**
@@ -27,4 +28,10 @@ public class Facility {
     public UUID getId() {
         return id;
     }
+
+    /**
+     * Get the name of the facility.
+     * @return  Name of the facility.
+     */
+    public String getName() { return name; }
 }

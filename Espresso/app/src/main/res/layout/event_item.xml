@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".EventItem">
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="106dp"
+        android:layout_height="114dp"
+        android:paddingEnd="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:gravity="center_vertical"
+            android:text="business"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingLeft="5dp"/>
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="29dp"
+            android:text="nov 10th, 2023"
+            android:paddingLeft="5dp"/>
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:text="la"
+            android:paddingLeft="5dp"/>
+    </LinearLayout>
+</LinearLayout>
