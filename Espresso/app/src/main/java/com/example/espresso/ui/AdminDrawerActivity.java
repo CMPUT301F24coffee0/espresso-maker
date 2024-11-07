@@ -1,20 +1,16 @@
 package com.example.espresso.ui;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
-
 import com.example.espresso.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.espresso.databinding.ActivityAdminDrawerBinding;
 
 public class AdminDrawerActivity extends AppCompatActivity {
@@ -30,14 +26,9 @@ public class AdminDrawerActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarOrganizerDrawer.toolbar);
-        binding.appBarOrganizerDrawer.toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.toolbar).show();
-            }
-        });
+        binding.appBarOrganizerDrawer.toolbar.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null)
+                .setAnchorView(R.id.toolbar).show());
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each

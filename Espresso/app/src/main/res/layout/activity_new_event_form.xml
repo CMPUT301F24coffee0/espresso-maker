@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/landing_page"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,12 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NewEventForm">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-
         <!-- Close Button -->
         <ImageView
             android:id="@+id/close_button"
@@ -24,7 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
-
         <!-- Page Title -->
         <TextView
             android:id="@+id/page_name"
@@ -40,7 +36,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-
         <!-- Input Fields Layout -->
         <LinearLayout
             android:id="@+id/input_fields_container"
@@ -53,7 +48,6 @@
             app:layout_constraintTop_toBottomOf="@id/page_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-
             <!-- Event Name Field -->
             <EditText
                 android:id="@+id/event_name"
@@ -66,7 +60,6 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
-
             <!-- Location Field -->
             <EditText
                 android:id="@+id/location"
@@ -79,7 +72,6 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
-
             <!-- Choose Date Field with Calendar Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -87,7 +79,6 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:background="@drawable/text_input_field_shape">
-
                 <EditText
                     android:id="@+id/choose_date"
                     android:layout_width="0dp"
@@ -102,7 +93,6 @@
                     android:textColorHint="@color/blueGrey"
                     android:textSize="16sp"
                     android:background="@null" />
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,7 +100,6 @@
                     android:src="@drawable/espresso_app_cal_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
-
             <!-- Choose Time Field with Clock Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -118,7 +107,6 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:background="@drawable/text_input_field_shape">
-
                 <EditText
                     android:id="@+id/choose_time"
                     android:layout_width="0dp"
@@ -133,7 +121,6 @@
                     android:textColorHint="@color/blueGrey"
                     android:textSize="16sp"
                     android:background="@null" />
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -141,7 +128,6 @@
                     android:padding="16dp"
                     tools:srcCompat="@android:drawable/ic_menu_today" />
             </LinearLayout>
-
             <!-- Waiting List Capacity Field -->
             <EditText
                 android:id="@+id/waiting_list_capacity"
@@ -154,7 +140,6 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
-
             <!-- Open for Registration Until Field with Calendar Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -162,7 +147,6 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:background="@drawable/text_input_field_shape">
-
                 <EditText
                     android:id="@+id/registration_until"
                     android:layout_width="0dp"
@@ -177,7 +161,6 @@
                     android:textColorHint="@color/blueGrey"
                     android:textSize="16sp"
                     android:background="@null" />
-
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -185,7 +168,6 @@
                     android:src="@drawable/espresso_app_cal_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
-
             <!-- Number of Attendees to Sample Field -->
             <EditText
                 android:id="@+id/attendees_to_sample"
@@ -199,7 +181,6 @@
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
         </LinearLayout>
-
         <!-- Next Button -->
         <Button
             android:id="@+id/next_button"
@@ -217,6 +198,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_fields_container"
             app:layout_constraintVertical_bias="0.37" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -6,13 +6,11 @@ import java.util.List;
 /**
  * EntrantList class manages the list of all entrants to an event, categorized by status.
  * It handles the entry and exit of entrants from the list and receives notifications for changes.
- *
  * Responsibilities:
  * - Shows list of entrants categorized as accepted, rejected, or cancelled.
  * - Handles entry/exit of entrants to/from the list.
  * - Receives notifications about updates.
  * - Updates the Firebase database.
- *
  * Collaborators:
  * - WaitingList
  * - Entrant

@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:gravity="center_vertical"
-            android:text="business"
+            android:text="Meeting"
             android:textSize="16sp"
             android:textStyle="bold"
             android:paddingLeft="5dp"/>
@@ -30,13 +30,13 @@
             android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="29dp"
-            android:text="nov 10th, 2023"
+            android:text="Nov 10th, 2023"
             android:paddingLeft="5dp"/>
         <TextView
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="34dp"
-            android:text="la"
+            android:text="CCIS"
             android:paddingLeft="5dp"/>
     </LinearLayout>
 </LinearLayout>

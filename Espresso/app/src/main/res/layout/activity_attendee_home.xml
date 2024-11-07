@@ -37,7 +37,7 @@ tools:context=".AttendeeHomeActivity">
 <ListView
     android:id="@+id/event_list_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
     android:layout_below="@id/upcoming_events_header"
     android:layout_marginTop="8dp"
     android:divider="@android:color/darker_gray"
@@ -48,9 +48,9 @@ tools:context=".AttendeeHomeActivity">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    app:menu="@menu/bottom_nav_menu_entrant"
-    app:labelVisibilityMode="labeled"
+    android:background="?android:attr/windowBackground"
     app:itemTextColor="@color/black"
-    android:background="?android:attr/windowBackground" />
+    app:labelVisibilityMode="labeled"
+    app:menu="@menu/bottom_nav_menu_entrant" />
 
 </RelativeLayout>
