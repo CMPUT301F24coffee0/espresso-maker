@@ -126,12 +126,13 @@
 
                 <Button
                     android:id="@+id/enter_lottery_button"
-                    android:backgroundTint="@color/lightBrown"
                     android:layout_width="350dp"
                     android:layout_height="70dp"
-                    android:layout_marginTop="160dp"
                     android:layout_gravity="center"
-                    android:text="Enter the Lottery" />
+                    android:backgroundTint="@color/lightBrown"
+                    android:text="Enter the Lottery"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -146,16 +147,6 @@
             android:text="The quick brown fox jumps over the lazy dog."
             android:textColor="@color/black"
             android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/enter_lottery_button"
-            android:backgroundTint="@color/lightBrown"
-            android:layout_width="350dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="160dp"
-            android:layout_gravity="center"
-            android:text="Enter the Lottery" />
-
 
     </LinearLayout>
 

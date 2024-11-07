@@ -12,8 +12,7 @@ import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.espresso.databinding.ActivityMainBinding;
-import com.example.espresso.databinding.EntrantHomeBinding;
+import com.example.espresso.databinding.ActivityAttendeeHomeBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.lang.reflect.Array;
@@ -22,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class AttendeeDashboard extends AppCompatActivity {
-    EntrantHomeBinding binding;
+    ActivityAttendeeHomeBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = EntrantHomeBinding.inflate(getLayoutInflater());
+        binding = ActivityAttendeeHomeBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
