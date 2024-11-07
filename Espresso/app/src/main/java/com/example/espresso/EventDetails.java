@@ -62,6 +62,7 @@ public class EventDetails extends AppCompatActivity {
         int capacity = intent.getIntExtra("capacity", 0); // Default value is 0
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
+        String status = intent.getStringExtra("status");
 
 
 
@@ -94,6 +95,25 @@ public class EventDetails extends AppCompatActivity {
         eventData.put("status", "pending");
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
+        if (status.equals("confirmed")) {
+            enterLotteryButton.setEnabled(false);
+            enterLotteryButton.setText("Confirmed");
+            enterLotteryButton.setTextColor(Color.BLACK);
+            enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("green")));
+        }
+        else if (status.equals("pending")) {
+            enterLotteryButton.setEnabled(false);
+            enterLotteryButton.setText("Pending");
+            enterLotteryButton.setTextColor(Color.BLACK);
+            enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("yellow")));
+        }
+        else if (status.equals("declined")) {
+            enterLotteryButton.setEnabled(false);
+            enterLotteryButton.setText("Declined");
+            enterLotteryButton.setTextColor(Color.WHITE);
+            enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
+        }
+
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
             db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);

@@ -122,6 +122,7 @@ public class AttendeeDashboard extends AppCompatActivity {
                 intent.putExtra("deadline", deadline);
                 intent.putExtra("capacity", capacity);
                 intent.putExtra("eventId", eventId);
+                intent.putExtra("status", "view");
                 clickedEvent.getUrl(url -> {
                     intent.putExtra("posterUrl", url);
                 });
