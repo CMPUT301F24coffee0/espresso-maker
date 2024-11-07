@@ -1,46 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/organizer_home_page"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/organizer_home_page"
-    tools:context=".OrganizerHomeActivity">
+    android:layout_height="match_parent">
 
-    <!-- Admin Dashboard Title -->
-    <TextView
-        android:id="@+id/admin_dashboard_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:text="Organizer Dashboard"
-        android:textSize="34sp"
-        android:textStyle="bold" />
-
-    <!-- Upcoming Events Header -->
-    <TextView
-        android:id="@+id/upcoming_events_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/admin_dashboard_title"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:text="My Events"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <!-- ListView for events -->
-    <ListView
-        android:id="@+id/event_list_view"
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/upcoming_events_header"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:layout_marginTop="8dp" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigationView" />
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -49,8 +18,6 @@
         app:menu="@menu/bottom_nav_menu_organizer"
         app:labelVisibilityMode="labeled"
         app:itemTextColor="@color/black"
-        android:background="?android:attr/windowBackground" >
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        android:background="?android:attr/windowBackground" />
 
 </RelativeLayout>

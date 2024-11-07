@@ -1,36 +1,65 @@
 package com.example.espresso;
 
 import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import android.view.MenuItem;
 
 public class OrganizerHomeActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.organizer_home);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.organizer_home_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+
+        if (savedInstanceState == null) {
+            loadFragment(new organizerHomeFragment());
+        }
+    }
+
+
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+
+                    if (item.getItemId() == R.id.nav_home_organizer) {
+                        selectedFragment = new organizerHomeFragment();
+                    } else if (item.getItemId() == R.id.nav_facilities_organizer) {
+                        selectedFragment = new organizerFacility();
+                    } else if (item.getItemId() == R.id.nav_profile_organizer) {
+                        selectedFragment = new organizerProfile();
+                    }
+
+                    // Load the selected fragment if it is not null
+                    if (selectedFragment != null) {
+                        loadFragment(selectedFragment);
+                    }
+                    return true;
+                }
+            };
+
+    // Helper method to load fragments
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment); // Updated with `fragment_container`
+        transaction.commit();
     }
 }

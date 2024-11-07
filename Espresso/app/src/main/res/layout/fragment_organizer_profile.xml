@@ -17,20 +17,6 @@
         android:textStyle="bold" />
 
 
-
-    <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu_organizer"
-        app:labelVisibilityMode="labeled"
-        app:itemTextColor="@color/black"
-        android:background="?android:attr/windowBackground" >
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
-
     <ImageView
         android:id="@+id/profilePic"
         android:layout_width="43dp"
