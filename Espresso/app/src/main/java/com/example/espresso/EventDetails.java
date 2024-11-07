@@ -83,11 +83,20 @@ public class EventDetails extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.attendee_event_profile_banner_img);
         Picasso.get().load(posterUrl).into(imageView);
 
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("name", name);
+        eventData.put("date", date);
+        eventData.put("time", time);
+        eventData.put("location", location);
+        eventData.put("description", description);
+        eventData.put("deadline", deadline);
+        eventData.put("capacity", capacity);
+        eventData.put("status", "pending");
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
-            db.collection("users").document(deviceID).collection("events").document(eventId).set(Map.of("status", "pending"));
+            db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
             db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "lottery"))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -98,7 +107,6 @@ public class EventDetails extends AppCompatActivity {
                             enterLotteryButton.setText("You have entered the lottery!");
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-
 
                         } else {
                             // Lottery entry failed
