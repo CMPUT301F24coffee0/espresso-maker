@@ -36,7 +36,7 @@ public class QRCodeGenerator extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.start_up);
 
 
         // Set onClick listener for the button to generate the QR code

@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class EventAdapter extends BaseAdapter {
@@ -91,16 +88,13 @@ public class EventAdapter extends BaseAdapter {
                     viewHolder.location.setText(event.getFacility());
 
                     // Fetch and load the image URL
-                    event.getUrl(new Event.OnUrlFetchedListener() {
-                        @Override
-                        public void onUrlFetched(String url) {
-                            if (url != null) {
-                                Log.d("ImageURL", "Fetched URL: " + url);
-                                // Use an image loading library like Picasso to load the image
-                                Picasso.get().load(url).into(viewHolder.image);
-                            } else {
-                                Log.d("ImageURL", "Failed to fetch URL.");
-                            }
+                    event.getUrl(url -> {
+                        if (url != null) {
+                            Log.d("ImageURL", "Fetched URL: " + url);
+                            // Use an image loading library like Picasso to load the image
+                            Picasso.get().load(url).into(viewHolder.image);
+                        } else {
+                            Log.d("ImageURL", "Failed to fetch URL.");
                         }
                     });
                 }

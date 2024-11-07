@@ -14,8 +14,6 @@ public class ViewPageAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
-            case 0:
-                return new ConfirmedEvents();
             case 1:
                 return new PendingEvents();
             case 2:

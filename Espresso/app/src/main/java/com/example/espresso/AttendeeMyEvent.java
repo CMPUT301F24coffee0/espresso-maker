@@ -2,23 +2,14 @@ package com.example.espresso;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.espresso.databinding.EntrantHomeBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
-
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-
-import com.example.espresso.ui.main.SectionsPagerAdapter;
 import com.example.espresso.databinding.ActivityAttendeeMyEventBinding;
+
+import java.util.Objects;
 
 public class AttendeeMyEvent extends AppCompatActivity {
     TabLayout tabLayout;
@@ -38,7 +29,7 @@ public class AttendeeMyEvent extends AppCompatActivity {
             if (item.getItemId() == R.id.home) {
                 // Open Home activity
                 Log.d("BottomNav", "Home clicked");
-                Intent intent = new Intent(AttendeeMyEvent.this, AttendeeDashboard.class);
+                Intent intent = new Intent(AttendeeMyEvent.this, AttendeeHomeActivity.class);
                 startActivity(intent);
             }
             else if (item.getItemId() == R.id.scan) {
@@ -79,7 +70,8 @@ public class AttendeeMyEvent extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 tabLayout.selectTab(tabLayout.getTabAt(position));
-                tabLayout.getTabAt(position).select();
+                Objects.requireNonNull(
+                        tabLayout.getTabAt(position)).select();
             }
 
         });

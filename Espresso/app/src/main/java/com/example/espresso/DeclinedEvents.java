@@ -6,16 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +28,7 @@ public class DeclinedEvents extends Fragment {
         EventAdapter adapter = new EventAdapter(getContext(),events);
         // Fetch confirmed events from the database and add them to the list
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(new User(getContext()).getDeviceID()).collection("events").whereEqualTo("status", "declined").get().addOnCompleteListener(task -> {
+        db.collection("users").document(new User(requireContext()).getDeviceID()).collection("events").whereEqualTo("status", "declined").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // Loop through the documents in the collection
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -59,39 +55,34 @@ public class DeclinedEvents extends Fragment {
         ListView listView = rootView.findViewById(R.id.event_list_view);
         listView.setAdapter(adapter);
         // Item onClick listener
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Open event details activity
-                Event clickedEvent = events.get(position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // Open event details activity
+            Event clickedEvent = events.get(position);
 
-                String name = clickedEvent.getName();
-                String date = clickedEvent.getDate();
-                String time = clickedEvent.getTime();
-                String location = clickedEvent.getFacility();
-                String description = clickedEvent.getDescription();
-                String deadline = clickedEvent.getDeadline();
-                int capacity = clickedEvent.getCapacity();
-                String eventId = clickedEvent.getId();
+            String name = clickedEvent.getName();
+            String date = clickedEvent.getDate();
+            String time = clickedEvent.getTime();
+            String location = clickedEvent.getFacility();
+            String description = clickedEvent.getDescription();
+            String deadline = clickedEvent.getDeadline();
+            int capacity = clickedEvent.getCapacity();
+            String eventId = clickedEvent.getId();
 
-                Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
+            Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 
-                // Start a new activity to display event details
-                Intent intent = new Intent(requireActivity(), EventDetails.class);
-                intent.putExtra("name", name);
-                intent.putExtra("date", date);
-                intent.putExtra("time", time);
-                intent.putExtra("location", location);
-                intent.putExtra("description", description);
-                intent.putExtra("deadline", deadline);
-                intent.putExtra("capacity", capacity);
-                intent.putExtra("eventId", eventId);
-                intent.putExtra("status", "declined");
-                clickedEvent.getUrl(url -> {
-                    intent.putExtra("posterUrl", url);
-                });
-                startActivity(intent);
-            }
+            // Start a new activity to display event details
+            Intent intent = new Intent(requireActivity(), EventDetails.class);
+            intent.putExtra("name", name);
+            intent.putExtra("date", date);
+            intent.putExtra("time", time);
+            intent.putExtra("location", location);
+            intent.putExtra("description", description);
+            intent.putExtra("deadline", deadline);
+            intent.putExtra("capacity", capacity);
+            intent.putExtra("eventId", eventId);
+            intent.putExtra("status", "declined");
+            clickedEvent.getUrl(url -> intent.putExtra("posterUrl", url));
+            startActivity(intent);
         });
         return rootView;
     }
