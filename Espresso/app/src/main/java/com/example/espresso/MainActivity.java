@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
                     docData.put("type", "attendee");
                     docData.put("deviceID", deviceID);
                     docData.put("name", "P Diddy");
-                    docData.put("email", null);
-                    docData.put("phone", null);
-                    docData.put("facility", null);
+                    docData.put("email", "");
+                    docData.put("phone", "");
+                    docData.put("facility", "");
                     newUser.set(docData)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

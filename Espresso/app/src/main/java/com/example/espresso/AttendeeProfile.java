@@ -54,10 +54,13 @@ public class AttendeeProfile extends AppCompatActivity {
         });
 
         // Navigation
+        binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.events) {
                 // Open events activity
                 Log.d("BottomNav", "Events clicked");
+                Intent intent = new Intent(AttendeeProfile.this, AttendeeMyEvent.class);
+                startActivity(intent);
             }
             else if (item.getItemId() == R.id.scan) {
                 // Open scan activity

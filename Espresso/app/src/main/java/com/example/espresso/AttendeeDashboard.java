@@ -37,6 +37,8 @@ public class AttendeeDashboard extends AppCompatActivity {
             if (item.getItemId() == R.id.events) {
                     // Open events activity
                     Log.d("BottomNav", "Events clicked");
+                    Intent intent = new Intent(AttendeeDashboard.this, AttendeeMyEvent.class);
+                    startActivity(intent);
             }
             else if (item.getItemId() == R.id.scan) {
                     // Open scan activity
