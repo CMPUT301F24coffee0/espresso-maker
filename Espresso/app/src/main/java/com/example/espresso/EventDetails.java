@@ -8,28 +8,14 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Source;
 import com.squareup.picasso.Picasso;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class EventDetails extends AppCompatActivity {
     Button enterLotteryButton;
@@ -47,7 +33,7 @@ public class EventDetails extends AppCompatActivity {
         dispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intent = new Intent(EventDetails.this, AttendeeDashboard.class);
+                Intent intent = new Intent(EventDetails.this, AttendeeHomeActivity.class);
                 startActivity(intent);
             }
         });
@@ -62,6 +48,7 @@ public class EventDetails extends AppCompatActivity {
         int capacity = intent.getIntExtra("capacity", 0); // Default value is 0
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
+        String status = intent.getStringExtra("status");
 
 
 
@@ -83,11 +70,41 @@ public class EventDetails extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.attendee_event_profile_banner_img);
         Picasso.get().load(posterUrl).into(imageView);
 
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("name", name);
+        eventData.put("date", date);
+        eventData.put("time", time);
+        eventData.put("location", location);
+        eventData.put("description", description);
+        eventData.put("deadline", deadline);
+        eventData.put("capacity", capacity);
+        eventData.put("status", "pending");
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
+        switch (Objects.requireNonNull(status)) {
+            case "confirmed":
+                enterLotteryButton.setEnabled(false);
+                enterLotteryButton.setText("Confirmed");
+                enterLotteryButton.setTextColor(Color.BLACK);
+                enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("green")));
+                break;
+            case "pending":
+                enterLotteryButton.setEnabled(false);
+                enterLotteryButton.setText("Pending");
+                enterLotteryButton.setTextColor(Color.BLACK);
+                enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("yellow")));
+                break;
+            case "declined":
+                enterLotteryButton.setEnabled(false);
+                enterLotteryButton.setText("Declined");
+                enterLotteryButton.setTextColor(Color.WHITE);
+                enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
+                break;
+        }
+
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
-            db.collection("users").document(deviceID).collection("events").document(eventId).set(Map.of("status", "pending"));
+            db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
             db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "lottery"))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -98,7 +115,6 @@ public class EventDetails extends AppCompatActivity {
                             enterLotteryButton.setText("You have entered the lottery!");
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-
 
                         } else {
                             // Lottery entry failed

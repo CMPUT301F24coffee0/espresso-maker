@@ -2,34 +2,27 @@ package com.example.espresso;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import android.widget.Toast;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    Button attendee_sign_in_btn, org_sign_in_btn, adm_sign_in_btn;
     String deviceID;
+    Button attendee_sign_in_btn, org_sign_in_btn, admin_sign_in_btn;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    boolean isLoggedIn = false, isAttendee = false, isOrganizer = false, isAdmin = false;
+
+    boolean isLoggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,134 +32,107 @@ public class MainActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.landing_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+            return insets;});
 
-        // Get device ID
-        deviceID = new User(this).getDeviceID();
+        deviceID = new User(this).getDeviceID(); // Get device ID
+
         DocumentReference docRef = db.collection("users").document(deviceID);
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        isLoggedIn = true;
-                        Log.d("auth", "User exists" + document.getData());
-                        String type = document.getString("type");
-                        if (type.contains("admin")){
-                            isAdmin = true;
-                        }
-                        if (type.contains("attendee")){
-                            isAttendee = true;
-                        }
-                        if (type.contains("organizer")){
-                            isOrganizer = true;
-                        }
-                    } else {
-                        Log.d("auth", "User does not exist");
-                        isLoggedIn = false;
-                    }
-                } else {
-                    Log.d("auth", "get failed with ", task.getException());
-                }
-            }
-        });
 
-        attendee_sign_in_btn = findViewById(R.id.AttendeeSignInButton);
+        (docRef.get()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    isLoggedIn = true;
+                    Log.d("auth", "User exists: " + document.getData());
+
+                } else {
+                    isLoggedIn = false;
+                    Log.d("auth", "User does not exist");
+                }
+            } else {
+                Log.d("auth", "get() failed with " + task.getException());
+            }});
+
+        admin_sign_in_btn = findViewById(R.id.AdminSignInButton);
         org_sign_in_btn = findViewById(R.id.OrganizerSignInButton);
-        adm_sign_in_btn = findViewById(R.id.AdminSignInButton);
+        attendee_sign_in_btn = findViewById(R.id.AttendeeSignInButton);
 
-        attendee_sign_in_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoggedIn) {
-                    if (isAttendee) {
-                        // Start Attendee AttendeeDashboard
-                        Intent intent = new Intent(MainActivity.this, AttendeeDashboard.class);
-                        startActivity(intent);
-                    } else {
-                        // Create a pop-up window saying that the user is not an attendee
-                        Log.d("auth", "User is not an attendee");
-                    }
-                } else {
-                    // Create a new user
-                    DocumentReference newUser = db.collection("users").document(deviceID);
-                    Map<String, Object> docData = new HashMap<>();
-                    docData.put("type", "attendee");
-                    docData.put("deviceID", deviceID);
-                    docData.put("name", "P Diddy");
-                    docData.put("email", null);
-                    docData.put("phone", null);
-                    docData.put("facility", null);
-                    newUser.set(docData)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("add_user", "DocumentSnapshot successfully written!");
-                                    // Start Attendee AttendeeDashboard
-                                    isLoggedIn = true;
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("add_user", "Error writing document", e);
-                                }
-                            });
+        admin_sign_in_btn.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT);
+            toast.show();});
 
-                }
+        attendee_sign_in_btn.setOnClickListener(v -> {
+            if (isLoggedIn) {
+                Intent i = new Intent(MainActivity.this, AttendeeHomeActivity.class);
+                MainActivity.this.startActivity(i);
+            } else {
+                // Create a new user
+                DocumentReference newUser = db.collection("users").document(deviceID);
+
+                Random random = new Random();
+
+                Map<String, Object> docData = new HashMap<>();
+                docData.put("type", "Not Admin");
+                docData.put("deviceID", deviceID);
+
+                // Use a random username
+                docData.put("name", random.ints(
+                        48, 122 + 1)
+                        .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                        .limit(10)
+                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                        .toString());
+                docData.put("email", "Not set");
+                docData.put("phone", 0);
+                docData.put("facility", "Not set");
+
+                newUser.set(docData)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("add_user", "DocumentSnapshot successfully written!");
+
+                            Intent i = new Intent(MainActivity.this, AttendeeHomeActivity.class);
+                            MainActivity.this.startActivity(i);
+                            isLoggedIn = true;
+                        })
+                        .addOnFailureListener(e -> Log.w("add_user", "Error writing document " + e));
+
             }
         });
 
-        org_sign_in_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoggedIn) {
-                    if (isOrganizer) {
-                        // Start Organizer AttendeeDashboard
-                    } else {
-                        // Create a pop-up window saying that the user is not an attendee
-                        Log.d("auth", "User is not an organizer");
-                    }
-                } else {
-                    // Create a new user
-                    DocumentReference newUser = db.collection("users").document(deviceID);
-                    Map<String, Object> docData = new HashMap<>();
-                    docData.put("type", "organizer");
-                    docData.put("deviceID", deviceID);
-                    docData.put("name", "P Diddy");
-                    docData.put("email", null);
-                    docData.put("phone", null);
-                    docData.put("facility", null);
-                    newUser.set(docData)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("add_user", "DocumentSnapshot successfully written!");
-                                    // Start Organizer AttendeeDashboard
-                                    isLoggedIn = true;
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("add_user", "Error writing document", e);
-                                }
-                            });
-                }
-            }
-        });
+        org_sign_in_btn.setOnClickListener(v -> {
+            if (isLoggedIn) {
+                Intent i = new Intent(MainActivity.this, OrganizerHomeActivity.class);
+                MainActivity.this.startActivity(i);
 
-        adm_sign_in_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isLoggedIn && isAdmin) {
-                    // Start Admin AttendeeDashboard
-                } else {
-                    // Create a pop-up window saying that the user is not an admin
-                    Log.d("auth", "User is not an admin");
-                }
+            } else {
+                // Create a new user
+                DocumentReference newUser = db.collection("users").document(deviceID);
+
+                Random random = new Random();
+
+                Map<String, Object> docData = new HashMap<>();
+                docData.put("type", "Not Admin");
+                docData.put("deviceID", deviceID);
+                // Use a random username
+                docData.put("name", random.ints(
+                                48, 122 + 1)
+                        .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                        .limit(10)
+                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                        .toString());
+                docData.put("email", "Not set");
+                docData.put("phone", 123);
+                docData.put("facility", "Not set");
+
+                newUser.set(docData)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("add_user", "DocumentSnapshot successfully written!");
+
+                            Intent i = new Intent(MainActivity.this, OrganizerHomeActivity.class);
+                            MainActivity.this.startActivity(i);
+                            isLoggedIn = true;
+                        })
+                        .addOnFailureListener(e -> Log.w("add_user", "Error writing document", e));
             }
         });
     }

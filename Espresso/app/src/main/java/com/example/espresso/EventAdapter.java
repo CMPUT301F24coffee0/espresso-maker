@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class EventAdapter extends BaseAdapter {
@@ -45,48 +42,76 @@ public class EventAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.event_item, null);
+        // ViewHolder pattern to improve performance
+        ViewHolder viewHolder;
 
+        // If convertView is null, inflate a new view and set up the ViewHolder
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.event_item, parent, false);
+
+            // Initialize ViewHolder and associate it with the view
+            viewHolder = new ViewHolder();
+            viewHolder.name = convertView.findViewById(R.id.name);
+            viewHolder.date = convertView.findViewById(R.id.date);
+            viewHolder.location = convertView.findViewById(R.id.location);
+            viewHolder.image = convertView.findViewById(R.id.poster);
+
+            // Set the ViewHolder as a tag on the convertView so it can be reused
+            convertView.setTag(viewHolder);
+        } else {
+            // If convertView is not null, retrieve the ViewHolder
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        // Get the current event data
         Event event = events.get(position);
         String deviceID = new User(context).getDeviceID();
-        // Check if user already joined the lottery
+
+        // Fetch the event participant data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("events").document(event.getId()).collection("participants").document(deviceID);
+        DocumentReference docRef = db.collection("events")
+                .document(event.getId())
+                .collection("participants")
+                .document(deviceID);
+
         View finalConvertView = convertView;
-        View finalConvertView1 = convertView;
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
+                    // Hide the item if the user is already a participant
                     finalConvertView.setVisibility(View.GONE);
-                }
-                else {
-                    TextView name = (TextView) finalConvertView1.findViewById(R.id.name);
-                    TextView date = (TextView) finalConvertView1.findViewById(R.id.date);
-                    TextView location = (TextView) finalConvertView1.findViewById(R.id.location);
-                    ImageView image = (ImageView) finalConvertView1.findViewById(R.id.poster);
+                } else {
+                    // Populate the view with event data
+                    viewHolder.name.setText(event.getName());
+                    viewHolder.date.setText(String.format("%s %s", event.getDate(), event.getTime()));
+                    viewHolder.location.setText(event.getFacility());
 
-                    name.setText(event.getName());
-                    date.setText(String.format("%s %s", event.getDate(), event.getTime()));
-                    location.setText(event.getFacility());
-
-                    // Fetch the image URL from Firebase Storage and load it into the ImageView
-                    event.getUrl(new Event.OnUrlFetchedListener() {
-                        @Override
-                        public void onUrlFetched(String url) {
-                            if (url != null) {
-                                Log.d("ImageURL", "Fetched URL: " + url);
-                                // Use the URL as needed, e.g., load it into an ImageView with Glide or Picasso
-                                Picasso.get().load(url).into(image);
-                            } else {
-                                Log.d("ImageURL", "Failed to fetch URL.");
-                            }
+                    // Fetch and load the image URL
+                    event.getUrl(url -> {
+                        if (url != null) {
+                            Log.d("ImageURL", "Fetched URL: " + url);
+                            // Use an image loading library like Picasso to load the image
+                            Picasso.get().load(url).into(viewHolder.image);
+                        } else {
+                            Log.d("ImageURL", "Failed to fetch URL.");
                         }
                     });
                 }
+            } else {
+                Log.d("Firestore", "Error fetching event participant data.", task.getException());
             }
         });
 
         return convertView;
     }
+
+    // ViewHolder class to hold references to the views
+    static class ViewHolder {
+        TextView name;
+        TextView date;
+        TextView location;
+        ImageView image;
+    }
+
 }

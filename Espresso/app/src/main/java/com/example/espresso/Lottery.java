@@ -5,12 +5,10 @@ import java.util.Random;
 
 /**
  * Lottery class handles the lottery selection process for entrants.
- *
  * Responsibilities:
  * - Randomly select entrants from the waiting list.
  * - Handle re-selection when an invitation is declined.
  * - Send notifications to entrants of their lottery outcome.
- *
  * Collaborators:
  * - WaitingList
  * - EntrantList
