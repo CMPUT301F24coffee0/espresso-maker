@@ -9,8 +9,6 @@
         android:id="@+id/event_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/upcoming_events_header"
-        android:layout_above="@id/bottomNavigationView"
         android:layout_marginTop="8dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />

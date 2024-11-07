@@ -28,7 +28,7 @@ public class PendingEvents extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_pending_events, container, false);
         List<Event> events = new ArrayList<>();
-        EventAdapter adapter = new EventAdapter(getContext(),events);
+        EventAdapter adapter = new EventAdapter(requireContext(),events);
         // Fetch confirmed events from the database and add them to the list
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(new User(requireContext()).getDeviceID()).collection("events").whereEqualTo("status", "pending").get().addOnCompleteListener(task -> {

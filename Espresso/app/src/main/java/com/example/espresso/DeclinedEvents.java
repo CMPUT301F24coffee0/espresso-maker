@@ -25,7 +25,9 @@ public class DeclinedEvents extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_declined_events, container, false);
         List<Event> events = new ArrayList<>();
-        EventAdapter adapter = new EventAdapter(getContext(),events);
+        EventAdapter adapter = new EventAdapter(requireContext(),events);
+        ListView listView = rootView.findViewById(R.id.event_list_view);
+        listView.setAdapter(adapter);
         // Fetch confirmed events from the database and add them to the list
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(new User(requireContext()).getDeviceID()).collection("events").whereEqualTo("status", "declined").get().addOnCompleteListener(task -> {
@@ -44,16 +46,16 @@ public class DeclinedEvents extends Fragment {
                     Object capacityObj = data.get("capacity");
                     int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
                     events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
-                    adapter.notifyDataSetChanged();
+
                 }
+                adapter.notifyDataSetChanged();
             } else {
                 Log.d("Event", "Error getting documents: ", task.getException());
             }
         });
 
 
-        ListView listView = rootView.findViewById(R.id.event_list_view);
-        listView.setAdapter(adapter);
+
         // Item onClick listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // Open event details activity

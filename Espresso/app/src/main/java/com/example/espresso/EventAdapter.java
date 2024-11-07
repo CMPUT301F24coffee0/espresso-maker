@@ -70,19 +70,15 @@ public class EventAdapter extends BaseAdapter {
         // Fetch the event participant data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("events")
-                .document(event.getId())
-                .collection("participants")
-                .document(deviceID);
+                .document(event.getId());
 
         View finalConvertView = convertView;
         docRef.get().addOnCompleteListener(task -> {
+            Log.d("Firestore", "Fetching event participant data...");
             if (task.isSuccessful()) {
+                Log.d("Firestore", "Fetched event participant data." + task.getResult());
                 DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    // Hide the item if the user is already a participant
-                    finalConvertView.setVisibility(View.GONE);
-                } else {
-                    // Populate the view with event data
+
                     viewHolder.name.setText(event.getName());
                     viewHolder.date.setText(String.format("%s %s", event.getDate(), event.getTime()));
                     viewHolder.location.setText(event.getFacility());
@@ -97,7 +93,6 @@ public class EventAdapter extends BaseAdapter {
                             Log.d("ImageURL", "Failed to fetch URL.");
                         }
                     });
-                }
             } else {
                 Log.d("Firestore", "Error fetching event participant data.", task.getException());
             }

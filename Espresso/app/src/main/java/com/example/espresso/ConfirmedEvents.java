@@ -25,7 +25,7 @@ public class ConfirmedEvents extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_confirmed_events, container, false);
         List<Event> events = new ArrayList<>();
-        EventAdapter adapter = new EventAdapter(getContext(),events);
+        EventAdapter adapter = new EventAdapter(requireContext(),events);
         // Fetch confirmed events from the database and add them to the list
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(new User(requireContext()).getDeviceID()).collection("events").whereEqualTo("status", "confirmed").get().addOnCompleteListener(task -> {
@@ -44,8 +44,8 @@ public class ConfirmedEvents extends Fragment {
                     Object capacityObj = data.get("capacity");
                     int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
                     events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
-                    adapter.notifyDataSetChanged();
                 }
+                adapter.notifyDataSetChanged();
             } else {
                 Log.d("Event", "Error getting documents: ", task.getException());
             }
