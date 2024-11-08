@@ -89,6 +89,19 @@ public class AttendeeProfile extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Remove profile picture button
+        Button removeProfilePicButton = findViewById(R.id.removeProfilePicButton);
+        removeProfilePicButton.setOnClickListener(v -> {
+            // Remove the profile picture from Firebase Storage
+            pfpsRef.delete().addOnSuccessListener(aVoid -> {
+                Toast.makeText(this, "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
+                profilePicButton.setImageResource(R.drawable.profile);
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, "You can't remove this profile picture.", Toast.LENGTH_SHORT).show();
+            });
+        });
+
+
         // Navigation
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
