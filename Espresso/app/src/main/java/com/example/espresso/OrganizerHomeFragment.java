@@ -44,9 +44,7 @@ public class OrganizerHomeFragment extends Fragment {
                             String location = document.getString("location");
                             String description = document.getString("description");
                             String deadline = document.getString("deadline");
-
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-
                             events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
                         }
                         adapter.notifyDataSetChanged();
@@ -80,7 +78,7 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Capacity=" + capacity +
                             ", EventId=" + eventId);
 
-            Intent intent = new Intent(requireActivity(), NewEventForm.class);
+            Intent intent = new Intent(requireActivity(), EventDetails.class);
 
             intent.putExtra("name", name);
             intent.putExtra("date", date);
@@ -90,7 +88,7 @@ public class OrganizerHomeFragment extends Fragment {
             intent.putExtra("deadline", deadline);
             intent.putExtra("capacity", capacity);
             intent.putExtra("eventId", eventId);
-            intent.putExtra("type", "edit");
+            intent.putExtra("status", "edit");
 
             startActivity(intent);
 
