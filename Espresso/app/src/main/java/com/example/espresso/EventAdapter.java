@@ -11,41 +11,18 @@ import android.widget.TextView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import java.util.List;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
-
-/**
- * Custom adapter for displaying event data in a ListView.
- * The adapter fetches event details from Firestore and uses a ViewHolder pattern
- * for efficient view recycling.
- */
 public class EventAdapter extends BaseAdapter {
-    private Context context;
-    private List<Event> events;
-    private LayoutInflater inflater;
+    Context context;
+    List<Event> events;
+    LayoutInflater inflater;
 
-    /**
-     * Constructor for the EventAdapter.
-     *
-     * @param context The context where the adapter is used, typically an Activity or Fragment.
-     * @param events  The list of events to be displayed in the ListView.
-     */
-    public EventAdapter(Context context, List<Event> events) {
-        this.context = context;
+    public EventAdapter(Context c, List<Event> events){
+        this.context = c;
         this.events = events;
         inflater = LayoutInflater.from(context);
     }
@@ -65,23 +42,14 @@ public class EventAdapter extends BaseAdapter {
         return position;
     }
 
-    /**
-     * Returns a view for the event item at the specified position.
-     * This method is optimized using the ViewHolder pattern.
-     *
-     * @param position The position of the item within the list.
-     * @param convertView The old view to reuse, if possible.
-     * @param parent The parent view to which the new view will be attached.
-     * @return The view for the event item at the given position.
-     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        // ViewHolder pattern to improve performance
         ViewHolder viewHolder;
 
         // If convertView is null, inflate a new view and set up the ViewHolder
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.event_item, parent, false);
-
             // Initialize ViewHolder and associate it with the view
             viewHolder = new ViewHolder();
             viewHolder.name = convertView.findViewById(R.id.name);
@@ -98,48 +66,59 @@ public class EventAdapter extends BaseAdapter {
 
         // Get the current event data
         Event event = events.get(position);
+        // Fetch and load the image URL
+        String path = "posters/"+event.getId()+".png";
+        StorageReference posterRef = FirebaseStorage.getInstance().getReference().child(path);
+        // Clear previous image
+        viewHolder.image.setImageDrawable(null);
+        // Assign a tag to image based on event ID to track changes
+        viewHolder.image.setTag(event.getId());
+        // Use Picasso with a tag check to prevent overwriting
+        posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
 
-        // Fetch event data from Firestore
+            if (event.getId().equals(viewHolder.image.getTag())) {
+                Picasso.get().load(uri).into(viewHolder.image);
+            }
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
+            Log.e("Event", path);
+            Log.e("Event", "Error getting download URL for poster", exception);
+        });
+        // Fetch the event participant data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("events").document(event.getId());
+        DocumentReference docRef = db.collection("events")
+                .document(event.getId());
 
-        // Fetch event participant data from Firestore asynchronously
+        // Fetch the event participant data from Firestore
         docRef.get().addOnCompleteListener(task -> {
+            Log.d("Firestore", "Fetching event participant data...");
             if (task.isSuccessful()) {
+                Log.d("Firestore", "Fetched event participant data." + task.getResult());
                 DocumentSnapshot document = task.getResult();
-                if (document != null && document.exists()) {
-                    // Populate the ViewHolder views with event data
+
                     viewHolder.name.setText(event.getName());
                     viewHolder.date.setText(String.format("%s %s", event.getDate(), event.getTime()));
                     viewHolder.location.setText(event.getFacility());
 
-                    // Load event image if available
-                    event.getUrl(url -> {
-                        if (url != null) {
-                            // Use Picasso to load the image URL into the ImageView
-                            Picasso.get().load(url).into(viewHolder.image);
-                        } else {
-                            // Log error if the image URL is unavailable
-                            Log.d("ImageURL", "Failed to fetch URL.");
-                        }
-                    });
-                }
+
+
             } else {
                 Log.d("Firestore", "Error fetching event participant data.", task.getException());
             }
         });
 
+
+
+
         return convertView;
     }
 
-    /**
-     * ViewHolder pattern to hold references to the views for each event item.
-     * This improves performance by preventing repeated calls to findViewById.
-     */
+    // ViewHolder class to hold references to the views
     static class ViewHolder {
         TextView name;
         TextView date;
         TextView location;
         ImageView image;
     }
+
 }

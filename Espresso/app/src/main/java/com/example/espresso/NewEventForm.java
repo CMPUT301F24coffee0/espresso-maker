@@ -60,7 +60,7 @@ public class NewEventForm extends AppCompatActivity {
 
         // Retrieve the event type (create or edit) from the intent
         Intent intent = getIntent();
-        String eventType = intent.getStringExtra("type");
+        String eventType = intent.getStringExtra("status");
 
         // If editing an event, load its data
         if ("edit".equals(eventType)) {
