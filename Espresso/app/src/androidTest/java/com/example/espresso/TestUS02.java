@@ -57,7 +57,6 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
         onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
-        onView(withId(R.id.attendees_to_sample)).perform(replaceText("10"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
         onView(withId(R.id.create_event_button)).perform(click());
@@ -108,7 +107,6 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
         onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
-        onView(withId(R.id.attendees_to_sample)).perform(replaceText("10"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
         onView(withId(R.id.create_event_button)).perform(click());
@@ -140,7 +138,6 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
         onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
-        onView(withId(R.id.attendees_to_sample)).perform(replaceText("10"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
         onView(withId(R.id.upload_poster_button)).perform(click());
@@ -173,7 +170,6 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
         onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
-        onView(withId(R.id.attendees_to_sample)).perform(replaceText("10"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
         onView(withId(R.id.upload_poster_button)).perform(click());
@@ -225,7 +221,6 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
         onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
-        onView(withId(R.id.attendees_to_sample)).perform(replaceText("10"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
         onView(withId(R.id.create_event_button)).perform(click());
