@@ -71,10 +71,11 @@ public class EventAdapter extends BaseAdapter {
         StorageReference posterRef = FirebaseStorage.getInstance().getReference().child(path);
         // Clear previous image
         viewHolder.image.setImageDrawable(null);
+        // Assign a tag to image based on event ID to track changes
+        viewHolder.image.setTag(event.getId());
         // Use Picasso with a tag check to prevent overwriting
         posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
-            // Assign a tag to image based on event ID to track changes
-            viewHolder.image.setTag(event.getId());
+
             if (event.getId().equals(viewHolder.image.getTag())) {
                 Picasso.get().load(uri).into(viewHolder.image);
             }
