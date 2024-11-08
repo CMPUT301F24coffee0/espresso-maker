@@ -33,6 +33,8 @@ public class AttendeeHomeActivity extends AppCompatActivity {
             else if (item.getItemId() == R.id.scan) {
                 // Open scan activity
                 Log.d("BottomNav", "Scan clicked");
+                Intent intent = new Intent(AttendeeHomeActivity.this, ScanQR.class);
+                startActivity(intent);
             }
             else if (item.getItemId() == R.id.profile) {
                 // Open profile activity
