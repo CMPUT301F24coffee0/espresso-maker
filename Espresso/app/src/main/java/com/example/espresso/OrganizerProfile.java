@@ -10,15 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.fragment.app.Fragment;
-
-import com.example.espresso.databinding.AttendeeProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -50,7 +46,6 @@ public class OrganizerProfile extends Fragment {
             startActivity(intent);
         });
 
-        //Fetching data from Firebase
         DocumentReference docRef = db.collection("users").document(deviceID);
 
         docRef.addSnapshotListener((documentSnapshot, e) -> {

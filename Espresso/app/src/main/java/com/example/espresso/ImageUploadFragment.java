@@ -82,9 +82,12 @@ public class ImageUploadFragment extends Fragment {
         if (documentId != null && !documentId.isEmpty()) {
             // Update existing document
             docRef = db.collection("events").document(documentId);
+            docRef.delete();
+
+            docRef = db.collection("events").document(eventName + eventLocation + eventTime);
         } else {
             // Create new document
-            docRef = db.collection("events").document();
+            docRef = db.collection("events").document(eventName + eventLocation + eventTime);
         }
 
         docRef.set(eventData)
@@ -94,6 +97,4 @@ public class ImageUploadFragment extends Fragment {
         Intent intent = new Intent(getContext(), OrganizerHomeActivity.class);
         startActivity(intent);
     }
-
-
 }

@@ -24,10 +24,8 @@ public class OrganizerHomeActivity extends AppCompatActivity {
             return insets;
         });
 
-
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-
 
         if (savedInstanceState == null) loadFragment(new OrganizerHomeFragment());
     }
@@ -53,7 +51,7 @@ public class OrganizerHomeActivity extends AppCompatActivity {
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment); // Updated with `fragment_container`
+        transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
 

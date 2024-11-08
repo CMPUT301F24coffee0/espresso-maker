@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Objects;
+
 public class NewEventForm extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -50,7 +52,7 @@ public class NewEventForm extends AppCompatActivity {
         String eventType = intent.getStringExtra("type");
 
         if ("edit".equals(eventType)) {
-            documentId = intent.getStringExtra("documentId");
+            documentId = intent.getStringExtra("eventId");
             if (documentId != null && !documentId.isEmpty()) {
                 loadEventData();
             } else {
