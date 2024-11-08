@@ -49,7 +49,7 @@ public class NewEventForm extends AppCompatActivity {
         waitingListCapacity = findViewById(R.id.waiting_list_capacity);
 
         Intent intent = getIntent();
-        String eventType = intent.getStringExtra("type");
+        String eventType = intent.getStringExtra("status");
 
         if ("edit".equals(eventType)) {
             documentId = intent.getStringExtra("eventId");
