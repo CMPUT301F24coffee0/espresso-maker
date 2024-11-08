@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.espresso.databinding.ActivityAttendeeHomeBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,6 +47,16 @@ public class AttendeeHomeActivity extends AppCompatActivity {
             return true;
         });
 
+        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String userName = task.getResult().getString("name");
+                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
+            } else {
+                // Handle failure (e.g., user not found or error fetching data)
+                Log.d("User", "Error retrieving user data: ", task.getException());
+            }
+        });
+
         List<Event> events = new ArrayList<>();
         ListView listView = findViewById(R.id.event_list_view);
         EventAdapter adapter = new EventAdapter(this, events);
@@ -63,7 +75,6 @@ public class AttendeeHomeActivity extends AppCompatActivity {
                             .document(deviceID).get().addOnCompleteListener(task1 -> {
 
                                 if (task1.isSuccessful() && !task1.getResult().exists()) {
-                                    // Only add the event if the user has not joined
                                     Log.d("Event", "Event not joined: " + eventId);
 
                                     String name = task.getResult().getDocuments().get(finalI).getString("name");

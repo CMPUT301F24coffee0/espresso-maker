@@ -27,7 +27,8 @@ public class OrganizerHomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        if (savedInstanceState == null) loadFragment(new OrganizerHomeFragment());
+        if (savedInstanceState == null)
+            loadFragment(new OrganizerHomeFragment());
     }
 
 

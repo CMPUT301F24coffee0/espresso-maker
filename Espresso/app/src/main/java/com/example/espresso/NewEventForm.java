@@ -1,6 +1,7 @@
 package com.example.espresso;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,8 +15,6 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Objects;
 
 public class NewEventForm extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -100,8 +99,8 @@ public class NewEventForm extends AppCompatActivity {
                         Long capacity = documentSnapshot.getLong("capacity");
                         waitingListCapacity.setText(capacity != null ? String.valueOf(capacity) : "");
                     }
+                    Log.d("document ID: ", documentId);
                 })
                 .addOnFailureListener(e -> Toast.makeText(NewEventForm.this, "Failed to load data", Toast.LENGTH_SHORT).show());
     }
-
 }

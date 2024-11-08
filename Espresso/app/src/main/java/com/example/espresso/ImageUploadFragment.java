@@ -83,12 +83,17 @@ public class ImageUploadFragment extends Fragment {
             // Update existing document
             docRef = db.collection("events").document(documentId);
             docRef.delete();
-
-            docRef = db.collection("events").document(eventName + eventLocation + eventTime);
-        } else {
-            // Create new document
-            docRef = db.collection("events").document(eventName + eventLocation + eventTime);
         }
+
+        docRef = db.collection("events").document(
+                new Event(
+                        eventName,
+                        eventDate,
+                        eventTime,
+                        null,
+                        eventDate,
+                        Integer.valueOf(waitingListCapacity),
+                        new Facility(eventLocation)).getId());
 
         docRef.set(eventData)
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Event saved successfully", Toast.LENGTH_SHORT).show())
