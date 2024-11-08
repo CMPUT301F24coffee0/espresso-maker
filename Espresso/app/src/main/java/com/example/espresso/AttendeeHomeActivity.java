@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.espresso.databinding.ActivityAttendeeHomeBinding;
 import com.google.android.gms.tasks.Task;
@@ -62,6 +64,15 @@ public class AttendeeHomeActivity extends AppCompatActivity {
         });
     }
 
+        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String userName = task.getResult().getString("name");
+                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
+            } else {
+                // Handle failure (e.g., user not found or error fetching data)
+                Log.d("User", "Error retrieving user data: ", task.getException());
+            }
+        });
     /**
      * Navigates to a specified activity and logs a message.
      *
@@ -87,6 +98,36 @@ public class AttendeeHomeActivity extends AppCompatActivity {
 
         db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                Log.d("Event", "Events found");
+                for (int i = 0; i < task.getResult().size(); i++) {
+                    String eventId = task.getResult().getDocuments().get(i).getId();
+                    String deviceID = new User(this).getDeviceID();
+
+                    int finalI = i;
+                    db.collection("events")
+                            .document(eventId).collection("participants")
+                            .document(deviceID).get().addOnCompleteListener(task1 -> {
+
+                                if (task1.isSuccessful() && !task1.getResult().exists()) {
+                                    Log.d("Event", "Event not joined: " + eventId);
+
+                                    String name = task.getResult().getDocuments().get(finalI).getString("name");
+                                    String date = task.getResult().getDocuments().get(finalI).getString("date");
+                                    String time = task.getResult().getDocuments().get(finalI).getString("time");
+                                    String location = task.getResult().getDocuments().get(finalI).getString("location");
+                                    String description = task.getResult().getDocuments().get(finalI).getString("description");
+                                    String deadline = task.getResult().getDocuments().get(finalI).getString("deadline");
+
+                                    int capacity = Objects.requireNonNull(
+                                            task.getResult().getDocuments().get(finalI).getLong("capacity")).intValue();
+
+                                    events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Log.d("Event", "Event already joined: " + eventId);
+                                }
+                            });
+                }
                 processEvents(task, events, adapter, db);
             } else {
                 Log.d("Event", "Error getting events: ", task.getException());

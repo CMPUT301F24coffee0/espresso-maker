@@ -1,6 +1,7 @@
 package com.example.espresso;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import java.util.Objects;
  * It collects event details from the user and allows them to upload an event image.
  * If editing an existing event, it loads the existing event data from Firestore.
  */
+
 public class NewEventForm extends AppCompatActivity {
     // Firestore instance to interact with the database
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -120,6 +122,7 @@ public class NewEventForm extends AppCompatActivity {
                         Long capacity = documentSnapshot.getLong("capacity");
                         waitingListCapacity.setText(capacity != null ? String.valueOf(capacity) : "");
                     }
+                    Log.d("document ID: ", documentId);
                 })
                 .addOnFailureListener(e -> Toast.makeText(NewEventForm.this, "Failed to load data", Toast.LENGTH_SHORT).show());
     }

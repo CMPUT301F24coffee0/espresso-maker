@@ -124,9 +124,25 @@ public class ImageUploadFragment extends Fragment {
             eventData.put("geolocation", geolocationSwitch.isChecked());
         }
 
-        eventData.put("organizer", new User(getContext()).getDeviceID());
+        eventData.put("organizer", (new User(getContext())).getDeviceID());
 
-        DocumentReference docRef = db.collection("events").document(documentId != null ? documentId : eventName + eventLocation + eventTime);
+        DocumentReference docRef;
+        if (documentId != null && !documentId.isEmpty()) {
+            // Update existing document
+            docRef = db.collection("events").document(documentId);
+            docRef.delete();
+        }
+
+        docRef = db.collection("events").document(
+                new Event(
+                        eventName,
+                        eventDate,
+                        eventTime,
+                        null,
+                        eventDate,
+                        Integer.valueOf(waitingListCapacity),
+                        new Facility(eventLocation)).getId());
+
         docRef.set(eventData)
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Event saved successfully", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to save event", Toast.LENGTH_SHORT).show());
