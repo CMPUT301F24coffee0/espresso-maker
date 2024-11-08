@@ -1,6 +1,9 @@
 package com.example.espresso;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -26,9 +29,7 @@ public class OrganizerHomeActivity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
 
-        if (savedInstanceState == null) {
-            loadFragment(new OrganizerHomeFragment());
-        }
+        if (savedInstanceState == null) loadFragment(new OrganizerHomeFragment());
     }
 
 
@@ -44,17 +45,22 @@ public class OrganizerHomeActivity extends AppCompatActivity {
                     selectedFragment = new OrganizerProfile();
                 }
 
-                // Load the selected fragment if it is not null
                 if (selectedFragment != null) {
                     loadFragment(selectedFragment);
                 }
                 return true;
             };
 
-    // Helper method to load fragments
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment); // Updated with `fragment_container`
         transaction.commit();
+    }
+
+
+    public void launchEventForm(View view) {
+        Intent intent = new Intent(this, NewEventForm.class);
+        intent.putExtra("type", "new");
+        startActivity(intent);
     }
 }

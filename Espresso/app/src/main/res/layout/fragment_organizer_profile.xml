@@ -50,7 +50,7 @@
         android:layout_marginTop="187dp"
         android:text="Role:" />
     <Button
-        android:id="@+id/button"
+        android:id="@+id/sign_out"
         android:layout_width="356dp"
         android:layout_height="68dp"
         android:layout_alignParentStart="true"
@@ -59,13 +59,16 @@
         android:layout_marginTop="239dp"
         android:text="Sign out"
         android:textColorLink="#00B0FD" />
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="43dp"
-        android:layout_height="45dp"
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginEnd="60dp"
+        android:layout_toEndOf="@+id/admin_dashboard_title"
         app:srcCompat="@drawable/settings" />
 </RelativeLayout>

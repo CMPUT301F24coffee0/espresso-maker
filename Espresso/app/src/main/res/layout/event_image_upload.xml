@@ -45,17 +45,20 @@
         android:layout_marginBottom="24dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="GeoLocation"
                 android:textColor="#333333"
                 android:textSize="16sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

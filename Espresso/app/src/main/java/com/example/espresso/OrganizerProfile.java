@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -15,12 +17,16 @@ import com.example.espresso.databinding.AttendeeProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class OrganizerProfile extends Fragment {
+    String name, email;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_organizer_profile, container, false);
@@ -31,41 +37,22 @@ public class OrganizerProfile extends Fragment {
             return view;
         }
 
-        Button logout = findViewById(R.id.button);
+        Button logout = view.findViewById(R.id.sign_out);
+
         logout.setOnClickListener(v -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
             if (user != null) {
                 FirebaseAuth.getInstance().signOut();
                 Log.d("user", "User signed out");
             }
-            Intent intent = new Intent(AttendeeProfile.this, MainActivity.class);
+            Intent intent = new Intent(requireActivity(), MainActivity.class);
             startActivity(intent);
-        });
-
-        // Navigation
-        binding.bottomNavigationView.setSelectedItemId(R.id.profile);
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.events) {
-                // Open events activity
-                Log.d("BottomNav", "Events clicked");
-                Intent intent = new Intent(AttendeeProfile.this, AttendeeMyEvent.class);
-                startActivity(intent);
-            }
-            else if (item.getItemId() == R.id.scan) {
-                // Open scan activity
-                Log.d("BottomNav", "Scan clicked");
-            }
-            else if (item.getItemId() == R.id.home) {
-                // Open profile activity
-                Log.d("BottomNav", "Home clicked");
-                Intent intent = new Intent(AttendeeProfile.this, AttendeeHomeActivity.class);
-                startActivity(intent);
-            }
-            return true;
         });
 
         //Fetching data from Firebase
         DocumentReference docRef = db.collection("users").document(deviceID);
+
         docRef.addSnapshotListener((documentSnapshot, e) -> {
             if (e != null) {
                 Log.w("user", "Listen failed.", e);
@@ -78,54 +65,48 @@ public class OrganizerProfile extends Fragment {
                 assert data != null;
                 name = Objects.requireNonNull(data.get("name")).toString();
                 email = Objects.requireNonNull(data.get("email")).toString();
-                phone = Objects.requireNonNull(data.get("phone")).toString();
-                type = Objects.requireNonNull(data.get("type")).toString();
 
-                binding.name.setText(name);
-                binding.email.setText(String.format("Email: %s", email));
-                binding.phoneNumber.setText(String.format("Phone Number: %s", phone));
-                binding.role.setText(String.format("Role: %s", type));
+                ((TextView) view.findViewById(R.id.name)).setText(name);
+                ((TextView)view.findViewById(R.id.email)).setText(String.format("Email: %s", email));
             } else {
                 Log.d("user", "No such document");
             }
         });
 
-        findViewById(R.id.edit_profile_button).setOnClickListener(
+        view.findViewById(R.id.settings).setOnClickListener(
                 v -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AttendeeProfile.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                     builder.setTitle("Edit Profile");
                     builder.setMessage("Do you want to save changes?");
 
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.edit_profile_dialog, null);
+                    LayoutInflater d = getLayoutInflater();
+                    View dialogView = d.inflate(R.layout.edit_profile_dialog, null);
                     builder.setView(dialogView);
 
                     EditText name_text = dialogView.findViewById(R.id.edit_name);
                     EditText email_text = dialogView.findViewById(R.id.edit_email);
-                    EditText phone_number_text = dialogView.findViewById(R.id.edit_phone_number);
+                    dialogView.findViewById(R.id.edit_phone_number);
 
                     name_text.setText(name);
                     email_text.setText(email);
-                    phone_number_text.setText(phone);
+
+                    dialogView.findViewById(R.id.edit_phone_number).setVisibility(View.GONE);
 
                     builder.setPositiveButton("Save", (dialog, id) -> {
                         String newName = name_text.getText().toString();
                         String newEmail = email_text.getText().toString();
-                        String newPhone = phone_number_text.getText().toString();
 
                         Map<String, Object> updates = new HashMap<>();
                         updates.put("name", newName);
                         updates.put("email", newEmail);
-                        updates.put("phone", newPhone);
 
                         docRef.update(updates)
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d("user", "DocumentSnapshot successfully updated!");
 
-                                    binding.name.setText(newName);
-                                    binding.email.setText(String.format("Email: %s", newEmail));
-                                    binding.phoneNumber.setText(String.format("Phone Number: %s", newPhone));
+                                    ((TextView) view.findViewById(R.id.name)).setText(newName);
+                                    ((TextView) view.findViewById(R.id.name)).setText(String.format("Email: %s", newEmail));
                                 })
                                 .addOnFailureListener(e -> Log.w("user", "Error updating document", e));
                     });
@@ -137,6 +118,6 @@ public class OrganizerProfile extends Fragment {
                 }
         );
 
-        return view
+        return view;
     }
 }

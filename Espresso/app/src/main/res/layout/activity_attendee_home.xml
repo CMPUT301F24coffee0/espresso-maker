@@ -34,14 +34,14 @@ tools:context=".AttendeeHomeActivity">
 <!-- ListView for events -->
 
 <!-- Bottom Navigation -->
-<ListView
-    android:id="@+id/event_list_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/upcoming_events_header"
-    android:layout_marginTop="8dp"
-    android:divider="@android:color/darker_gray"
-    android:dividerHeight="1dp" />
+    <ListView
+        android:id="@+id/event_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="527dp"
+        android:layout_below="@id/upcoming_events_header"
+        android:layout_marginTop="8dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
 
 <com.google.android.material.bottomnavigation.BottomNavigationView
     android:id="@+id/bottomNavigationView"
