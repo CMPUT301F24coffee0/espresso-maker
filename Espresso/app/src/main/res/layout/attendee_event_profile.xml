@@ -190,6 +190,27 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/accept_invite_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/green"
+            android:text="Accept Invitation"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/decline_invite_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/grey"
+            android:textColor="@color/red"
+            android:text="Decline Invitation"
+            android:visibility="gone"/>
+
+        <Button
             android:id="@+id/withdraw_button"
             android:layout_width="350dp"
             android:layout_height="70dp"

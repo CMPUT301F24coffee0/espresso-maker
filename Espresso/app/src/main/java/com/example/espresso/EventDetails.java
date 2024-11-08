@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -37,7 +38,7 @@ import java.util.Objects;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -76,6 +77,7 @@ public class EventDetails extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status");
+        boolean drawed = intent.getBooleanExtra("drawed", false);
 
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
@@ -123,17 +125,32 @@ public class EventDetails extends AppCompatActivity {
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         withdrawButton = findViewById(R.id.withdraw_button);
         drawLotteryButton = findViewById(R.id.draw_lottery);
+        acceptInviteButton = findViewById(R.id.accept_invite_button);
+        declineInviteButton = findViewById(R.id.decline_invite_button);
+
         switch (Objects.requireNonNull(status)) {
             case "edit":
                 enterLotteryButton.setEnabled(false);
-                enterLotteryButton.setVisibility(View.INVISIBLE);
+                enterLotteryButton.setVisibility(View.GONE);
                 drawLotteryButton.setVisibility(View.VISIBLE);
+                if (drawed) {
+                    drawLotteryButton.setEnabled(false);
+                    drawLotteryButton.setText("You already drawn the lottery!");
+                    drawLotteryButton.setTextColor(Color.RED);
+                    drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                }
                 break;
             case "confirmed":
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Confirmed");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("green")));
+                break;
+            case "invited":
+                acceptInviteButton.setVisibility(View.VISIBLE);
+                declineInviteButton.setVisibility(View.VISIBLE);
+                enterLotteryButton.setVisibility(View.GONE);
+                enterLotteryButton.setEnabled(false);
                 break;
             case "pending":
                 enterLotteryButton.setEnabled(false);
@@ -192,6 +209,7 @@ public class EventDetails extends AppCompatActivity {
 
         drawLotteryButton.setOnClickListener(v -> {
             // Access Firestore and retrieve participants
+            db.collection("users").document(deviceID).collection("events").document(eventId).set(Map.of("drawed", true), SetOptions.merge());
             db.collection("events").document(eventId).collection("participants").get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -212,10 +230,10 @@ public class EventDetails extends AppCompatActivity {
                                 String participantId = participant.getId();
                                 db.collection("users").document(deviceID)
                                         .collection("events").document(eventId)
-                                        .update("status", "declined");
+                                        .update("status", "not-invited");
                                 db.collection("events").document(eventId)
                                         .collection("participants").document(participantId)
-                                        .update("status", "declined")
+                                        .update("status", "not-invited")
                                         .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to declined", e));
                             }
 
@@ -224,10 +242,10 @@ public class EventDetails extends AppCompatActivity {
                                 String participantId = participant.getId();
                                 db.collection("users").document(deviceID)
                                         .collection("events").document(eventId)
-                                        .update("status", "confirmed");
+                                        .update("status", "invited");
                                 db.collection("events").document(eventId)
                                         .collection("participants").document(participantId)
-                                        .update("status", "confirmed")
+                                        .update("status", "invited")
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
                                             drawLotteryButton.setEnabled(false);
@@ -244,6 +262,25 @@ public class EventDetails extends AppCompatActivity {
                     });
         });
 
+        acceptInviteButton.setOnClickListener(v -> {
+            // Accept the invitation
+            db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "confirmed");
+            db.collection("events").document(eventId).collection("participants").document(deviceID).update("status", "confirmed")
+                    .addOnSuccessListener(aVoid ->{
+                        Toast.makeText(this, "You have accepted the invitation!", Toast.LENGTH_SHORT).show();
+                        acceptInviteButton.setEnabled(false);
+                    });
+        });
+
+        declineInviteButton.setOnClickListener(v -> {
+            // Decline the invitation
+            db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "declined");
+            db.collection("events").document(eventId).collection("participants").document(deviceID).update("status", "declined")
+                    .addOnSuccessListener(aVoid ->{
+                        Toast.makeText(this, "You have declined the invitation!", Toast.LENGTH_SHORT).show();
+                        declineInviteButton.setEnabled(false);
+                    });
+        });
 
         // Share button
         ImageButton shareBtn = findViewById(R.id.share_button);
