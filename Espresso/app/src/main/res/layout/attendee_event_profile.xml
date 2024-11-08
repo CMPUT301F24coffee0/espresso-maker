@@ -180,6 +180,16 @@
             android:text="Enter the Lottery" />
 
         <Button
+            android:id="@+id/draw_lottery"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/lightBrown"
+            android:text="Draw the Lottery"
+            android:visibility="gone" />
+
+        <Button
             android:id="@+id/withdraw_button"
             android:layout_width="350dp"
             android:layout_height="70dp"

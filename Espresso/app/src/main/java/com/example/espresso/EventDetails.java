@@ -18,11 +18,16 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Objects;
@@ -32,7 +37,7 @@ import java.util.Objects;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -117,10 +122,12 @@ public class EventDetails extends AppCompatActivity {
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         withdrawButton = findViewById(R.id.withdraw_button);
+        drawLotteryButton = findViewById(R.id.draw_lottery);
         switch (Objects.requireNonNull(status)) {
             case "edit":
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.INVISIBLE);
+                drawLotteryButton.setVisibility(View.VISIBLE);
                 break;
             case "confirmed":
                 enterLotteryButton.setEnabled(false);
@@ -182,6 +189,61 @@ public class EventDetails extends AppCompatActivity {
                 }
             });
         });
+
+        drawLotteryButton.setOnClickListener(v -> {
+            // Access Firestore and retrieve participants
+            db.collection("events").document(eventId).collection("participants").get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<DocumentSnapshot> participants = task.getResult().getDocuments();
+                            int size = participants.size();
+
+                            // Ensure we don't select more than the total number of participants
+                            int selectCount = Math.min(capacity, size);
+
+                            // Shuffle the participant list to get a random order
+                            Collections.shuffle(participants);
+
+                            // Select the first `selectCount` participants from the shuffled list
+                            List<DocumentSnapshot> selectedParticipants = participants.subList(0, selectCount);
+
+                            // Mark all participants as "declined" initially
+                            for (DocumentSnapshot participant : participants) {
+                                String participantId = participant.getId();
+                                db.collection("users").document(deviceID)
+                                        .collection("events").document(eventId)
+                                        .update("status", "declined");
+                                db.collection("events").document(eventId)
+                                        .collection("participants").document(participantId)
+                                        .update("status", "declined")
+                                        .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to declined", e));
+                            }
+
+                            // Update selected participants to "confirmed"
+                            for (DocumentSnapshot participant : selectedParticipants) {
+                                String participantId = participant.getId();
+                                db.collection("users").document(deviceID)
+                                        .collection("events").document(eventId)
+                                        .update("status", "confirmed");
+                                db.collection("events").document(eventId)
+                                        .collection("participants").document(participantId)
+                                        .update("status", "confirmed")
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
+                                            drawLotteryButton.setEnabled(false);
+                                            drawLotteryButton.setText("You already drawn the lottery!");
+                                            drawLotteryButton.setTextColor(Color.WHITE);
+                                            drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                                        })
+                                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to draw lottery.", Toast.LENGTH_SHORT).show());
+                            }
+
+                        } else {
+                            Log.e("Lottery", "Error retrieving participants", task.getException());
+                        }
+                    });
+        });
+
 
         // Share button
         ImageButton shareBtn = findViewById(R.id.share_button);
