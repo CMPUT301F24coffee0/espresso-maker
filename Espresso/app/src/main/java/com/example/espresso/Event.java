@@ -2,6 +2,10 @@ package com.example.espresso;
 
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Event {
     private final String id;
     private Facility facility;
@@ -12,12 +16,31 @@ public class Event {
     private String deadline;
     private int capacity;
 
+
+    public static String hashWithSHA256(String text) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
+
+        // Convert to hex string
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (byte b : hash) {
+            hexString.append(String.format("%02x", b));
+        }
+        return hexString.toString();
+    }
+
+
     /**
      * Create a new event in a given facility.
      * @param facility  Facility the event takes place in.
      */
     public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility) {
-        id = name + facility.getName() + time;
+        String text = name + facility.getName() + time;
+        try {
+            id = hashWithSHA256(text);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 algorithm not found", e);
+        }
         this.facility = facility;
         this.name = name;
         this.date = date;

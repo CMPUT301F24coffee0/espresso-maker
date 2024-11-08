@@ -61,6 +61,8 @@ public class AttendeeProfile extends AppCompatActivity {
             else if (item.getItemId() == R.id.scan) {
                 // Open scan activity
                 Log.d("BottomNav", "Scan clicked");
+                Intent intent = new Intent(AttendeeProfile.this, ScanQR.class);
+                startActivity(intent);
             }
             else if (item.getItemId() == R.id.home) {
                 // Open profile activity

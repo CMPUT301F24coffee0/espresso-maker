@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Espresso"
         tools:targetApi="31">
+        <activity
+            android:name=".ScanQR"
+            android:exported="false" />
         <activity
             android:name=".NewEventForm"
             android:exported="false" />
@@ -31,13 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AttendeeMyEvent"
             android:exported="false"
             android:label="@string/title_activity_attendee_my_event"
             android:theme="@style/Theme.Espresso.NoActionBar" />
-
         <activity
             android:name=".EventDetails"
             android:exported="false" />

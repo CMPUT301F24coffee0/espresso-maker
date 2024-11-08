@@ -1,11 +1,16 @@
 package com.example.espresso;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
@@ -122,6 +127,34 @@ public class EventDetails extends AppCompatActivity {
                             Log.d("Lottery", "Lottery entry failed");
                         }
                     });
+        });
+
+        // Share button
+        ImageButton shareBtn = findViewById(R.id.share_button);
+        shareBtn.setOnClickListener(v -> {
+            //Generate qr code from eventID
+            Bitmap bitmap = new QRCode(eventId).generateQRCode();
+            // Open a pop-up
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+            builder.setTitle("Share QR Code");
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.share_qr_code, null);
+            builder.setView(dialogView);
+
+            ImageView qrCodeImage = dialogView.findViewById(R.id.qr_code_image);
+            qrCodeImage.setImageBitmap(bitmap);
+
+            Button shareButton = dialogView.findViewById(R.id.share_qr_button);
+            shareButton.setOnClickListener(v1 -> {
+                //Share qr code
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            Button cancelButton = dialogView.findViewById(R.id.cancel_button);
+            cancelButton.setOnClickListener(v1 -> {
+                dialog.dismiss();
+            });
         });
     }
 
