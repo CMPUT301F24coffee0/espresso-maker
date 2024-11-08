@@ -38,7 +38,7 @@ import java.util.Objects;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, editButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -127,6 +127,7 @@ public class EventDetails extends AppCompatActivity {
         drawLotteryButton = findViewById(R.id.draw_lottery);
         acceptInviteButton = findViewById(R.id.accept_invite_button);
         declineInviteButton = findViewById(R.id.decline_invite_button);
+        editButton = findViewById(R.id.edit_button);
 
         switch (Objects.requireNonNull(status)) {
             case "edit":
@@ -139,6 +140,8 @@ public class EventDetails extends AppCompatActivity {
                     drawLotteryButton.setTextColor(Color.RED);
                     drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                 }
+                editButton.setVisibility(View.VISIBLE);
+
                 break;
             case "confirmed":
                 enterLotteryButton.setEnabled(false);
@@ -166,6 +169,23 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
                 break;
         }
+
+        editButton.setOnClickListener(v -> {
+            // Edit the event
+            Intent intent2 = new Intent(EventDetails.this, NewEventForm.class);
+            intent2.putExtra("eventId", eventId);
+            intent2.putExtra("name", name);
+            intent2.putExtra("date", date);
+            intent2.putExtra("time", time);
+            intent2.putExtra("location", location);
+            intent2.putExtra("description", description);
+            intent2.putExtra("deadline", deadline);
+            intent2.putExtra("capacity", capacity);
+            intent2.putExtra("eventId", eventId);
+            intent2.putExtra("status", status);
+            intent2.putExtra("drawed", drawed);
+            startActivity(intent2);
+        });
 
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system

@@ -98,7 +98,7 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Capacity=" + capacity +
                             ", EventId=" + eventId);
 
-            Intent intent = new Intent(requireActivity(), NewEventForm.class);
+            Intent intent = new Intent(requireActivity(), EventDetails.class);
 
             intent.putExtra("name", name);
             intent.putExtra("date", date);
