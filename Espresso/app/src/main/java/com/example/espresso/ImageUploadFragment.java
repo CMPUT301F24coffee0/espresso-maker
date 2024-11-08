@@ -85,9 +85,10 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            String deviceID = new User(getContext()).getDeviceID();
+            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation));
+            String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-            StorageReference pfpsRef = storageRef.child("poster/" + deviceID + ".png");
+            StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
 
             UploadTask uploadTask = pfpsRef.putStream(inputStream);
             uploadTask.addOnSuccessListener(taskSnapshot -> {

@@ -46,9 +46,7 @@ public class AttendeeProfile extends AppCompatActivity {
     Button logout;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    // Create a storage reference from our app
     StorageReference storageRef = storage.getReference();
-    // Create a reference to "mountains.jpg"
     StorageReference pfpsRef;
 
     private static final int GALLERY_REQUEST_CODE = 101;  // Request code for gallery
@@ -66,7 +64,7 @@ public class AttendeeProfile extends AppCompatActivity {
             Log.d("user", "Device ID is null");
             return;
         }
-        String path = "pfp/"+deviceID+".png";
+        String path = "pfps/"+deviceID+".png";
         pfpsRef = storageRef.child(path);
         // Fetch profile picture from Firebase Storage
         pfpsRef.getDownloadUrl().addOnSuccessListener(uri -> {
@@ -218,10 +216,6 @@ public class AttendeeProfile extends AppCompatActivity {
                 try {
                     // Open an InputStream from the content URI
                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
-
-                    // Define a unique path for storing the image in Firebase Storage
-                    String deviceID = "your_device_id"; // Replace with actual device ID or unique identifier
-                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                     // Upload the InputStream to Firebase Storage
                     UploadTask uploadTask = pfpsRef.putStream(inputStream);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {

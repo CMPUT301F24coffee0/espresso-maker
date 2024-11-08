@@ -17,6 +17,8 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +26,9 @@ import java.util.Objects;
 
 public class EventDetails extends AppCompatActivity {
     Button enterLotteryButton;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReference();
+    StorageReference posterRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,20 @@ public class EventDetails extends AppCompatActivity {
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status");
 
-
+        // Fetch poster from Firebase Storage
+        String path = "posters/"+eventId+".png";
+        posterRef = storageRef.child(path);
+        posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            // Got the download URL for poster
+            Log.d("Event", "Got download URL for poster");
+            // Load the image using Picasso
+            ImageView imageView = findViewById(R.id.attendee_event_profile_banner_img);
+            Picasso.get().load(uri).into(imageView);
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
+            Log.e("Event", path);
+            Log.e("Event", "Error getting download URL for poster", exception);
+        });
 
         Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 

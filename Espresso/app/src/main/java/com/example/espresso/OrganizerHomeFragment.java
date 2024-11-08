@@ -44,9 +44,7 @@ public class OrganizerHomeFragment extends Fragment {
                             String location = document.getString("location");
                             String description = document.getString("description");
                             String deadline = document.getString("deadline");
-
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-
                             events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
                         }
                         adapter.notifyDataSetChanged();
