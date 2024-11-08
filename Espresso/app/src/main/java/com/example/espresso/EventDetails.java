@@ -25,13 +25,23 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
+import java.util.Objects;
+/**
+ * Activity that displays detailed information about a specific event.
+ * Users can view the event details, enter the lottery system for the event,
+ * share the event via QR code, or navigate back to the home screen.
+ */
 public class EventDetails extends AppCompatActivity {
     Button enterLotteryButton, withdrawButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
-
+    /**
+     * Initializes the activity, sets up the event details UI, and handles user interactions.
+     * Users can enter the lottery, share the event via QR code, and navigate back to the home screen.
+     *
+     * @param savedInstanceState The saved instance state of the activity, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
