@@ -179,6 +179,17 @@
             android:backgroundTint="@color/lightBrown"
             android:text="Enter the Lottery" />
 
+        <Button
+            android:id="@+id/withdraw_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/lightGrey"
+            android:textColor="@color/red"
+            android:visibility="gone"
+            android:text="Withdraw from the lottery" />
+
 
     </LinearLayout>
 

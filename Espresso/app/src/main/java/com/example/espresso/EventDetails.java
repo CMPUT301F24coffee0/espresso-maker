@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton;
+    Button enterLotteryButton, withdrawButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -104,6 +106,7 @@ public class EventDetails extends AppCompatActivity {
         eventData.put("status", "pending");
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
+        withdrawButton = findViewById(R.id.withdraw_button);
         switch (Objects.requireNonNull(status)) {
             case "edit":
                 enterLotteryButton.setEnabled(false);
@@ -120,6 +123,7 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.setText("Pending");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("yellow")));
+                withdrawButton.setVisibility(View.VISIBLE);
                 break;
             case "declined":
                 enterLotteryButton.setEnabled(false);
@@ -149,6 +153,24 @@ public class EventDetails extends AppCompatActivity {
                             Log.d("Lottery", "Lottery entry failed");
                         }
                     });
+        });
+
+        withdrawButton.setOnClickListener(v -> {
+            // User withdrew from the lottery
+            assert eventId != null;
+            db.collection("users").document(deviceID).collection("events").document(eventId).delete();
+            db.collection("events").document(eventId).collection("participants").document(deviceID).delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Lottery withdrawn successfully
+                    Toast.makeText(this, "You have successfully withdrawn from the lottery!", Toast.LENGTH_SHORT).show();
+                    // Go back to the previous activity
+                    Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                    startActivity(intent2);
+                } else {
+                    // Lottery withdrawal failed
+                    Toast.makeText(this, "Failed to withdraw from the lottery.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Share button
