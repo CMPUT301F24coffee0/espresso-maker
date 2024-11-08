@@ -16,31 +16,41 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
-
+/**
+ * Activity for creating or editing a new event.
+ * It collects event details from the user and allows them to upload an event image.
+ * If editing an existing event, it loads the existing event data from Firestore.
+ */
 public class NewEventForm extends AppCompatActivity {
+    // Firestore instance to interact with the database
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private EditText
-            eventName,
-            eventLocation,
-            eventDate,
-            eventTime,
-            registrationDeadline,
-            waitingListCapacity;
+    // EditText fields for event details
+    private EditText eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity;
 
+    // Document ID to identify the event for editing
     private String documentId;
 
+    /**
+     * Called when the activity is created. Sets up the UI elements, retrieves the event type
+     * (create or edit), and initializes the event data if editing an existing event.
+     *
+     * @param savedInstanceState Saved state from a previous instance of the activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_event_form);
+
+        // Adjust UI for system bars (status bar, navigation bar)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.landing_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Initialize EditText fields
         eventName = findViewById(R.id.event_name);
         eventLocation = findViewById(R.id.location);
         eventDate = findViewById(R.id.choose_date);
@@ -48,9 +58,11 @@ public class NewEventForm extends AppCompatActivity {
         registrationDeadline = findViewById(R.id.registration_until);
         waitingListCapacity = findViewById(R.id.waiting_list_capacity);
 
+        // Retrieve the event type (create or edit) from the intent
         Intent intent = getIntent();
         String eventType = intent.getStringExtra("type");
 
+        // If editing an event, load its data
         if ("edit".equals(eventType)) {
             documentId = intent.getStringExtra("eventId");
             if (documentId != null && !documentId.isEmpty()) {
@@ -60,10 +72,12 @@ public class NewEventForm extends AppCompatActivity {
             }
         }
 
+        // Set up the 'next' button to navigate to the image upload fragment
         Button nextButton = findViewById(R.id.next_button);
         nextButton.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
 
+            // Put the event details into the bundle
             bundle.putString("eventName", eventName.getText().toString());
             bundle.putString("eventLocation", eventLocation.getText().toString());
             bundle.putString("eventDate", eventDate.getText().toString());
@@ -72,10 +86,10 @@ public class NewEventForm extends AppCompatActivity {
             bundle.putString("waitingListCapacity", waitingListCapacity.getText().toString());
             bundle.putString("documentId", documentId);
 
+            // Start the image upload fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             ImageUploadFragment fragment = new ImageUploadFragment();
-
             fragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.landing_page, fragment);
             fragmentTransaction.addToBackStack(null);
@@ -83,15 +97,21 @@ public class NewEventForm extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads event data from Firestore if editing an existing event.
+     * This will populate the form fields with the current data of the event.
+     */
     private void loadEventData() {
         if (documentId == null || documentId.isEmpty()) {
             Toast.makeText(this, "Invalid document ID, unable to load event data.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Fetch event data from Firestore
         db.collection("events").document(documentId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        // Populate form fields with event data
                         eventName.setText(documentSnapshot.getString("name"));
                         eventLocation.setText(documentSnapshot.getString("location"));
                         eventDate.setText(documentSnapshot.getString("date"));
@@ -103,5 +123,4 @@ public class NewEventForm extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(NewEventForm.this, "Failed to load data", Toast.LENGTH_SHORT).show());
     }
-
 }

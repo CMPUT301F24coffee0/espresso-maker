@@ -17,12 +17,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * This fragment displays a list of events organized by the user (organizer).
+ * The fragment retrieves event data from Firebase Firestore and populates the list view with the events.
+ * When an event is clicked, the user is directed to a form to either edit or view the event details.
+ */
 public class OrganizerHomeFragment extends Fragment {
+
+    /**
+     * Called to inflate the fragment's layout and set up the list of events.
+     * This method retrieves event data from Firestore, populates a list view with the events,
+     * and sets up an item click listener to allow event editing.
+     *
+     * @param inflater The LayoutInflater object to inflate the fragment's view.
+     * @param container The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
 
         List<Event> events = new ArrayList<>();
@@ -30,13 +46,16 @@ public class OrganizerHomeFragment extends Fragment {
         EventAdapter adapter = new EventAdapter(requireActivity(), events);
         listView.setAdapter(adapter);
 
+        // Retrieve the device ID for the current user
         String deviceID = new User(requireActivity()).getDeviceID();
 
+        // Fetch events organized by the current user
         db.collection("events")
                 .whereEqualTo("organizer", deviceID)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        // Populate the events list with data from Firestore
                         for (DocumentSnapshot document : task.getResult()) {
                             String name = document.getString("name");
                             String date = document.getString("date");
@@ -51,25 +70,33 @@ public class OrganizerHomeFragment extends Fragment {
                         }
                         adapter.notifyDataSetChanged();
 
-                        if (events.isEmpty()) Log.d("Event", "No events found.");
-                        else Log.d("Event", "Events found: " + events.size());
+                        // Log message depending on whether events were found
+                        if (events.isEmpty()) {
+                            Log.d("Event", "No events found.");
+                        } else {
+                            Log.d("Event", "Events found: " + events.size());
+                        }
 
-                    } else Log.d("Event", "Error getting events: ", task.getException());
+                    } else {
+                        Log.d("Event", "Error getting events: ", task.getException());
+                    }
                 });
 
+        // Set up item click listener for the event list
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Event clickedEvent = events.get(position);
 
+            // Extract event details
             String name = clickedEvent.getName();
             String date = clickedEvent.getDate();
             String time = clickedEvent.getTime();
             String location = clickedEvent.getFacility();
             String description = clickedEvent.getDescription();
             String deadline = clickedEvent.getDeadline();
-
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
 
+            // Log event details for debugging
             Log.d("Event",
                     "Event clicked: Name=" + name +
                             ", Date=" + date +
@@ -80,8 +107,8 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Capacity=" + capacity +
                             ", EventId=" + eventId);
 
+            // Create an intent to edit the clicked event
             Intent intent = new Intent(requireActivity(), NewEventForm.class);
-
             intent.putExtra("name", name);
             intent.putExtra("date", date);
             intent.putExtra("time", time);
@@ -92,8 +119,10 @@ public class OrganizerHomeFragment extends Fragment {
             intent.putExtra("eventId", eventId);
             intent.putExtra("type", "edit");
 
+            // Start the NewEventForm activity
             startActivity(intent);
+        });
 
-        }); return view;
+        return view;
     }
 }

@@ -13,14 +13,39 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 import java.util.List;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+/**
+ * Custom adapter for displaying event data in a ListView.
+ * The adapter fetches event details from Firestore and uses a ViewHolder pattern
+ * for efficient view recycling.
+ */
 public class EventAdapter extends BaseAdapter {
-    Context context;
-    List<Event> events;
-    LayoutInflater inflater;
+    private Context context;
+    private List<Event> events;
+    private LayoutInflater inflater;
 
-    public EventAdapter(Context c, List<Event> events){
-        this.context = c;
+    /**
+     * Constructor for the EventAdapter.
+     *
+     * @param context The context where the adapter is used, typically an Activity or Fragment.
+     * @param events  The list of events to be displayed in the ListView.
+     */
+    public EventAdapter(Context context, List<Event> events) {
+        this.context = context;
         this.events = events;
         inflater = LayoutInflater.from(context);
     }
@@ -40,9 +65,17 @@ public class EventAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Returns a view for the event item at the specified position.
+     * This method is optimized using the ViewHolder pattern.
+     *
+     * @param position The position of the item within the list.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent The parent view to which the new view will be attached.
+     * @return The view for the event item at the given position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // ViewHolder pattern to improve performance
         ViewHolder viewHolder;
 
         // If convertView is null, inflate a new view and set up the ViewHolder
@@ -65,34 +98,32 @@ public class EventAdapter extends BaseAdapter {
 
         // Get the current event data
         Event event = events.get(position);
-        String deviceID = new User(context).getDeviceID();
 
-        // Fetch the event participant data from Firestore
+        // Fetch event data from Firestore
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("events")
-                .document(event.getId());
+        DocumentReference docRef = db.collection("events").document(event.getId());
 
-        View finalConvertView = convertView;
+        // Fetch event participant data from Firestore asynchronously
         docRef.get().addOnCompleteListener(task -> {
-            Log.d("Firestore", "Fetching event participant data...");
             if (task.isSuccessful()) {
-                Log.d("Firestore", "Fetched event participant data." + task.getResult());
                 DocumentSnapshot document = task.getResult();
-
+                if (document != null && document.exists()) {
+                    // Populate the ViewHolder views with event data
                     viewHolder.name.setText(event.getName());
                     viewHolder.date.setText(String.format("%s %s", event.getDate(), event.getTime()));
                     viewHolder.location.setText(event.getFacility());
 
-                    // Fetch and load the image URL
+                    // Load event image if available
                     event.getUrl(url -> {
                         if (url != null) {
-                            Log.d("ImageURL", "Fetched URL: " + url);
-                            // Use an image loading library like Picasso to load the image
+                            // Use Picasso to load the image URL into the ImageView
                             Picasso.get().load(url).into(viewHolder.image);
                         } else {
+                            // Log error if the image URL is unavailable
                             Log.d("ImageURL", "Failed to fetch URL.");
                         }
                     });
+                }
             } else {
                 Log.d("Firestore", "Error fetching event participant data.", task.getException());
             }
@@ -101,12 +132,14 @@ public class EventAdapter extends BaseAdapter {
         return convertView;
     }
 
-    // ViewHolder class to hold references to the views
+    /**
+     * ViewHolder pattern to hold references to the views for each event item.
+     * This improves performance by preventing repeated calls to findViewById.
+     */
     static class ViewHolder {
         TextView name;
         TextView date;
         TextView location;
         ImageView image;
     }
-
 }
