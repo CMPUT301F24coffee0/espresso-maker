@@ -11,12 +11,21 @@ import com.example.espresso.databinding.ActivityAttendeeMyEventBinding;
 
 import java.util.Objects;
 
+/**
+ * The {@code AttendeeMyEvent} class represents the activity for displaying the attendee's events.
+ * It includes a tab layout for navigating between different event categories.
+ */
 public class AttendeeMyEvent extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     ViewPageAdapter adapter;
     ActivityAttendeeMyEventBinding binding;
 
+    /**
+     * Initializes the activity, sets up the tab layout and view pager, and configures bottom navigation actions.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

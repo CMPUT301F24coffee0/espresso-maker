@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class image_upload_fragment extends Fragment {
+    
 
     public image_upload_fragment() {
         // Required empty public constructor
@@ -18,4 +19,5 @@ public class image_upload_fragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.event_image_upload, container, false); // Ensure this is the correct layout name
     }
+
 }

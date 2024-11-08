@@ -11,9 +11,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * The {@code AttendeeHomeActivity} class represents the home screen for an attendee.
+ * It displays a list of events fetched from Firestore and allows navigation through a bottom
+ * navigation bar.
+ */
 public class AttendeeHomeActivity extends AppCompatActivity {
     ActivityAttendeeHomeBinding binding;
+
+    /**
+     * Initializes the activity, sets up the event list, and configures bottom navigation actions.
+     *
+     * @param savedInstanceState The saved instance state bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
