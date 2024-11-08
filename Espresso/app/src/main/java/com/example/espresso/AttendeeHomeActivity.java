@@ -62,7 +62,7 @@ public class AttendeeHomeActivity extends AppCompatActivity {
                 Log.d("User", "Error retrieving user data: ", task.getException());
             }
         });
-        
+
     }
 
     /**
