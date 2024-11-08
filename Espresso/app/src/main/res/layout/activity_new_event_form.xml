@@ -135,7 +135,7 @@
                 android:layout_height="55dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/text_input_field_shape"
-                android:hint="Waiting List Capacity (Optional)"
+                android:hint="Event Capacity (Optional)"
                 android:paddingHorizontal="15dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
@@ -168,18 +168,7 @@
                     android:src="@drawable/espresso_app_cal_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
-            <!-- Number of Attendees to Sample Field -->
-            <EditText
-                android:id="@+id/attendees_to_sample"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/text_input_field_shape"
-                android:hint="Number of Attendees to Sample"
-                android:paddingHorizontal="15dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/blueGrey"
-                android:textSize="16sp" />
+
         </LinearLayout>
         <!-- Next Button -->
         <Button

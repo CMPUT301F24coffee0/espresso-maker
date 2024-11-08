@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 /**
@@ -24,7 +25,7 @@ import java.util.Map;
  * view of the event with more information.
  */
 public class PendingEvents extends Fragment {
-
+    String status;
     /**
      * Called to inflate the fragment's layout and initialize UI components.
      * This method retrieves pending events from Firestore and displays them in a list.
@@ -53,7 +54,7 @@ public class PendingEvents extends Fragment {
         db.collection("users")
                 .document(new User(requireContext()).getDeviceID())
                 .collection("events")
-                .whereEqualTo("status", "pending")
+                .whereIn("status", Arrays.asList("pending", "invited"))
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -69,6 +70,7 @@ public class PendingEvents extends Fragment {
                             String description = (String) data.get("description");
                             String deadline = (String) data.get("deadline");
                             Object capacityObj = data.get("capacity");
+                            status = (String) data.get("status");
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
                             events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
                             adapter.notifyDataSetChanged();
@@ -107,7 +109,7 @@ public class PendingEvents extends Fragment {
             intent.putExtra("deadline", deadline);
             intent.putExtra("capacity", capacity);
             intent.putExtra("eventId", eventId);
-            intent.putExtra("status", "pending");
+            intent.putExtra("status", status);
             // Fetch the event poster URL and pass it to the intent
             clickedEvent.getUrl(url -> intent.putExtra("posterUrl", url));
             startActivity(intent);
