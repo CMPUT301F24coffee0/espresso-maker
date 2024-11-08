@@ -104,8 +104,9 @@ public class EventDetails extends AppCompatActivity {
 
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
+            assert eventId != null;
             db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
-            db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "lottery"))
+            db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "pending"))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             // Lottery entered successfully

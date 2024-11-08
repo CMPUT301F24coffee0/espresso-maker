@@ -48,42 +48,49 @@ public class AttendeeHomeActivity extends AppCompatActivity {
         EventAdapter adapter = new EventAdapter(this, events);
         listView.setAdapter(adapter);
 
-        db.collection("events").get().addOnCompleteListener( task -> {
+        db.collection("events").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("Event", "Events found");
                 for (int i = 0; i < task.getResult().size(); i++) {
-                    // Filter out events that have already joined
                     String eventId = task.getResult().getDocuments().get(i).getId();
                     String deviceID = new User(this).getDeviceID();
+
+                    int finalI = i;
                     db.collection("events")
                             .document(eventId).collection("participants")
                             .document(deviceID).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            if (task1.getResult().exists()) Log.d("Event", "Event already joined: " + eventId);
-                            else Log.d("Error", "Could not fetch events");
-                        }
-                    });
 
-                    String name = task.getResult().getDocuments().get(i).getString("name");
-                    String date = task.getResult().getDocuments().get(i).getString("date");
-                    String time = task.getResult().getDocuments().get(i).getString("time");
-                    String location = task.getResult().getDocuments().get(i).getString("location");
-                    String description = task.getResult().getDocuments().get(i).getString("description");
-                    String deadline = task.getResult().getDocuments().get(i).getString("deadline");
+                                if (task1.isSuccessful() && !task1.getResult().exists()) {
+                                    // Only add the event if the user has not joined
+                                    Log.d("Event", "Event not joined: " + eventId);
 
-                    int capacity = Objects.requireNonNull(
-                            task.getResult().getDocuments().get(i).getLong("capacity")).intValue();
+                                    String name = task.getResult().getDocuments().get(finalI).getString("name");
+                                    String date = task.getResult().getDocuments().get(finalI).getString("date");
+                                    String time = task.getResult().getDocuments().get(finalI).getString("time");
+                                    String location = task.getResult().getDocuments().get(finalI).getString("location");
+                                    String description = task.getResult().getDocuments().get(finalI).getString("description");
+                                    String deadline = task.getResult().getDocuments().get(finalI).getString("deadline");
 
-                    events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
-                    adapter.notifyDataSetChanged();
+                                    int capacity = Objects.requireNonNull(
+                                            task.getResult().getDocuments().get(finalI).getLong("capacity")).intValue();
+
+                                    events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                                    adapter.notifyDataSetChanged();
+                                } else {
+                                    Log.d("Event", "Event already joined: " + eventId);
+                                }
+                            });
                 }
+            } else {
+                Log.d("Event", "Error getting events: ", task.getException());
             }
-        }).addOnCompleteListener( task -> {
+        }).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (events.isEmpty()) Log.d("Event", "No events found " + events.size());
                 else Log.d("Event", "Events found " + events.get(0).getName());
             }
         });
+
 
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {

@@ -124,16 +124,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/enter_lottery_button"
-                    android:layout_width="350dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/lightBrown"
-                    android:text="Enter the Lottery"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
