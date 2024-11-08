@@ -237,7 +237,7 @@ public class EventDetails extends AppCompatActivity {
                                         .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to declined", e));
                             }
 
-                            // Update selected participants to "confirmed"
+                            // Update selected participants to "invited"
                             for (DocumentSnapshot participant : selectedParticipants) {
                                 String participantId = participant.getId();
                                 db.collection("users").document(deviceID)
@@ -252,6 +252,7 @@ public class EventDetails extends AppCompatActivity {
                                             drawLotteryButton.setText("You already drawn the lottery!");
                                             drawLotteryButton.setTextColor(Color.WHITE);
                                             drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                                            db.collection("events").document(eventId).update("drawed", true);
                                         })
                                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to draw lottery.", Toast.LENGTH_SHORT).show());
                             }
