@@ -23,7 +23,7 @@ import java.util.Random;
  * user profile with a randomly generated username.
  */
 public class MainActivity extends AppCompatActivity {
-    String deviceID;
+    public String deviceID;
     Button attendee_sign_in_btn, org_sign_in_btn, admin_sign_in_btn;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 

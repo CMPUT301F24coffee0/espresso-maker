@@ -15,7 +15,7 @@ public class Entrant extends User {
      * Create a new entrant.
      * @param context   App context.
      */
-    Entrant(Context context) {
+    public Entrant(Context context) {
         super(context);
 
         name = "";
