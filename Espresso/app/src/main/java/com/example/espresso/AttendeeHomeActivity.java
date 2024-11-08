@@ -45,6 +45,16 @@ public class AttendeeHomeActivity extends AppCompatActivity {
 
         setupBottomNavigationView();
         setupEventList(db);
+        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String userName = task.getResult().getString("name");
+                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
+            } else {
+                // Handle failure (e.g., user not found or error fetching data)
+                Log.d("User", "Error retrieving user data: ", task.getException());
+            }
+        });
+        
     }
 
     /**
@@ -64,15 +74,6 @@ public class AttendeeHomeActivity extends AppCompatActivity {
         });
     }
 
-        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String userName = task.getResult().getString("name");
-                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
-            } else {
-                // Handle failure (e.g., user not found or error fetching data)
-                Log.d("User", "Error retrieving user data: ", task.getException());
-            }
-        });
     /**
      * Navigates to a specified activity and logs a message.
      *
