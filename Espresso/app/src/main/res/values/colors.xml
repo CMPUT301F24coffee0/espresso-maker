@@ -9,4 +9,6 @@
     <color name="darkBrown">#734936</color>
     <color name="lightBrown">#A97F6D</color>
     <color name="transparent">#00ffffff</color>
+    <color name="red">#8C0726</color>
+    <color name="lightGrey">#bab5b6</color>
 </resources>
