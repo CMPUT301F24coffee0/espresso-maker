@@ -23,22 +23,33 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
+/**
+ * Activity that displays detailed information about a specific event.
+ * Users can view the event details, enter the lottery system for the event,
+ * share the event via QR code, or navigate back to the home screen.
+ */
 public class EventDetails extends AppCompatActivity {
     Button enterLotteryButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
 
+    /**
+     * Initializes the activity, sets up the event details UI, and handles user interactions.
+     * Users can enter the lottery, share the event via QR code, and navigate back to the home screen.
+     *
+     * @param savedInstanceState The saved instance state of the activity, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_event_profile);
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String deviceID = new User(this).getDeviceID();
         Intent intent = getIntent();
 
-        // Handle onBackPressed()
+        // Handle onBackPressed() to navigate back to the AttendeeHomeActivity
         OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
         dispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -48,7 +59,7 @@ public class EventDetails extends AppCompatActivity {
             }
         });
 
-        // Retrieve the extras
+        // Retrieve event details from the Intent
         String name = intent.getStringExtra("name");
         String date = intent.getStringExtra("date");
         String time = intent.getStringExtra("time");
@@ -59,7 +70,7 @@ public class EventDetails extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status");
-
+      
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
         posterRef = storageRef.child(path);
@@ -77,6 +88,7 @@ public class EventDetails extends AppCompatActivity {
 
         Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 
+
         // Set the event details in the UI
         TextView nameTextView = findViewById(R.id.attendee_event_profile_title);
         nameTextView.setText(name);
@@ -93,6 +105,7 @@ public class EventDetails extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.attendee_event_profile_banner_img);
         Picasso.get().load(posterUrl).into(imageView);
 
+        // Prepare data for Firestore
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("name", name);
         eventData.put("date", date);
@@ -103,6 +116,7 @@ public class EventDetails extends AppCompatActivity {
         eventData.put("capacity", capacity);
         eventData.put("status", "pending");
 
+        // Handle the event lottery button based on the event status
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         switch (Objects.requireNonNull(status)) {
             case "edit":
@@ -129,6 +143,7 @@ public class EventDetails extends AppCompatActivity {
                 break;
         }
 
+        // Handle user interaction with the enter lottery button
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
             assert eventId != null;
@@ -138,12 +153,11 @@ public class EventDetails extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Lottery entered successfully
                             Log.d("Lottery", "Lottery entered successfully");
-                            // Disable the button
+                            // Disable the button after entering the lottery
                             enterLotteryButton.setEnabled(false);
                             enterLotteryButton.setText("You have entered the lottery!");
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-
                         } else {
                             // Lottery entry failed
                             Log.d("Lottery", "Lottery entry failed");
@@ -151,12 +165,12 @@ public class EventDetails extends AppCompatActivity {
                     });
         });
 
-        // Share button
+        // Share button for generating and sharing a QR code of the event
         ImageButton shareBtn = findViewById(R.id.share_button);
         shareBtn.setOnClickListener(v -> {
-            //Generate qr code from eventID
+            // Generate QR code for event ID
             Bitmap bitmap = new QRCode(eventId).generateQRCode();
-            // Open a pop-up
+            // Open a dialog to share the QR code
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
             builder.setTitle("Share QR Code");
             LayoutInflater inflater = getLayoutInflater();
@@ -168,7 +182,7 @@ public class EventDetails extends AppCompatActivity {
 
             Button shareButton = dialogView.findViewById(R.id.share_qr_button);
             shareButton.setOnClickListener(v1 -> {
-                //Share qr code
+                // Logic to share the QR code (not yet implemented)
             });
 
             AlertDialog dialog = builder.create();
@@ -179,9 +193,8 @@ public class EventDetails extends AppCompatActivity {
             });
         });
 
-        // Go back button
+        // Go back button to navigate back to the AttendeeHomeActivity
         ImageButton goBackBtn = findViewById(R.id.go_back_button);
         goBackBtn.setOnClickListener(v -> finish());
     }
-
 }
