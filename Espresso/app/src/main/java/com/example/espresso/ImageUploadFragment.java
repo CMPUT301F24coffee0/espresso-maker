@@ -26,17 +26,34 @@ import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * A fragment that handles the uploading of event images and related data to Firestore.
+ * It retrieves event details from the arguments, allows the user to input event information,
+ * and saves the event data to the Firestore database when the "Create Event" button is clicked.
+ */
 public class ImageUploadFragment extends Fragment {
     private FirebaseFirestore db;
     private Button uploadButton;
     private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     Uri selectedImageUri;
+    /**
+     * Default constructor for the fragment.
+     * Required for fragment instantiation. No implementation needed.
+     */
     public ImageUploadFragment() {
         // Required empty public constructor
     }
-
+    /**
+     * Called to create the view for the fragment. This method inflates the layout,
+     * retrieves event details passed through the fragment's arguments, and sets up
+     * a listener for the "Create Event" button.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState A Bundle containing the fragment's previously saved state, if any.
+     * @return The View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_image_upload, container, false);
@@ -103,7 +120,14 @@ public class ImageUploadFragment extends Fragment {
             Toast.makeText(getContext(), "Error opening image", Toast.LENGTH_SHORT).show();
         }
     }
-
+    /**
+     * Saves the event data to Firestore.
+     * This method creates a map of event details and either updates an existing event document
+     * or creates a new one in the Firestore database.
+     * After saving the event data, it navigates to the OrganizerHomeActivity.
+     *
+     * @param view The current fragment's view, used to retrieve additional UI input like description
+     */
     private void saveEventDataToFirestore(View view) {
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("name", eventName);

@@ -39,7 +39,11 @@ import java.util.Objects;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.Manifest;
-
+/**
+ * The AttendeeProfile activity allows users to view and edit their profile information,
+ * including name, email, phone, and profile picture, which are retrieved from Firebase.
+ * It also provides navigation to other activities via a BottomNavigationView.
+ */
 public class AttendeeProfile extends AppCompatActivity {
     AttendeeProfileBinding binding;
     String deviceID, name, email, phone, type;
@@ -51,7 +55,12 @@ public class AttendeeProfile extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST_CODE = 101;  // Request code for gallery
     private ImageButton profilePicButton;
-
+    /**
+     * Initializes the profile activity, setting up Firebase connections, navigation,
+     * profile image retrieval, and profile data retrieval.
+     *
+     * @param savedInstanceState the saved instance state, if any, to restore the activity's state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,14 +218,24 @@ public class AttendeeProfile extends AppCompatActivity {
 
 
     }
-
+    /**
+     * Opens the image gallery for selecting a profile picture.
+     *
+     * @param view The view that triggers this method.
+     */
     // Method called by the profilePicButton click
     public void selectProfileImage(android.view.View view) {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, GALLERY_REQUEST_CODE);
     }
-
+    /**
+     * Handles the result from the image selection activity, uploading the selected image to Firebase Storage.
+     *
+     * @param requestCode The request code of the activity result.
+     * @param resultCode The result code of the activity result.
+     * @param data The intent containing the data returned by the activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

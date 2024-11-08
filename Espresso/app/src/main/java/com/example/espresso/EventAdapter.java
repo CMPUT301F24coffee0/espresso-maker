@@ -15,12 +15,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import java.util.List;
-
+/**
+ * Custom adapter for displaying event data in a ListView.
+ * The adapter fetches event details from Firestore and uses a ViewHolder pattern
+ * for efficient view recycling.
+ */
 public class EventAdapter extends BaseAdapter {
     Context context;
     List<Event> events;
     LayoutInflater inflater;
-
+    /**
+     * Constructor for the EventAdapter.
+     *
+     * @param c The context where the adapter is used, typically an Activity or Fragment.
+     * @param events  The list of events to be displayed in the ListView.
+     */
     public EventAdapter(Context c, List<Event> events){
         this.context = c;
         this.events = events;
@@ -41,7 +50,15 @@ public class EventAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
+    /**
+     * Returns a view for the event item at the specified position.
+     * This method is optimized using the ViewHolder pattern.
+     *
+     * @param position The position of the item within the list.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent The parent view to which the new view will be attached.
+     * @return The view for the event item at the given position.
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // ViewHolder pattern to improve performance
@@ -84,7 +101,10 @@ public class EventAdapter extends BaseAdapter {
         return convertView;
     }
 
-
+    /**
+     * ViewHolder pattern to hold references to the views for each event item.
+     * This improves performance by preventing repeated calls to findViewById.
+     */
     // ViewHolder class to hold references to the views
     static class ViewHolder {
         TextView name;

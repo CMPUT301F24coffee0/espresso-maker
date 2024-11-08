@@ -17,8 +17,22 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * This fragment displays a list of events organized by the user (organizer).
+ * The fragment retrieves event data from Firebase Firestore and populates the list view with the events.
+ * When an event is clicked, the user is directed to a form to either edit or view the event details.
+ */
 public class OrganizerHomeFragment extends Fragment {
+    /**
+     * Called to inflate the fragment's layout and set up the list of events.
+     * This method retrieves event data from Firestore, populates a list view with the events,
+     * and sets up an item click listener to allow event editing.
+     *
+     * @param inflater The LayoutInflater object to inflate the fragment's view.
+     * @param container The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
