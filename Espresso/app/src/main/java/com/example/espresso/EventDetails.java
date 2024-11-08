@@ -103,7 +103,7 @@ public class EventDetails extends AppCompatActivity {
         eventData.put("capacity", capacity);
         eventData.put("status", "pending");
 
-        enterLotteryButton = findViewById(R.id.enter_lottery_button);
+        //enterLotteryButton = findViewById(R.id.enter_lottery_button);
         switch (Objects.requireNonNull(status)) {
             case "edit":
                 enterLotteryButton.setEnabled(false);

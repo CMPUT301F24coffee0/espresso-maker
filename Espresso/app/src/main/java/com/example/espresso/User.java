@@ -10,7 +10,7 @@ public class User {
      * Create a new user.
      * @param context   App context.
      */
-    User(Context context) {
+    public User(Context context) {
         deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
