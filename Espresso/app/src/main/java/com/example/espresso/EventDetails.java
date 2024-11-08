@@ -156,6 +156,13 @@ public class EventDetails extends AppCompatActivity {
                 dialog.dismiss();
             });
         });
+
+        // Go back button
+        ImageButton goBackBtn = findViewById(R.id.go_back_button);
+        goBackBtn.setOnClickListener(v -> {
+            Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+            startActivity(intent2);
+        });
     }
 
 }
