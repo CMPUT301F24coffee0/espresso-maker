@@ -87,6 +87,10 @@ public class EventDetails extends AppCompatActivity {
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         switch (Objects.requireNonNull(status)) {
+            case "edit":
+                enterLotteryButton.setEnabled(false);
+                enterLotteryButton.setVisibility(View.INVISIBLE);
+                break;
             case "confirmed":
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Confirmed");
@@ -159,10 +163,7 @@ public class EventDetails extends AppCompatActivity {
 
         // Go back button
         ImageButton goBackBtn = findViewById(R.id.go_back_button);
-        goBackBtn.setOnClickListener(v -> {
-            Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
-            startActivity(intent2);
-        });
+        goBackBtn.setOnClickListener(v -> finish());
     }
 
 }
