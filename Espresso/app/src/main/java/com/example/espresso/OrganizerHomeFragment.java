@@ -48,7 +48,6 @@ public class OrganizerHomeFragment extends Fragment {
         listView.setAdapter(adapter);
 
         String deviceID = new User(requireActivity()).getDeviceID();
-
         db.collection("events")
                 .whereEqualTo("organizer", deviceID)
                 .get()

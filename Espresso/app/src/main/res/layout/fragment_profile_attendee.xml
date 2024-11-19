@@ -5,154 +5,132 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".AttendeeHomeActivity">
 
-    <!-- Profile Page Layout -->
-    <FrameLayout
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+        <!-- Admin AttendeeDashboard Title -->
+        <TextView
+            android:id="@+id/admin_dashboard_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true"
+            android:text="Profile"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
-            <!-- Page Title/Name -->
-            <TextView
-                android:id="@+id/page_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Profile"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/removeProfilePicButton"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/profilePicButton"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="11dp"
+            android:backgroundTint="@android:color/darker_gray"
+            android:contentDescription="Remove Profile Picture"
+            android:text="Remove"
+            android:textColor="@android:color/white"
+            android:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/settings_icon"
-                android:layout_width="33dp"
-                android:layout_height="38dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.858"
-                app:layout_constraintStart_toEndOf="@+id/page_name"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/settings" />
+        <ImageButton
+            android:id="@+id/profilePicButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="64dp"
+            android:contentDescription="Select Profile Picture"
+            android:background="?android:attr/windowBackground"
+            android:padding="0dp"
+            android:scaleType="centerCrop"/>
 
-            <ImageView
-                android:id="@+id/menu_icon"
-                android:layout_width="33dp"
-                android:layout_height="38dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/menu_drawer"
-                app:layout_constraintEnd_toStartOf="@+id/page_name"
-                app:layout_constraintHorizontal_bias="0.142"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/initial"
+            android:text="A"
+            android:textSize="32sp"
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="64dp"
+            android:textColor="#000000"
+            android:background="@drawable/circle_background"
+            android:visibility="visible"/>  <!-- Optional: set the text color -->
 
-            <TextView
-                android:id="@+id/attendee_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="72dp"
-                android:text="Damien R."
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                app:layout_constraintStart_toEndOf="@+id/attendee_pfp"
-                app:layout_constraintTop_toBottomOf="@+id/page_name" />
 
-            <ImageView
-                android:id="@+id/attendee_pfp"
-                android:layout_width="74dp"
-                android:layout_height="71dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="68dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/menu_icon"
-                app:srcCompat="@drawable/letter_d_pfp" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="279dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="106dp"
+            android:layout_marginTop="92dp"
+            android:text="Name"
+            android:textSize="25sp" />
 
-            <!-- Attendee Details -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="64dp"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/attendee_name">
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="212dp"
+            android:text="Email"
+            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/attendee_email_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:inputType="textEmailAddress"
-                    android:paddingHorizontal="15dp"
-                    android:text="damienr@gmail.com"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+        <TextView
+            android:id="@+id/role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="248dp"
+            android:text="Role:"
+            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/role_attendee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:paddingHorizontal="15dp"
-                    android:text="Role: Attendee"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+        <TextView
+            android:id="@+id/phoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="286dp"
+            android:text="Phone Number"
+            android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/attendee_phone_num"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="20dp"
-                    android:paddingHorizontal="15dp"
-                    android:text="Phone number: (+1) 123-456-7890"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-            </LinearLayout>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="356dp"
+            android:layout_height="68dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="339dp"
+            android:text="Sign out"
+            android:textColorLink="#00B0FD" />
 
-            <!-- Sign Out Button -->
-            <Button
-                android:id="@+id/AttendeeSignOutButton"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/blue"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="15dp"
-                android:text="Sign out"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.558"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.944"/>
+        <ImageButton
+            android:id="@+id/edit_profile_button"
+            android:layout_width="65dp"
+            android:layout_height="56dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            android:backgroundTint="@color/white"
+            android:background="@color/white"
+            app:srcCompat="@drawable/settings" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+    </RelativeLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

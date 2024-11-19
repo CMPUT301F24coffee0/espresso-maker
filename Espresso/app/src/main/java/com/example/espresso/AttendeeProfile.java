@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.example.espresso.databinding.AttendeeProfileBinding;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,8 +47,7 @@ import android.Manifest;
  * including name, email, phone, and profile picture, which are retrieved from Firebase.
  * It also provides navigation to other activities via a BottomNavigationView.
  */
-public class AttendeeProfile extends AppCompatActivity {
-    AttendeeProfileBinding binding;
+public class AttendeeProfile extends Fragment {
     String deviceID, name, email, phone, type;
     Button logout;
     TextView initial;
@@ -54,6 +55,7 @@ public class AttendeeProfile extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference pfpsRef;
+    View view;
 
     private static final int GALLERY_REQUEST_CODE = 101;  // Request code for gallery
     private ImageButton profilePicButton;
@@ -64,19 +66,17 @@ public class AttendeeProfile extends AppCompatActivity {
      * @param savedInstanceState the saved instance state, if any, to restore the activity's state
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = AttendeeProfileBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
-        deviceID = new User(this).getDeviceID();
+        view = inflater.inflate(R.layout.fragment_profile_attendee, container, false);
+        deviceID = new User(requireContext()).getDeviceID();
 
         if (deviceID == null) {
             Log.d("user", "Device ID is null");
-            return;
+            return view;
         }
 
-        initial = findViewById(R.id.initial);
+        initial = view.findViewById(R.id.initial);
 
 
         String path = "pfps/"+deviceID+".png";
@@ -94,52 +94,27 @@ public class AttendeeProfile extends AppCompatActivity {
         });
 
 
-        logout = findViewById(R.id.button);
+        logout = view.findViewById(R.id.button);
         logout.setOnClickListener(v -> {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 FirebaseAuth.getInstance().signOut();
                 Log.d("user", "User signed out");
             }
-            Intent intent = new Intent(AttendeeProfile.this, MainActivity.class);
+            Intent intent = new Intent(requireActivity(), MainActivity.class);
             startActivity(intent);
         });
 
         // Remove profile picture button
-        Button removeProfilePicButton = findViewById(R.id.removeProfilePicButton);
+        Button removeProfilePicButton = view.findViewById(R.id.removeProfilePicButton);
         removeProfilePicButton.setOnClickListener(v -> {
             // Remove the profile picture from Firebase Storage
             pfpsRef.delete().addOnSuccessListener(aVoid -> {
-                Toast.makeText(this, "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
                 initial.setVisibility(View.VISIBLE);
             }).addOnFailureListener(e -> {
-                Toast.makeText(this, "You can't remove this profile picture.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "You can't remove this profile picture.", Toast.LENGTH_SHORT).show();
             });
-        });
-
-
-        // Navigation
-        binding.bottomNavigationView.setSelectedItemId(R.id.profile);
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.events) {
-                // Open events activity
-                Log.d("BottomNav", "Events clicked");
-                Intent intent = new Intent(AttendeeProfile.this, AttendeeMyEvent.class);
-                startActivity(intent);
-            }
-            else if (item.getItemId() == R.id.scan) {
-                // Open scan activity
-                Log.d("BottomNav", "Scan clicked");
-                Intent intent = new Intent(AttendeeProfile.this, ScanQR.class);
-                startActivity(intent);
-            }
-            else if (item.getItemId() == R.id.home) {
-                // Open profile activity
-                Log.d("BottomNav", "Home clicked");
-                Intent intent = new Intent(AttendeeProfile.this, AttendeeHomeActivity.class);
-                startActivity(intent);
-            }
-            return true;
         });
 
         //Fetching data from Firebase
@@ -154,30 +129,30 @@ public class AttendeeProfile extends AppCompatActivity {
                 Map<String, Object> data = documentSnapshot.getData();
 
                 assert data != null;
-                name = Objects.requireNonNull(data.get("name")).toString();
+                name = Objects.requireNonNullElse(data.get("name"), "Default Name").toString();
                 initial.setText(name.substring(0, 1));
                 email = Objects.requireNonNull(data.get("email")).toString();
                 phone = Objects.requireNonNull(data.get("phone")).toString();
                 type = Objects.requireNonNull(data.get("type")).toString();
 
-                binding.name.setText(name);
-                binding.email.setText(String.format("Email: %s", email));
-                binding.phoneNumber.setText(String.format("Phone Number: %s", phone));
-                binding.role.setText(String.format("Role: %s", type));
+                ((TextView) view.findViewById(R.id.name)).setText(name);
+                ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", email));
+                ((TextView) view.findViewById(R.id.phoneNumber)).setText(String.format("Phone Number: %s", phone));
+                ((TextView) view.findViewById(R.id.role)).setText(String.format("Role: %s", type));
             } else {
                 Log.d("user", "No such document");
             }
         });
 
-        findViewById(R.id.edit_profile_button).setOnClickListener(
+        view.findViewById(R.id.edit_profile_button).setOnClickListener(
                 v -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(AttendeeProfile.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 
                     builder.setTitle("Edit Profile");
                     builder.setMessage("Do you want to save changes?");
 
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.edit_profile_dialog, null);
+                    LayoutInflater inflater2 = getLayoutInflater();
+                    View dialogView = inflater2.inflate(R.layout.edit_profile_dialog, null);
                     builder.setView(dialogView);
 
                     EditText name_text = dialogView.findViewById(R.id.edit_name);
@@ -202,9 +177,10 @@ public class AttendeeProfile extends AppCompatActivity {
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d("user", "DocumentSnapshot successfully updated!");
 
-                                    binding.name.setText(newName);
-                                    binding.email.setText(String.format("Email: %s", newEmail));
-                                    binding.phoneNumber.setText(String.format("Phone Number: %s", newPhone));
+                                    ((TextView) view.findViewById(R.id.name)).setText(newName);
+                                    ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", newEmail));
+                                    ((TextView) view.findViewById(R.id.phoneNumber)).setText(String.format("Phone Number: %s", newPhone));
+                                    ((TextView) view.findViewById(R.id.role)).setText(String.format("Role: %s", type));
                                 })
                                 .addOnFailureListener(e -> Log.w("user", "Error updating document", e));
                     });
@@ -217,14 +193,14 @@ public class AttendeeProfile extends AppCompatActivity {
         );
 
         // Set up the profile picture button
-        profilePicButton = findViewById(R.id.profilePicButton);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        profilePicButton = view.findViewById(R.id.profilePicButton);
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
         // Permission already granted, proceed with file access
         profilePicButton.setOnClickListener(this::selectProfileImage);
 
-
+        return view;
     }
     /**
      * Opens the image gallery for selecting a profile picture.
@@ -245,21 +221,21 @@ public class AttendeeProfile extends AppCompatActivity {
      * @param data The intent containing the data returned by the activity.
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == 100 && data != null) {
             Uri selectedImageUri = data.getData();
             profilePicButton.setImageURI(selectedImageUri); // Display the selected image in the ImageButton
 
             if (selectedImageUri != null) {
                 try {
                     // Open an InputStream from the content URI
-                    InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                    InputStream inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
                     // Upload the InputStream to Firebase Storage
                     UploadTask uploadTask = pfpsRef.putStream(inputStream);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
-                        Toast.makeText(this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
                         initial.setVisibility(View.GONE);
 
                         // Optionally, update the displayed image by reloading it from Firebase Storage
@@ -269,13 +245,13 @@ public class AttendeeProfile extends AppCompatActivity {
                             Log.e("user", "Error fetching uploaded image URL", exception);
                         });
                     }).addOnFailureListener(e -> {
-                        Toast.makeText(this, "Failed to upload image.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Failed to upload image.", Toast.LENGTH_SHORT).show();
                         Log.e("user", "Error uploading image", e);
                     });
 
                 } catch (Exception e) {
                     Log.e("user", "Error opening InputStream", e);
-                    Toast.makeText(this, "Error opening image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Error opening image", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Log.e("user", "Selected image URI is null.");

@@ -8,8 +8,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.espresso.databinding.ActivityAttendeeHomeBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -25,9 +32,6 @@ import java.util.Objects;
  */
 public class AttendeeHomeActivity extends AppCompatActivity {
 
-    /** Binding object for ActivityAttendeeHome layout. */
-    ActivityAttendeeHomeBinding binding;
-
     /**
      * Called when the activity is first created. Sets up the view, initializes Firebase Firestore,
      * sets up the BottomNavigationView listener, and loads event data.
@@ -37,178 +41,62 @@ public class AttendeeHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAttendeeHomeBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
+        setContentView(R.layout.activity_attendee_home);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String userName = task.getResult().getString("name");
-                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
-            } else {
-                // Handle failure (e.g., user not found or error fetching data)
-                Log.d("User", "Error retrieving user data: ", task.getException());
-            }
-        });
-        setupBottomNavigationView();
-        setupEventList(db);
-        db.collection("users").document(new User(this).getDeviceID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String userName = task.getResult().getString("name");
-                ((TextView) findViewById(R.id.name_title)).setText("Welcome " + userName + "!");
-            } else {
-                // Handle failure (e.g., user not found or error fetching data)
-                Log.d("User", "Error retrieving user data: ", task.getException());
-            }
+        // Adjust padding for system bars (status bar, navigation bar)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.attendee_home_page), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
 
+        // Set up bottom navigation
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        // Load the default fragment if no saved instance state
+        if (savedInstanceState == null) loadFragment(new AttendeeHomeFragment());
     }
 
     /**
-     * Sets up the BottomNavigationView listener to handle navigation to different activities
-     * based on the selected item.
+     * Listener for navigation item selection in the bottom navigation bar.
+     * It switches between different fragments based on the selected item.
      */
-    private void setupBottomNavigationView() {
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.events) {
-                navigateToActivity(AttendeeMyEvent.class, "Events clicked");
-            } else if (item.getItemId() == R.id.scan) {
-                navigateToActivity(ScanQR.class, "Scan clicked");
-            } else if (item.getItemId() == R.id.profile) {
-                navigateToActivity(AttendeeProfile.class, "Profile clicked");
-            }
-            return true;
-        });
-    }
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            item -> {
+                Fragment selectedFragment = null;
+
+                // Select fragment based on the item clicked in the bottom navigation
+                if (item.getItemId() == R.id.events) {
+                    selectedFragment = new AttendeeMyEvent();
+                } else if (item.getItemId() == R.id.scan) {
+                    Log.d("BottomNav", "Scan clicked");
+                    Intent intent = new Intent(this, ScanQR.class);
+                    startActivity(intent);
+                } else if (item.getItemId() == R.id.profile) {
+                    selectedFragment = new AttendeeProfile();
+                } else if (item.getItemId() == R.id.home) {
+                    selectedFragment = new AttendeeHomeFragment();
+                }
+
+                // If a fragment is selected, load it
+                if (selectedFragment != null) {
+                    loadFragment(selectedFragment);
+                }
+                return true;
+            };
 
     /**
-     * Navigates to a specified activity and logs a message.
+     * Loads the specified fragment into the container of the activity.
+     * This replaces the current fragment with the new one.
      *
-     * @param activityClass The class of the activity to navigate to.
-     * @param logMessage    The message to log.
+     * @param fragment The fragment to be loaded.
      */
-    private void navigateToActivity(Class<?> activityClass, String logMessage) {
-        Log.d("BottomNav", logMessage);
-        Intent intent = new Intent(AttendeeHomeActivity.this, activityClass);
-        startActivity(intent);
-    }
-
-    /**
-     * Sets up the event list by fetching events from Firestore and adding them to a ListView.
-     *
-     * @param db The FirebaseFirestore instance used to retrieve events.
-     */
-    private void setupEventList(FirebaseFirestore db) {
-        List<Event> events = new ArrayList<>();
-        ListView listView = findViewById(R.id.event_list_view);
-        EventAdapter adapter = new EventAdapter(this, events);
-        listView.setAdapter(adapter);
-
-        db.collection("events").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.d("Event", "Events found");
-                processEvents(task, events, adapter, db);  // Call processEvents to handle event data loading
-            } else {
-                Log.d("Event", "Error getting events: ", task.getException());
-            }
-        });
-
-        setupEventItemClickListener(listView, events);
-    }
-
-    /**
-     * Processes the retrieved events and adds them to the list if the user hasn't joined them.
-     *
-     * @param task     The Firestore task result containing the events.
-     * @param events   The list of events to update.
-     * @param adapter  The EventAdapter to notify of changes.
-     * @param db       The FirebaseFirestore instance for participant data.
-     */
-    private void processEvents(Task<QuerySnapshot> task, List<Event> events, EventAdapter adapter, FirebaseFirestore db) {
-        events.clear();  // Clear the list to prevent duplicates
-
-        for (int i = 0; i < task.getResult().size(); i++) {
-            String eventId = task.getResult().getDocuments().get(i).getId();
-            String deviceID = new User(this).getDeviceID();
-
-            int finalI = i;
-            db.collection("events").document(eventId).collection("participants").document(deviceID).get()
-                    .addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful() && !task1.getResult().exists()) {
-                            addEventToList(task, events, finalI);
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Event", "Event already joined: " + eventId);
-                        }
-                    });
-        }
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
     }
 
 
-    /**
-     * Logs the status of event loading based on whether events were found.
-     *
-     * @param events The list of events loaded from Firestore.
-     */
-    private void logEventsLoadedStatus(List<Event> events) {
-        if (events.isEmpty()) Log.d("Event", "No events found " + events.size());
-        else Log.d("Event", "Events found " + events.get(0).getName());
-    }
-
-    /**
-     * Adds an event to the events list using the document data at the specified index.
-     *
-     * @param task   The Firestore task result containing event documents.
-     * @param events The list of events to update.
-     * @param index  The index of the document to add.
-     */
-    private void addEventToList(Task<QuerySnapshot> task, List<Event> events, int index) {
-        DocumentSnapshot doc = task.getResult().getDocuments().get(index);
-        String name = doc.getString("name");
-        String date = doc.getString("date");
-        String time = doc.getString("time");
-        String location = doc.getString("location");
-        String description = doc.getString("description");
-        String deadline = doc.getString("deadline");
-        int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
-
-        events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
-    }
-
-    /**
-     * Sets up the item click listener for the event ListView to open the event details activity.
-     *
-     * @param listView The ListView displaying the events.
-     * @param events   The list of events to retrieve the clicked event from.
-     */
-    private void setupEventItemClickListener(ListView listView, List<Event> events) {
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Event clickedEvent = events.get(position);
-            openEventDetails(clickedEvent);
-        });
-    }
-
-    /**
-     * Opens the EventDetails activity for a clicked event, passing relevant event information.
-     *
-     * @param event The Event object containing details to display.
-     */
-    private void openEventDetails(Event event) {
-        Intent intent = new Intent(AttendeeHomeActivity.this, EventDetails.class);
-        intent.putExtra("name", event.getName());
-        intent.putExtra("date", event.getDate());
-        intent.putExtra("time", event.getTime());
-        intent.putExtra("location", event.getFacility());
-        intent.putExtra("description", event.getDescription());
-        intent.putExtra("deadline", event.getDeadline());
-        intent.putExtra("capacity", event.getCapacity());
-        intent.putExtra("eventId", event.getId());
-        intent.putExtra("status", "view");
-
-        event.getUrl(url -> {
-            intent.putExtra("posterUrl", url);
-            startActivity(intent);
-        });
-    }
 }

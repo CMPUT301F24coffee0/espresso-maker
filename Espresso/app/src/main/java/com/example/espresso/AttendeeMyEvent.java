@@ -3,10 +3,16 @@ package com.example.espresso;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
 import com.example.espresso.databinding.ActivityAttendeeMyEventBinding;
 
 import java.util.Objects;
@@ -16,8 +22,8 @@ import java.util.Objects;
  * through various event-related tabs using a ViewPager2 and a TabLayout. It includes navigation
  * to home, scan, and profile screens through a BottomNavigationView.
  */
-public class AttendeeMyEvent extends AppCompatActivity {
-
+public class AttendeeMyEvent extends Fragment {
+    View view;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     ViewPageAdapter adapter;
@@ -30,30 +36,13 @@ public class AttendeeMyEvent extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized, this contains the most recent data.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAttendeeMyEventBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
-        setContentView(view);
+        view = inflater.inflate(R.layout.fragment_attendee_my_event, container, false);
 
-        binding.bottomNavigationView.setSelectedItemId(R.id.events);
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.home) {
-                Intent intent = new Intent(AttendeeMyEvent.this, AttendeeHomeActivity.class);
-                startActivity(intent);
-            } else if (item.getItemId() == R.id.scan) {
-                Intent intent = new Intent(AttendeeMyEvent.this, ScanQR.class);
-                startActivity(intent);
-            } else if (item.getItemId() == R.id.profile) {
-                Intent intent = new Intent(AttendeeMyEvent.this, AttendeeProfile.class);
-                startActivity(intent);
-            }
-            return true;
-        });
-
-        tabLayout = findViewById(R.id.tabs);
-        viewPager2 = findViewById(R.id.view_pager);
-        adapter = new ViewPageAdapter(this);
+        tabLayout = view.findViewById(R.id.tabs);
+        viewPager2 = view.findViewById(R.id.view_pager);
+        adapter = new ViewPageAdapter(requireActivity());
         viewPager2.setAdapter(adapter);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -74,5 +63,7 @@ public class AttendeeMyEvent extends AppCompatActivity {
                 Objects.requireNonNull(tabLayout.getTabAt(position)).select();
             }
         });
+        return view;
+
     }
 }
