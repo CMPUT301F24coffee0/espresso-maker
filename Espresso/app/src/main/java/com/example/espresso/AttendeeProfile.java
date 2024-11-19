@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 /**
@@ -48,6 +49,7 @@ public class AttendeeProfile extends AppCompatActivity {
     AttendeeProfileBinding binding;
     String deviceID, name, email, phone, type;
     Button logout;
+    TextView initial;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -73,12 +75,17 @@ public class AttendeeProfile extends AppCompatActivity {
             Log.d("user", "Device ID is null");
             return;
         }
+
+        initial = findViewById(R.id.initial);
+
+
         String path = "pfps/"+deviceID+".png";
         pfpsRef = storageRef.child(path);
         // Fetch profile picture from Firebase Storage
         pfpsRef.getDownloadUrl().addOnSuccessListener(uri -> {
             // Got the download URL for pfp
             Log.d("user", "Got download URL for pfp");
+            initial.setVisibility(View.GONE);
             Picasso.get().load(uri).into(profilePicButton);
         }).addOnFailureListener(exception -> {
             // Handle any errors
@@ -104,7 +111,7 @@ public class AttendeeProfile extends AppCompatActivity {
             // Remove the profile picture from Firebase Storage
             pfpsRef.delete().addOnSuccessListener(aVoid -> {
                 Toast.makeText(this, "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
-                profilePicButton.setImageResource(R.drawable.profile);
+                initial.setVisibility(View.VISIBLE);
             }).addOnFailureListener(e -> {
                 Toast.makeText(this, "You can't remove this profile picture.", Toast.LENGTH_SHORT).show();
             });
@@ -148,6 +155,7 @@ public class AttendeeProfile extends AppCompatActivity {
 
                 assert data != null;
                 name = Objects.requireNonNull(data.get("name")).toString();
+                initial.setText(name.substring(0, 1));
                 email = Objects.requireNonNull(data.get("email")).toString();
                 phone = Objects.requireNonNull(data.get("phone")).toString();
                 type = Objects.requireNonNull(data.get("type")).toString();
@@ -252,6 +260,7 @@ public class AttendeeProfile extends AppCompatActivity {
                     UploadTask uploadTask = pfpsRef.putStream(inputStream);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
                         Toast.makeText(this, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                        initial.setVisibility(View.GONE);
 
                         // Optionally, update the displayed image by reloading it from Firebase Storage
                         pfpsRef.getDownloadUrl().addOnSuccessListener(uri -> {
