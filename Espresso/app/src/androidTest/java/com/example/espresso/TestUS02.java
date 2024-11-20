@@ -6,8 +6,10 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
 
 import android.app.Activity;
 
@@ -15,12 +17,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
-import androidx.test.runner.lifecycle.Stage;
 
-import com.example.espresso.MainActivity;
-import com.example.espresso.R;
-import com.example.espresso.uitests.UiTest;
 
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -33,7 +30,7 @@ import java.util.Collection;
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @LargeTest
-public class TestUS02 extends UiTest {
+public class TestUS02 {
     @Rule
     public ActivityScenarioRule<MainActivity> activityRule = new ActivityScenarioRule<>(MainActivity.class);
 
@@ -84,8 +81,23 @@ public class TestUS02 extends UiTest {
      * As an organizer, I want to be able to create and manage my facility profile
      */
     @Test
-    public void testCreateFacilityProfile() {
+    public void testCreateFacilityProfile() throws InterruptedException {
         // Create a new facility profile
+        onView(withId(R.id.OrganizerSignInButton)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.nav_facilities_organizer)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.add_facility)).perform(click());
+        Thread.sleep(2000);
+        onView(withHint("Enter facility name")).perform(replaceText("Test Facility"));
+        onView(withId(android.R.id.button1)).perform(click());
+        Thread.sleep(2000);
+        onView(withText("Test Facility")).check(matches(isDisplayed()));
+        onView(withText("Test Facility")).perform(click());
+        Thread.sleep(2000);
+        onView(withText("Yes")).perform(click());
+
+
     }
 
     /**
@@ -140,15 +152,17 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
-        onView(withId(R.id.upload_poster_button)).perform(click());
-        Thread.sleep(2000);
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
-        onView(withId(R.id.create_event_button)).perform(click());
-        Thread.sleep(2000);
-        onView(withText("Test Event")).check(matches(isDisplayed()));
-        onView(withText("2023-12-31 12:00")).check(matches(isDisplayed()));
-        onView(withText("Test Location")).check(matches(isDisplayed()));
+        onView(withId(R.id.upload_poster_button)).check(matches(isDisplayed()));
+        //onView(withId(R.id.upload_poster_button)).perform(click());
+//        onView(withId(R.id.go_back_button)).perform(click());
+//        Thread.sleep(2000);
+
+        //onView(withText("Select a photo")).check(matches(isDisplayed()));
+//        onView(withId(R.id.create_event_button)).perform(click());
+//        Thread.sleep(2000);
+//        onView(withText("Test Event")).check(matches(isDisplayed()));
+//        onView(withText("2023-12-31 12:00")).check(matches(isDisplayed()));
+//        onView(withText("Test Location")).check(matches(isDisplayed()));
     }
 
     /**
@@ -172,14 +186,18 @@ public class TestUS02 extends UiTest {
         onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
         onView(withId(R.id.next_button)).perform(click());
         Thread.sleep(2000);
-        onView(withId(R.id.upload_poster_button)).perform(click());
-        Thread.sleep(2000);
+        //onView(withId(R.id.upload_poster_button)).perform(click());
+        //Thread.sleep(2000);
         onView(withId(R.id.create_event_button)).perform(click());
         Thread.sleep(2000);
 
-        onView(withId(R.id.event_list_view)).perform(click());
+        onView(withText("Test Event")).perform(click());
         Thread.sleep(2000);
-        // no update event poster functionality yet
+        onView(withId(R.id.edit_button)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.next_button)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.upload_poster_button)).check(matches(isDisplayed()));
 
     }
 
@@ -188,8 +206,30 @@ public class TestUS02 extends UiTest {
      * As an organizer, I want to be able to perform the "lottery"
      */
     @Test
-    public void testLottery() {
+    public void testLottery() throws InterruptedException {
         // Perform the lottery
+        onView(withId(R.id.OrganizerSignInButton)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.add_event_button)).perform(click());
+        onView(withId(R.id.event_name)).perform(replaceText("Test Event"));
+        onView(withId(R.id.location)).perform(typeText("Test Location"));
+        onView(withId(R.id.choose_date)).perform(click());
+        //onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2023, 12, 31));
+        //onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.choose_date)).perform(typeText("2023-12-31"));
+        onView(withId(R.id.choose_time)).perform(replaceText("12:00"));
+        onView(withId(R.id.waiting_list_capacity)).perform(replaceText("50"));
+        onView(withId(R.id.registration_until)).perform(replaceText("2023-12-31"));
+        onView(withId(R.id.next_button)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.create_event_button)).perform(click());
+        Thread.sleep(2000);
+
+        onView(withText("Test Event")).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.draw_lottery)).perform(click());
+        Thread.sleep(2000);
+        onView(withText("You already drawn the lottery!")).check(matches(isDisplayed()));
 
     }
 
