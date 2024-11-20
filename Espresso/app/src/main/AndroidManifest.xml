@@ -26,19 +26,19 @@
         android:theme="@style/Theme.Espresso"
         tools:targetApi="31">
         <activity
-            android:name=".AttendeeHomeFragment"
+            android:name=".Attendee.AttendeeHomeFragment"
             android:exported="false" />
         <activity
-            android:name=".ScanQR"
+            android:name=".Attendee.ScanQR"
             android:exported="false" />
         <activity
-            android:name=".NewEventForm"
+            android:name=".Organizer.NewEventForm"
             android:exported="false" />
         <activity
-            android:name=".AttendeeHomeActivity"
+            android:name=".Attendee.AttendeeHomeActivity"
             android:exported="false" />
         <activity
-            android:name=".OrganizerHomeActivity"
+            android:name=".Organizer.OrganizerHomeActivity"
             android:exported="false"
             android:theme="@style/Theme.Espresso" />
         <activity
@@ -51,18 +51,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AttendeeMyEvent"
+            android:name=".Attendee.AttendeeMyEvent"
             android:exported="false"
             android:label="@string/title_activity_attendee_my_event"
             android:theme="@style/Theme.Espresso.NoActionBar" />
         <activity
-            android:name=".EventDetails"
+            android:name=".Event.EventDetails"
             android:exported="false" />
         <activity
-            android:name=".AttendeeProfile"
+            android:name=".Attendee.AttendeeProfile"
             android:exported="false" />
         <activity
-            android:name=".EventItem"
+            android:name=".Event.EventItem"
             android:exported="true" />
     </application>
 

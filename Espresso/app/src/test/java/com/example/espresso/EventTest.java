@@ -2,9 +2,10 @@ package com.example.espresso;
 
 import android.net.Uri;
 
+import com.example.espresso.Event.Event;
+import com.example.espresso.Organizer.Facility;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 import org.junit.Before;

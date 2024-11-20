@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attendee_home_page"
-    tools:context=".AttendeeHomeActivity">
+    tools:context=".Attendee.AttendeeHomeActivity">
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

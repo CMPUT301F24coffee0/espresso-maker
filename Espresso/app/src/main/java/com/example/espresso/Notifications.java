@@ -1,5 +1,7 @@
 package com.example.espresso;
 
+import com.example.espresso.Attendee.Entrant;
+
 public class Notifications {
      /**
      * Sends a notification to the selected entrant.
