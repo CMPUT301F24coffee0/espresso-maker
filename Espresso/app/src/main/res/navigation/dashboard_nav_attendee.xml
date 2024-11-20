@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_nav_organizer"
+    app:startDestination="@+id/dashboard_nav_attendee">
+
+    <fragment
+        android:id="@+id/nav_home_attendee"
+        android:name="com.example.espresso.Attendee.AttendeeHomeFragment"
+        android:label="@string/menu_home_organizer"
+        tools:layout="@layout/activity_attendee_home" />
+
+    <fragment
+        android:id="@+id/nav_my_event_attendee"
+        android:name="com.example.espresso.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_facilities_organizer"
+        tools:layout="@layout/activity_attendee_my_event" />
+
+
+    <fragment
+        android:id="@+id/nav_profile_attendee"
+        android:name="com.example.espresso.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_profile_organizer"
+        tools:layout="@layout/attendee_profile" />
+</navigation>

@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:required="false"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Espresso"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
-            android:name=".ScanQR"
+            android:name=".Attendee.AttendeeHomeFragment"
             android:exported="false" />
         <activity
-            android:name=".NewEventForm"
+            android:name=".Attendee.ScanQR"
             android:exported="false" />
         <activity
-            android:name=".AttendeeHomeActivity"
+            android:name=".Organizer.NewEventForm"
             android:exported="false" />
         <activity
-            android:name=".OrganizerHomeActivity"
+            android:name=".Attendee.AttendeeHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Organizer.OrganizerHomeActivity"
             android:exported="false"
             android:theme="@style/Theme.Espresso" />
         <activity
@@ -40,18 +51,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AttendeeMyEvent"
+            android:name=".Attendee.AttendeeMyEvent"
             android:exported="false"
             android:label="@string/title_activity_attendee_my_event"
             android:theme="@style/Theme.Espresso.NoActionBar" />
         <activity
-            android:name=".EventDetails"
+            android:name=".Event.EventDetails"
             android:exported="false" />
         <activity
-            android:name=".AttendeeProfile"
+            android:name=".Attendee.AttendeeProfile"
             android:exported="false" />
         <activity
-            android:name=".EventItem"
+            android:name=".Event.EventItem"
             android:exported="true" />
     </application>
 

@@ -6,42 +6,13 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attendee_home_page"
-    tools:context=".AttendeeHomeActivity">
-
-    <!-- Admin Dashboard Title -->
-    <TextView
-        android:id="@+id/name_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:text="Welcome Name!"
-        android:textSize="34sp"
-        android:textStyle="bold" />
-
-    <!-- Upcoming Events Header -->
-    <TextView
-        android:id="@+id/upcoming_events_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_title"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:text="Browse Upcoming Events"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <!-- ListView for events -->
-
-    <!-- Bottom Navigation -->
-    <ListView
-        android:id="@+id/event_list_view"
+    tools:context=".Attendee.AttendeeHomeActivity">
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="527dp"
-        android:layout_below="@id/upcoming_events_header"
-        android:layout_marginTop="8dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavigationView" />
+    <!-- Bottom Navigation -->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

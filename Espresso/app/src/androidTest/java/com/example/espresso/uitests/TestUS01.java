@@ -8,12 +8,11 @@ import androidx.test.core.app.ApplicationProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.example.espresso.Entrant;
-import com.example.espresso.Event;
-import com.example.espresso.Facility;
-import com.example.espresso.WaitingList;
+import com.example.espresso.Attendee.Entrant;
+import com.example.espresso.Event.Event;
+import com.example.espresso.Organizer.Facility;
+import com.example.espresso.Organizer.WaitingList;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**

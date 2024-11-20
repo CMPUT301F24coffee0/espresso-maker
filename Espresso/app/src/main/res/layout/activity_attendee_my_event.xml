@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AttendeeMyEvent">
+    tools:context=".Attendee.AttendeeMyEvent"
+    android:id="@+id/attendee_my_event">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -10,6 +10,10 @@ import androidx.core.view.WindowInsetsCompat;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.espresso.Attendee.AttendeeHomeActivity;
+import com.example.espresso.Attendee.User;
+import com.example.espresso.Organizer.OrganizerHomeActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
