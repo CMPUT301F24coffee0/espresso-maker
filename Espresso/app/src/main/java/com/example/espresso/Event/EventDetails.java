@@ -37,9 +37,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Activity that displays detailed information about a specific event.
@@ -271,43 +273,80 @@ public class EventDetails extends AppCompatActivity {
                             // Select the first `selectCount` participants from the shuffled list
                             List<DocumentSnapshot> selectedParticipants = participants.subList(0, selectCount);
 
-                            // Mark all participants as "not-invited" initially
-                            for (DocumentSnapshot participant : participants) {
-                                String participantId = participant.getId();
-                                db.collection("users").document(deviceID)
-                                        .collection("events").document(eventId)
-                                        .update("status", "not-invited");
-                                db.collection("events").document(eventId)
-                                        .collection("participants").document(participantId)
-                                        .update("status", "not-invited")
-                                        .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to declined", e));
+                            // Create a set of IDs for the selected participants
+                            Set<String> invitedParticipantIds = new HashSet<>();
+                            for (DocumentSnapshot participant : selectedParticipants) {
+                                invitedParticipantIds.add(participant.getId());
                             }
 
-                            // Update selected participants to "invited"
-                            for (DocumentSnapshot participant : selectedParticipants) {
+                            // Process all participants
+                            for (DocumentSnapshot participant : participants) {
                                 String participantId = participant.getId();
-                                db.collection("users").document(deviceID)
-                                        .collection("events").document(eventId)
-                                        .update("status", "invited");
-                                db.collection("events").document(eventId)
-                                        .collection("participants").document(participantId)
-                                        .update("status", "invited")
-                                        .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
-                                            drawLotteryButton.setEnabled(false);
-                                            drawLotteryButton.setText("You already drawn the lottery!");
-                                            drawLotteryButton.setTextColor(Color.WHITE);
-                                            drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-                                        })
-                                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to draw lottery.", Toast.LENGTH_SHORT).show());
+
+                                // Check if the participant is in the invited list
+                                if (invitedParticipantIds.contains(participantId)) {
+                                    // Update to "invited" and send invitation notification
+                                    db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "invited");
+                                    db.collection("events").document(eventId)
+                                            .collection("participants").document(participantId)
+                                            .update("status", "invited")
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    String username = userDoc.getString("name");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("title", "New update from event " + name + "!");
+                                                                    map.put("msg", "Congratulations " + username + "! You have been invited to the event!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
+                                                            }
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to invited", e));
+                                } else {
+                                    // Update to "not-invited" and send decline notification
+                                    db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "not-invited");
+                                    db.collection("events").document(eventId)
+                                            .collection("participants").document(participantId)
+                                            .update("status", "not-invited")
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    String eventName = userDoc.getString("name");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("title", eventName);
+                                                                    map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
+                                                            }
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to not-invited", e));
+                                }
                             }
+
+                            // Update the "drawed" status for the event
                             db.collection("events").document(eventId).update("drawed", true);
+                            Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
+                            drawLotteryButton.setEnabled(false);
+                            drawLotteryButton.setText("You already drawn the lottery!");
+                            drawLotteryButton.setTextColor(Color.WHITE);
+                            drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                         } else {
                             Log.e("Lottery", "Error retrieving participants", task.getException());
                         }
                     });
         });
-
 
         acceptInviteButton.setOnClickListener(v -> {
             // Accept the invitation

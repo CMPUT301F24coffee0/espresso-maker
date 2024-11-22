@@ -142,7 +142,7 @@ public class AttendeeHomeFragment extends Fragment {
         int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
         boolean drawed = Boolean.TRUE.equals(doc.getBoolean("drawed"));
 
-        events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed));
+         events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, "view"));
     }
 
     /**

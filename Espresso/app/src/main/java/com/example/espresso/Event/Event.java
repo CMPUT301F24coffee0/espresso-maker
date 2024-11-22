@@ -6,6 +6,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class Event {
     private final String id;
@@ -17,6 +18,7 @@ public class Event {
     private String deadline;
     private int capacity;
     private boolean drawed;
+    private String status;
 
 
     public static String hashWithSHA256(String text) throws NoSuchAlgorithmException {
@@ -36,7 +38,7 @@ public class Event {
      * Create a new event in a given facility.
      * @param facility  Facility the event takes place in.
      */
-    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed) {
+    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed, String status) {
         String text = name + facility.getName() + time;
         try {
             id = hashWithSHA256(text);
@@ -51,6 +53,7 @@ public class Event {
         this.capacity = capacity;
         this.description = description;
         this.drawed = drawed;
+        this.status = status;
     }
 
     /**
@@ -113,10 +116,15 @@ public class Event {
     public boolean getDrawed() { return drawed; }
 
     /**
+     * Get the status of the event.
+     * @return  Status of the event.
+     */
+    public String getStatus() { return status; }
+
+    /**
      *  Get the URL of the poster image for the event.
      *
      */
-
     public interface OnUrlFetchedListener {
         void onUrlFetched(String url);
     }

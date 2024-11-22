@@ -29,7 +29,6 @@ import java.util.Objects;
  * When an event is clicked, the user is directed to a form to either edit or view the event details.
  */
 public class OrganizerHomeFragment extends Fragment {
-    String status;
     /**
      * Called to inflate the fragment's layout and set up the list of events.
      * This method retrieves event data from Firestore, populates a list view with the events,
@@ -64,11 +63,11 @@ public class OrganizerHomeFragment extends Fragment {
                             String location = document.getString("location");
                             String description = document.getString("description");
                             String deadline = document.getString("deadline");
-                            status = document.getString("status") ;
+                            String status = document.getString("status") ;
                             if (status == null) status = "edit";
                             boolean drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, status));
                         }
                         adapter.notifyDataSetChanged();
 
@@ -88,6 +87,7 @@ public class OrganizerHomeFragment extends Fragment {
             String description = clickedEvent.getDescription();
             String deadline = clickedEvent.getDeadline();
             boolean drawed = clickedEvent.getDrawed();
+            String status = clickedEvent.getStatus();
 
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
