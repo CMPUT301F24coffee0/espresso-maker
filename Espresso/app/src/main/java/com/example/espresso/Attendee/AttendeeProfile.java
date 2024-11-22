@@ -217,7 +217,7 @@ public class AttendeeProfile extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == 100 && data != null) {
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == requireActivity().RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             profilePicButton.setImageURI(selectedImageUri); // Display the selected image in the ImageButton
 
