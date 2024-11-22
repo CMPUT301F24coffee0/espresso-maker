@@ -129,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     // Get current registration token
     public void getRegistrationToken() {
         FirebaseMessaging.getInstance().getToken()
@@ -149,23 +148,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /**
-     * There are two scenarios when onNewToken is called:
-     * 1) When a new token is generated on initial app startup
-     * 2) Whenever an existing token is changed
-     * Under #2, there are three scenarios when the existing token is changed:
-     * A) App is restored to a new device
-     * B) User uninstalls/reinstalls the app
-     * C) User clears app data
-     */
-    public void onNewToken(@NonNull String token) {
-        Log.d("token", "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
     }
 
     /**
@@ -192,6 +174,20 @@ public class MainActivity extends AppCompatActivity {
         askNotificationPermission();
         // Get registration token
         getRegistrationToken();
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("eventid1")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d("msg", msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         // Retrieve device ID for the current user
         deviceID = new User(this).getDeviceID();
