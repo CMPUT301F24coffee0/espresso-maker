@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
     <TextView
         android:id="@+id/admin_dashboard_title"
         android:layout_width="wrap_content"
@@ -8,6 +9,8 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:text="Organizer Dashboard"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold" />
     <TextView
@@ -18,7 +21,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="My Events"
-        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textSize="24sp"
         android:textStyle="bold" />
     <Button
         android:id="@+id/add_event_button"
@@ -29,6 +33,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:text="Add"
+        android:backgroundTint="@color/lightBrown"
         android:onClick="launchEventForm"/>
 
     <ListView
