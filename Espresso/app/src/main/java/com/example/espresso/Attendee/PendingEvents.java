@@ -77,7 +77,7 @@ public class PendingEvents extends Fragment {
                             Object capacityObj = data.get("capacity");
                             status = (String) data.get("status");
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), false));
                             adapter.notifyDataSetChanged();
                         }
                     } else {

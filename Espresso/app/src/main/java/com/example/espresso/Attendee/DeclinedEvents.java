@@ -70,7 +70,7 @@ public class DeclinedEvents extends Fragment {
                             String deadline = (String) data.get("deadline");
                             Object capacityObj = data.get("capacity");
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), true));
                         }
                         adapter.notifyDataSetChanged();
                     } else {

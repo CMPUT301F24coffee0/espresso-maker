@@ -67,7 +67,7 @@
             android:exported="true" />
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".ReceivingNotifications"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

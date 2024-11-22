@@ -16,6 +16,7 @@ public class Event {
     private String description;
     private String deadline;
     private int capacity;
+    private boolean drawed;
 
 
     public static String hashWithSHA256(String text) throws NoSuchAlgorithmException {
@@ -35,7 +36,7 @@ public class Event {
      * Create a new event in a given facility.
      * @param facility  Facility the event takes place in.
      */
-    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility) {
+    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed) {
         String text = name + facility.getName() + time;
         try {
             id = hashWithSHA256(text);
@@ -49,6 +50,7 @@ public class Event {
         this.deadline = deadline;
         this.capacity = capacity;
         this.description = description;
+        this.drawed = drawed;
     }
 
     /**
@@ -103,6 +105,12 @@ public class Event {
      * @return  Capacity of the event.
      */
     public int getCapacity() { return capacity; }
+
+    /**
+     * Get the status of the event.
+     * @return  Status of the event.
+     */
+    public boolean getDrawed() { return drawed; }
 
     /**
      *  Get the URL of the poster image for the event.

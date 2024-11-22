@@ -18,6 +18,7 @@ import com.example.espresso.Event.EventDetails;
 import com.example.espresso.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,6 @@ import java.util.Objects;
  * When an event is clicked, the user is directed to a form to either edit or view the event details.
  */
 public class OrganizerHomeFragment extends Fragment {
-    boolean drawed;
     String status;
     /**
      * Called to inflate the fragment's layout and set up the list of events.
@@ -54,7 +54,7 @@ public class OrganizerHomeFragment extends Fragment {
         String deviceID = new User(requireActivity()).getDeviceID();
         db.collection("events")
                 .whereEqualTo("organizer", deviceID)
-                .get()
+                .get(Source.SERVER)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot document : task.getResult()) {
@@ -66,9 +66,9 @@ public class OrganizerHomeFragment extends Fragment {
                             String deadline = document.getString("deadline");
                             status = document.getString("status") ;
                             if (status == null) status = "edit";
-                            drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
+                            boolean drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed));
                         }
                         adapter.notifyDataSetChanged();
 
@@ -87,6 +87,7 @@ public class OrganizerHomeFragment extends Fragment {
             String location = clickedEvent.getFacility();
             String description = clickedEvent.getDescription();
             String deadline = clickedEvent.getDeadline();
+            boolean drawed = clickedEvent.getDrawed();
 
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
@@ -99,7 +100,9 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Description=" + description +
                             ", Deadline=" + deadline +
                             ", Capacity=" + capacity +
-                            ", EventId=" + eventId);
+                            ", EventId=" + eventId +
+                            ", Status=" + status +
+                            ", Drawed=" + drawed);
 
             Intent intent = new Intent(requireActivity(), EventDetails.class);
 

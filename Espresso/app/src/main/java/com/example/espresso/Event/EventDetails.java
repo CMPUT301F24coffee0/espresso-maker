@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.espresso.Attendee.AttendeeHomeActivity;
@@ -24,9 +25,12 @@ import com.example.espresso.Attendee.QRCode;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -99,7 +103,7 @@ public class EventDetails extends AppCompatActivity {
             Log.e("Event", "Error getting download URL for poster", exception);
         });
 
-        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
+        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed);
 
         // Set the event details in the UI
         TextView nameTextView = findViewById(R.id.attendee_event_profile_title);
@@ -188,7 +192,6 @@ public class EventDetails extends AppCompatActivity {
             intent2.putExtra("capacity", capacity);
             intent2.putExtra("eventId", eventId);
             intent2.putExtra("status", status);
-            intent2.putExtra("drawed", drawed);
             startActivity(intent2);
         });
 
@@ -206,7 +209,19 @@ public class EventDetails extends AppCompatActivity {
                             enterLotteryButton.setText("You have entered the lottery!");
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-
+                            // Subscribed to notifications
+                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            String msg = "Subscribed";
+                                            if (!task.isSuccessful()) {
+                                                msg = "Subscribe failed";
+                                            }
+                                            Log.d("msg", msg);
+                                            Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         } else {
                             // Lottery entry failed
                             Log.d("Lottery", "Lottery entry failed");
@@ -233,12 +248,18 @@ public class EventDetails extends AppCompatActivity {
         });
 
         drawLotteryButton.setOnClickListener(v -> {
-            // Access Firestore and retrieve participants
-            db.collection("users").document(deviceID).collection("events").document(eventId).set(Map.of("drawed", true), SetOptions.merge());
+            assert eventId != null;
             db.collection("events").document(eventId).collection("participants").get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             List<DocumentSnapshot> participants = task.getResult().getDocuments();
+
+                            // Check if the participants list is empty
+                            if (participants.isEmpty()) {
+                                Toast.makeText(this, "No participants have joined this event.", Toast.LENGTH_SHORT).show();
+                                return; // Exit early since there's nothing to process
+                            }
+
                             int size = participants.size();
 
                             // Ensure we don't select more than the total number of participants
@@ -250,7 +271,7 @@ public class EventDetails extends AppCompatActivity {
                             // Select the first `selectCount` participants from the shuffled list
                             List<DocumentSnapshot> selectedParticipants = participants.subList(0, selectCount);
 
-                            // Mark all participants as "declined" initially
+                            // Mark all participants as "not-invited" initially
                             for (DocumentSnapshot participant : participants) {
                                 String participantId = participant.getId();
                                 db.collection("users").document(deviceID)
@@ -277,16 +298,16 @@ public class EventDetails extends AppCompatActivity {
                                             drawLotteryButton.setText("You already drawn the lottery!");
                                             drawLotteryButton.setTextColor(Color.WHITE);
                                             drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-                                            db.collection("events").document(eventId).update("drawed", true);
                                         })
                                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to draw lottery.", Toast.LENGTH_SHORT).show());
                             }
-
+                            db.collection("events").document(eventId).update("drawed", true);
                         } else {
                             Log.e("Lottery", "Error retrieving participants", task.getException());
                         }
                     });
         });
+
 
         acceptInviteButton.setOnClickListener(v -> {
             // Accept the invitation
