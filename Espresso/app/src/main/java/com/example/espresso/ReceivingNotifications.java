@@ -27,22 +27,27 @@ public class ReceivingNotifications extends FirebaseMessagingService {
 
     // [START receive_message]
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
 
-        // Handle data payload
-        if (!remoteMessage.getData().isEmpty()) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-        }
+        String title = "Default Title"; // Default title in case the sender didn't provide one
+        String body = "Default Body";  // Default body
 
-        // Handle notification payload
+        // Extract the title and body from the notification payload
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-            // Show notification manually when the app is in the foreground
-            sendNotification(remoteMessage.getNotification().getBody());
+            title = remoteMessage.getNotification().getTitle();
+            body = remoteMessage.getNotification().getBody();
         }
+
+        // Alternatively, extract from the data payload if provided
+        if (!remoteMessage.getData().isEmpty()) {
+            title = remoteMessage.getData().get("title");
+            body = remoteMessage.getData().get("body");
+        }
+
+        sendNotification(title, body);
     }
+
 
     // [END receive_message]
 
@@ -90,7 +95,7 @@ public class ReceivingNotifications extends FirebaseMessagingService {
                 });
     }
 
-    private void sendNotification(String messageBody) {
+    private void sendNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -101,7 +106,7 @@ public class ReceivingNotifications extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("FCM Message")
+                        .setContentTitle(messageTitle) // Use the title from the sender
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
@@ -110,7 +115,7 @@ public class ReceivingNotifications extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Since android Oreo notification channel is needed.
+        // Create notification channel for Android Oreo and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Event Update",
@@ -120,6 +125,4 @@ public class ReceivingNotifications extends FirebaseMessagingService {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
-
-
 }
