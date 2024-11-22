@@ -299,6 +299,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String username = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventID",eventId);
                                                                     map.put("title", "New update from event " + name + "!");
                                                                     map.put("msg", "Congratulations " + username + "! You have been invited to the event!");
                                                                     assert userToken != null;
@@ -323,6 +324,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String eventName = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventID",eventId);
                                                                     map.put("title", eventName);
                                                                     map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
                                                                     assert userToken != null;
