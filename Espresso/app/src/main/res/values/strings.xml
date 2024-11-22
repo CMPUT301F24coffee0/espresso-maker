@@ -32,6 +32,7 @@
     <string name="tab_text_1">Confirmed Events</string>
     <string name="tab_text_2">Pending Events</string>
     <string name="tab_text_3">Declined Events</string>
+    <string name="msg_token_fmt">Your FCM token is: %1$s</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -121,5 +122,4 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
-
 </resources>

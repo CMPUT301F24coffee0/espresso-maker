@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_popup_background"
+    android:gravity="center_horizontal">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/permission_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Notifications"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Explanation -->
+    <TextView
+        android:id="@+id/permission_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="We use notifications to inform you about important updates, such as whether you have been accepted into an event or not."
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Allow Button -->
+    <Button
+        android:id="@+id/button_allow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Allow Notifications"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/lightBrown" />
+
+    <!-- Deny Button -->
+    <Button
+        android:id="@+id/button_deny"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No, Thanks"
+        android:backgroundTint="@color/black" />
+
+</LinearLayout>
