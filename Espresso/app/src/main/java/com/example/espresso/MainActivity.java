@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     Button attendee_sign_in_btn, org_sign_in_btn, admin_sign_in_btn;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     boolean isLoggedIn;
+    String deviceToken;
 
     private void showNotificationPermissionDialog() {
         Dialog dialog = new Dialog(this);
@@ -129,43 +130,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public interface TokenCallback {
+        void onTokenReceived(String token);
+    }
 
     // Get current registration token
-    public void getRegistrationToken() {
+    public void getRegistrationToken(TokenCallback callback) {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
                             Log.w("fcm", "Fetching FCM registration token failed", task.getException());
+                            callback.onTokenReceived(null); // Notify callback of failure
                             return;
                         }
 
                         // Get new FCM registration token
                         String token = task.getResult();
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("fcm", msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        Log.d("fcm", "Token: " + token);
+
+                        // Notify the callback of the token
+                        callback.onTokenReceived(token);
                     }
                 });
-    }
-
-    /**
-     * There are two scenarios when onNewToken is called:
-     * 1) When a new token is generated on initial app startup
-     * 2) Whenever an existing token is changed
-     * Under #2, there are three scenarios when the existing token is changed:
-     * A) App is restored to a new device
-     * B) User uninstalls/reinstalls the app
-     * C) User clears app data
-     */
-    public void onNewToken(@NonNull String token) {
-        Log.d("token", "Refreshed token: " + token);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // FCM registration token to your app server.
     }
 
     /**
@@ -191,7 +179,19 @@ public class MainActivity extends AppCompatActivity {
         // Ask for notification permission
         askNotificationPermission();
         // Get registration token
-        getRegistrationToken();
+        getRegistrationToken(new TokenCallback() {
+            @Override
+            public void onTokenReceived(String token) {
+                if (token != null) {
+                    Log.d("Token", "Received token: " + token);
+                    Toast.makeText(MainActivity.this, "Token: " + token, Toast.LENGTH_SHORT).show();
+                    deviceToken = token;
+                } else {
+                    Log.w("Token", "Failed to retrieve token.");
+                }
+            }
+        });
+
 
         // Retrieve device ID for the current user
         deviceID = new User(this).getDeviceID();
@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         docData.put("email", "Not set");
         docData.put("phone", 123);
         docData.put("facility", "Not set");
+        docData.put("deviceToken", deviceToken);
 
         // Add the new user profile data to Firestore
         newUser.set(docData)

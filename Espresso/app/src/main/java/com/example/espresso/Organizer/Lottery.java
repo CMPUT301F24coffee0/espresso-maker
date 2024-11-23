@@ -2,7 +2,6 @@ package com.example.espresso.Organizer;
 
 import com.example.espresso.Attendee.Entrant;
 import com.example.espresso.Attendee.EntrantList;
-import com.example.espresso.Notifications;
 
 import java.util.List;
 import java.util.Random;
@@ -21,7 +20,6 @@ import java.util.Random;
 public class Lottery {
     private WaitingList waitingList;
     private EntrantList entrantList;
-    private Notifications notifications;
     private int maxEntrants;
 
     /**
@@ -33,10 +31,9 @@ public class Lottery {
      * @param notifications The notification manager for sending messages.
      * @param maxEntrants The maximum number of entrants to accept.
      */
-    public Lottery(WaitingList waitingList, EntrantList entrantList, Notifications notifications, int maxEntrants) {
+    public Lottery(WaitingList waitingList, EntrantList entrantList, int maxEntrants) {
         this.waitingList = waitingList;
         this.entrantList = entrantList;
-        this.notifications = notifications;
         this.maxEntrants = maxEntrants;
     }
 
@@ -65,7 +62,6 @@ public class Lottery {
 
             // Accept the selected entrant and notify them
             entrantList.acceptEntrant(selectedEntrant);
-            notifications.sendSelectedNotification(selectedEntrant);
 
             // Remove the selected entrant from the waiting list to prevent reselection
             entrants.remove(index);
@@ -81,9 +77,6 @@ public class Lottery {
     public void handleDecline(Entrant declinedEntrant) {
         // Remove the declined entrant from the accepted list
         entrantList.removeAcceptedEntrant(declinedEntrant);
-
-        // Notify the declined entrant
-        notifications.sendDeclineNotification(declinedEntrant);
 
         // Conduct the lottery again for a new selection
         conductLottery();

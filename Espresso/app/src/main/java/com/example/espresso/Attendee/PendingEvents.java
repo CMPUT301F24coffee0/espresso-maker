@@ -30,7 +30,6 @@ import java.util.Map;
  * view of the event with more information.
  */
 public class PendingEvents extends Fragment {
-    String status;
     /**
      * Called to inflate the fragment's layout and initialize UI components.
      * This method retrieves pending events from Firestore and displays them in a list.
@@ -75,9 +74,9 @@ public class PendingEvents extends Fragment {
                             String description = (String) data.get("description");
                             String deadline = (String) data.get("deadline");
                             Object capacityObj = data.get("capacity");
-                            status = (String) data.get("status");
+                            String status = (String) data.get("status");
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location)));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), false, status));
                             adapter.notifyDataSetChanged();
                         }
                     } else {
@@ -101,6 +100,7 @@ public class PendingEvents extends Fragment {
             String deadline = clickedEvent.getDeadline();
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
+            String status = clickedEvent.getStatus();
 
             Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 

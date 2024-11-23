@@ -103,7 +103,7 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation));
+            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
@@ -150,6 +150,7 @@ public class ImageUploadFragment extends Fragment {
         }
 
         eventData.put("organizer", (new User(getContext())).getDeviceID());
+        eventData.put("drawed", false);
 
         DocumentReference docRef;
         if (documentId != null && !documentId.isEmpty()) {
@@ -166,7 +167,9 @@ public class ImageUploadFragment extends Fragment {
                         null,
                         eventDate,
                         Integer.valueOf(waitingListCapacity),
-                        new Facility(eventLocation)).getId());
+                        new Facility(eventLocation),
+                        false,
+                        "view").getId());
 
         docRef.set(eventData)
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Event saved successfully", Toast.LENGTH_SHORT).show())
