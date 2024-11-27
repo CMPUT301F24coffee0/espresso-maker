@@ -39,8 +39,7 @@ public class AttendeeHomeFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(new User(requireContext()).getDeviceID()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                String userName = task.getResult().getString("name");
-                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome %s!", userName));
+                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
             } else {
                 // Handle failure (e.g., user not found or error fetching data)
                 Log.d("User", "Error retrieving user data: ", task.getException());
@@ -50,9 +49,8 @@ public class AttendeeHomeFragment extends Fragment {
         setupEventList(db);
         db.collection("users").document(new User(requireContext()).getDeviceID()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                String userName = task.getResult().getString("name");
                 //Toast.makeText(requireContext(), "Welcome " + userName + "!", Toast.LENGTH_SHORT).show();
-                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome %s!", userName));
+                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
             } else {
                 // Handle failure (e.g., user not found or error fetching data)
                 Log.d("User", "Error retrieving user data: ", task.getException());
