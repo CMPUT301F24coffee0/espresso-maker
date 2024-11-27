@@ -10,8 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +52,8 @@ import java.util.Set;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, editButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, sendNotificationButton;
+    ImageButton editButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -139,6 +143,7 @@ public class EventDetails extends AppCompatActivity {
         acceptInviteButton = findViewById(R.id.accept_invite_button);
         declineInviteButton = findViewById(R.id.decline_invite_button);
         editButton = findViewById(R.id.edit_button);
+        sendNotificationButton = findViewById(R.id.notification);
 
         switch (Objects.requireNonNull(status)) {
             case "edit":
@@ -152,7 +157,7 @@ public class EventDetails extends AppCompatActivity {
                     drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                 }
                 editButton.setVisibility(View.VISIBLE);
-
+                sendNotificationButton.setVisibility(View.VISIBLE);
                 break;
             case "confirmed":
                 enterLotteryButton.setEnabled(false);
@@ -195,6 +200,102 @@ public class EventDetails extends AppCompatActivity {
             intent2.putExtra("eventId", eventId);
             intent2.putExtra("status", status);
             startActivity(intent2);
+        });
+
+        sendNotificationButton.setOnClickListener(v -> {
+            // Create an AlertDialog with an EditText for notification input
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+            builder.setTitle("Send Notification");
+
+            // Inflate a custom layout with an EditText
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_send_notification, null);
+            EditText notificationEditText = dialogView.findViewById(R.id.notification_message_input);
+            Button cancelButton = dialogView.findViewById(R.id.cancel_notification_button);
+            Button sendButton = dialogView.findViewById(R.id.send_notification_button);
+            // Get the selected radio button
+            RadioGroup userSelectionGroup = dialogView.findViewById(R.id.user_selection_group);
+            String text = "";
+            // Create the dialog but don't show it yet
+            AlertDialog dialog = builder.create();
+            dialog.setView(dialogView);
+
+            // Cancel button listener
+            cancelButton.setOnClickListener(cancelView -> dialog.dismiss());
+
+            // Send button listener
+            sendButton.setOnClickListener(sendView -> {
+                String message = notificationEditText.getText().toString().trim();
+
+                if (!message.isEmpty()) {
+                    // Retrieve the current selected RadioButton ID dynamically
+                    int selectedRadioButtonId = userSelectionGroup.getCheckedRadioButtonId();
+                    String toastText; // Declare the toast text variable
+
+                    if (selectedRadioButtonId == R.id.radio_confirmed_users) {
+                        toastText = "Notification sent to confirmed participants";
+                    } else if (selectedRadioButtonId == R.id.radio_all_users) {
+                        toastText = "Notification sent to all users";
+                    } else {
+                        Toast.makeText(EventDetails.this, "Please select a user group", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    db.collection("events").document(eventId).collection("participants").get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    List<DocumentSnapshot> participants = task.getResult().getDocuments();
+
+                                    for (DocumentSnapshot participant : participants) {
+                                        String participantId = participant.getId();
+
+                                        // Fetch user details to get device token
+                                        db.collection("users").document(participantId).get()
+                                                .addOnCompleteListener(userTask -> {
+                                                    if (userTask.isSuccessful()) {
+                                                        DocumentSnapshot userDoc = userTask.getResult();
+                                                        if (userDoc.exists()) {
+                                                            String userToken = userDoc.getString("deviceToken");
+
+                                                            // Prepare notification data
+                                                            HashMap<String, String> notificationData = new HashMap<>();
+                                                            if (selectedRadioButtonId == R.id.radio_confirmed_users) {
+                                                                notificationData.put("eventID", eventId + "confirmed");
+                                                            } else if (selectedRadioButtonId == R.id.radio_all_users) {
+                                                                notificationData.put("eventID", eventId);
+                                                            }
+                                                            notificationData.put("title", "You have a notification from event " + name + "!");
+                                                            notificationData.put("msg", message);
+
+                                                            // Store notification in Firestore
+                                                            if (userToken != null) {
+                                                                db.collection("notifications").document(userToken).set(notificationData);
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                    }
+
+                                    // Show success toast and dismiss dialog
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(EventDetails.this, toastText, Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    });
+                                } else {
+                                    // Handle error
+                                    runOnUiThread(() -> {
+                                        Toast.makeText(EventDetails.this, "Failed to send notification", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    });
+                                }
+                            });
+                } else {
+                    Toast.makeText(EventDetails.this, "Please enter a notification message", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+            // Show the dialog
+            dialog.show();
         });
 
         enterLotteryButton.setOnClickListener(v -> {
