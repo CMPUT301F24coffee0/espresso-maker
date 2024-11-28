@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/scan"
-        android:icon="@drawable/scan"
+        android:icon="@drawable/scan_cam"
         android:title="Scan QR" />
 
     <item

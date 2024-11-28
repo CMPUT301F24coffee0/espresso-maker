@@ -10,18 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-        <!-- Close Button -->
-        <ImageView
-            android:id="@+id/close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="Close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
-        <!-- Page Title -->
+         <!-- Page Title -->
         <TextView
             android:id="@+id/page_name"
             android:layout_width="wrap_content"
@@ -36,6 +25,22 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Close Button -->
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Close"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/page_name"
+            app:layout_constraintHorizontal_bias="0.139"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.022" />
+
         <!-- Input Fields Layout -->
         <LinearLayout
             android:id="@+id/input_fields_container"
@@ -97,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:src="@drawable/espresso_app_cal_icon"
+                    android:src="@drawable/calendar_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
             <!-- Choose Time Field with Clock Icon -->
@@ -126,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="Clock Icon"
                     android:padding="16dp"
-                    tools:srcCompat="@android:drawable/ic_menu_today" />
+                    tools:srcCompat="@drawable/clock_icon" />
             </LinearLayout>
             <!-- Waiting List Capacity Field -->
             <EditText
@@ -165,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:src="@drawable/espresso_app_cal_icon"
+                    android:src="@drawable/calendar_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
 

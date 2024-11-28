@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Attendee.AttendeeMyEvent"
-    android:id="@+id/attendee_my_event">
+    android:id="@+id/attendee_my_event"
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.Espresso.AppBarOverlay">
+        android:theme="@style/Theme.Espresso.AppBarOverlay"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/title"
@@ -22,24 +24,30 @@
             android:textAlignment="viewStart"
             android:textColor="@color/black"
             android:textSize="33sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:tabIndicatorColor="@color/lightBrown"
+            app:tabSelectedTextColor="@color/lightBrown"
+            android:background="@color/white">
+
             <com.google.android.material.tabs.TabItem
-                android:text="@string/tab_text_1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/tab_text_1" />
+
             <com.google.android.material.tabs.TabItem
-                android:text="@string/tab_text_2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/tab_text_2" />
+
             <com.google.android.material.tabs.TabItem
-                android:text="@string/tab_text_3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/tab_text_3" />
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -50,12 +58,11 @@
         android:layout_weight="1"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/veryLightBrown"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu_entrant" />
