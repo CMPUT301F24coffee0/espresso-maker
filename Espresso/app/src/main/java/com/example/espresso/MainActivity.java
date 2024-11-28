@@ -113,21 +113,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Create notification channel
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is not in the Support Library.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Event Update";
-            String description = "Updates about events";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("1", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system. You can't change the importance
-            // or other notification behaviors after this.
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+    // Check subscribed topic
+    public void checkSubscribedTopic(String eventId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(deviceID).collection("events").document(eventId);
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    if (document.getString("status").equals("confirmed")) {
+                        // Subscribe to the topic
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventId+"confirmed");
+                    }
+                }
+                else {
+                    Log.d("notification", "Document does not exist");
+                }
+            } else {
+                Log.d("notification", "get() failed with " + task.getException());
+        }});
     }
 
     public interface TokenCallback {
@@ -184,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTokenReceived(String token) {
                 if (token != null) {
                     Log.d("Token", "Received token: " + token);
-                    Toast.makeText(MainActivity.this, "Token: " + token, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Token: " + token, Toast.LENGTH_SHORT).show();
                     deviceToken = token;
                 } else {
                     Log.w("Token", "Failed to retrieve token.");
@@ -198,6 +202,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Reference to the user document in Firestore
         DocumentReference docRef = db.collection("users").document(deviceID);
+
+        // Fetch all events for the current user from Firestore and check if they are subscribed to the topic
+        docRef.collection("events").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            checkSubscribedTopic(document.getId());
+                        }
+                        } else {
+                        Log.d("events", "Error getting documents: ", task.getException());
+                    }
+                });
+
 
         // Check if the user already exists in Firestore
         docRef.get().addOnCompleteListener(task -> {
