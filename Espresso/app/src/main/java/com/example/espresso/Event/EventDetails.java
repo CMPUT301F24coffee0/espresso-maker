@@ -146,7 +146,7 @@ public class EventDetails extends AppCompatActivity {
         sendNotificationButton = findViewById(R.id.notification);
 
         switch (Objects.requireNonNull(status)) {
-            case "edit":
+            case "edit": // When user is organizer
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.GONE);
                 drawLotteryButton.setVisibility(View.VISIBLE);
@@ -159,26 +159,26 @@ public class EventDetails extends AppCompatActivity {
                 editButton.setVisibility(View.VISIBLE);
                 sendNotificationButton.setVisibility(View.VISIBLE);
                 break;
-            case "confirmed":
+            case "confirmed": // When user is confirmed attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Confirmed");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("green")));
                 break;
-            case "invited":
+            case "invited": // When user is invited attendee
                 acceptInviteButton.setVisibility(View.VISIBLE);
                 declineInviteButton.setVisibility(View.VISIBLE);
                 enterLotteryButton.setVisibility(View.GONE);
                 enterLotteryButton.setEnabled(false);
                 break;
-            case "pending":
+            case "pending": // When user is not confirmed attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Pending");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("yellow")));
                 withdrawButton.setVisibility(View.VISIBLE);
                 break;
-            case "declined":
+            case "declined": // When user is declined attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Declined");
                 enterLotteryButton.setTextColor(Color.WHITE);
