@@ -5,7 +5,8 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Attendee.AttendeeHomeActivity">
+    tools:context=".Attendee.AttendeeHomeActivity"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +18,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Theme.Espresso.AppBarOverlay">
+            android:theme="@style/Theme.Espresso.AppBarOverlay"
+            android:background="@color/white">
 
             <TextView
                 android:id="@+id/title"
@@ -37,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabIndicatorColor="@color/lightBrown"
-                app:tabSelectedTextColor="@color/lightBrown">
+                app:tabSelectedTextColor="@color/lightBrown"
+                android:background="@color/white">
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
