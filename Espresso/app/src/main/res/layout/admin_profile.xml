@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <!-- Admin AttendeeDashboard Title -->
     <TextView
@@ -12,7 +13,9 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:text="Profile"
-        android:textSize="34sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        android:textSize="40sp"
         android:textStyle="bold" />
 
 
@@ -81,14 +84,16 @@
         android:text="Sign out"
         android:textColorLink="#00B0FD" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView"
-        android:layout_width="43dp"
-        android:layout_height="45dp"
+        android:layout_width="65dp"
+        android:layout_height="56dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         app:srcCompat="@drawable/settings" />
 
 </RelativeLayout>
