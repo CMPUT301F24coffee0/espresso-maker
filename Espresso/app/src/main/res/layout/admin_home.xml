@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <!-- Admin AttendeeDashboard Title -->
+    <!-- Admin Dashboard Title -->
     <TextView
         android:id="@+id/admin_dashboard_title"
         android:layout_width="wrap_content"
@@ -12,7 +13,9 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:text="Admin Dashboard"
-        android:textSize="34sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        android:textSize="40sp"
         android:textStyle="bold" />
 
     <!-- Upcoming Events Header -->
@@ -24,21 +27,21 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:text="Upcoming Events"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black" />
 
     <!-- ListView for events -->
-
-    <!-- Bottom Navigation -->
     <ListView
         android:id="@+id/event_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="510dp"
         android:layout_below="@id/upcoming_events_header"
         android:layout_marginTop="8dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp" />
 
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -47,6 +50,6 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         app:itemTextColor="@color/black"
-        android:background="?android:attr/windowBackground" />
+        android:background="@color/veryLightBrown" />
 
 </RelativeLayout>
