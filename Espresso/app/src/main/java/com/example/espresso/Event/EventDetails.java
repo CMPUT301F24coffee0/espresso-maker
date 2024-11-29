@@ -92,7 +92,7 @@ public class EventDetails extends AppCompatActivity {
         int capacity = intent.getIntExtra("capacity", 0); // Default value is 0
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
-        String status = intent.getStringExtra("status");
+        String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
         boolean drawed = intent.getBooleanExtra("drawed", false);
 
         // Fetch poster from Firebase Storage
