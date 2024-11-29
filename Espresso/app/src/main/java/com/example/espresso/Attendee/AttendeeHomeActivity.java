@@ -32,13 +32,10 @@ public class AttendeeHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendee_home);
-
-        // Adjust padding for system bars (status bar, navigation bar)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.attendee_home_page), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+            return insets;});
 
         // Set up bottom navigation
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
@@ -57,24 +54,16 @@ public class AttendeeHomeActivity extends AppCompatActivity {
                 Fragment selectedFragment = null;
 
                 // Select fragment based on the item clicked in the bottom navigation
-                if (item.getItemId() == R.id.events) {
-                    selectedFragment = new AttendeeMyEvent();
-                } else if (item.getItemId() == R.id.scan) {
+                if (item.getItemId() == R.id.events) selectedFragment = new AttendeeMyEvent();
+                else if (item.getItemId() == R.id.scan) {
                     Log.d("BottomNav", "Scan clicked");
                     Intent intent = new Intent(this, ScanQR.class);
                     startActivity(intent);
-                } else if (item.getItemId() == R.id.profile) {
-                    selectedFragment = new AttendeeProfile();
-                } else if (item.getItemId() == R.id.home) {
-                    selectedFragment = new AttendeeHomeFragment();
                 }
-
-                // If a fragment is selected, load it
-                if (selectedFragment != null) {
-                    loadFragment(selectedFragment);
-                }
-                return true;
-            };
+                else if (item.getItemId() == R.id.profile) selectedFragment = new AttendeeProfile();
+                else if (item.getItemId() == R.id.home) selectedFragment = new AttendeeHomeFragment();
+                if (selectedFragment != null) loadFragment(selectedFragment);
+                return true;};
 
     /**
      * Loads the specified fragment into the container of the activity.
@@ -87,6 +76,4 @@ public class AttendeeHomeActivity extends AppCompatActivity {
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
-
-
 }

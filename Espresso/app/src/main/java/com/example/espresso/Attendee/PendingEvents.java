@@ -79,9 +79,7 @@ public class PendingEvents extends Fragment {
                             events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), false, status));
                             adapter.notifyDataSetChanged();
                         }
-                    } else {
-                        Log.d("Event", "Error getting documents: ", task.getException());
-                    }
+                    } else Log.d("Event", "Error getting documents: ", task.getException());
                 });
 
         // Set up the ListView and adapter to display events

@@ -37,7 +37,7 @@ import java.util.Map;
 public class ImageUploadFragment extends Fragment {
     private FirebaseFirestore db;
     private Button uploadButton;
-    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId;
+    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId, sample;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     Uri selectedImageUri;
     /**
@@ -71,6 +71,7 @@ public class ImageUploadFragment extends Fragment {
             registrationDeadline = getArguments().getString("registrationDeadline");
             waitingListCapacity = getArguments().getString("waitingListCapacity");
             documentId = getArguments().getString("documentId");
+            sample = getArguments().getString("sample");
         }
 
         ImageButton close = view.findViewById(R.id.go_back_button);
@@ -93,7 +94,6 @@ public class ImageUploadFragment extends Fragment {
                 Intent data = result.getData();
                 if (data != null && data.getData() != null) {
                     selectedImageUri = data.getData();
-
                 }
             }
         });
@@ -116,6 +116,7 @@ public class ImageUploadFragment extends Fragment {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
             Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
+
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
@@ -149,6 +150,7 @@ public class ImageUploadFragment extends Fragment {
         eventData.put("time", eventTime);
         eventData.put("deadline", registrationDeadline);
         eventData.put("capacity", Integer.parseInt(waitingListCapacity));
+        // eventData.put("sample", sample);
 
         TextView descriptionView = view.findViewById(R.id.description);
         if (descriptionView != null) {
