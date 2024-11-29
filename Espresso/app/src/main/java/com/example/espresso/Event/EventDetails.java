@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -387,7 +388,15 @@ public class EventDetails extends AppCompatActivity {
                                 // Check if the participant is in the invited list
                                 if (invitedParticipantIds.contains(participantId)) {
                                     // Update to "invited" and send invitation notification
-                                    db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "invited");
+                                    db.collection("events").document(eventId)
+                                            .collection("participants")
+                                            .get()
+                                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                        for (QueryDocumentSnapshot participantDoc : queryDocumentSnapshots) {
+                                                            String pID = participantDoc.getId();
+                                                            db.collection("users").document(pID).collection("events").document(eventId).update("status", "invited");
+                                                        }
+                                            });
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "invited")
@@ -402,7 +411,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     HashMap<String, String> map = new HashMap<>();
                                                                     map.put("eventID",eventId);
                                                                     map.put("title", "New update from event " + name + "!");
-                                                                    map.put("msg", "Congratulations " + username + "! You have been invited to the event!");
+                                                                    map.put("msg", "Congratulations! You have been invited to the event!");
                                                                     assert userToken != null;
                                                                     db.collection("notifications").document(userToken).set(map);
                                                                 }
