@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -91,7 +92,7 @@ public class EventDetails extends AppCompatActivity {
         int capacity = intent.getIntExtra("capacity", 0); // Default value is 0
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
-        String status = intent.getStringExtra("status");
+        String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
         boolean drawed = intent.getBooleanExtra("drawed", false);
 
         // Fetch poster from Firebase Storage
@@ -146,7 +147,7 @@ public class EventDetails extends AppCompatActivity {
         sendNotificationButton = findViewById(R.id.notification);
 
         switch (Objects.requireNonNull(status)) {
-            case "edit":
+            case "edit": // When user is organizer
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.GONE);
                 drawLotteryButton.setVisibility(View.VISIBLE);
@@ -159,26 +160,26 @@ public class EventDetails extends AppCompatActivity {
                 editButton.setVisibility(View.VISIBLE);
                 sendNotificationButton.setVisibility(View.VISIBLE);
                 break;
-            case "confirmed":
+            case "confirmed": // When user is confirmed attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Confirmed");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("green")));
                 break;
-            case "invited":
+            case "invited": // When user is invited attendee
                 acceptInviteButton.setVisibility(View.VISIBLE);
                 declineInviteButton.setVisibility(View.VISIBLE);
                 enterLotteryButton.setVisibility(View.GONE);
                 enterLotteryButton.setEnabled(false);
                 break;
-            case "pending":
+            case "pending": // When user is not confirmed attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Pending");
                 enterLotteryButton.setTextColor(Color.BLACK);
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("yellow")));
                 withdrawButton.setVisibility(View.VISIBLE);
                 break;
-            case "declined":
+            case "declined": // When user is declined attendee
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setText("Declined");
                 enterLotteryButton.setTextColor(Color.WHITE);
@@ -387,7 +388,15 @@ public class EventDetails extends AppCompatActivity {
                                 // Check if the participant is in the invited list
                                 if (invitedParticipantIds.contains(participantId)) {
                                     // Update to "invited" and send invitation notification
-                                    db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "invited");
+                                    db.collection("events").document(eventId)
+                                            .collection("participants")
+                                            .get()
+                                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                        for (QueryDocumentSnapshot participantDoc : queryDocumentSnapshots) {
+                                                            String pID = participantDoc.getId();
+                                                            db.collection("users").document(pID).collection("events").document(eventId).update("status", "invited");
+                                                        }
+                                            });
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "invited")
@@ -402,7 +411,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     HashMap<String, String> map = new HashMap<>();
                                                                     map.put("eventId",eventId);
                                                                     map.put("title", "New update from event " + name + "!");
-                                                                    map.put("msg", "Congratulations " + username + "! You have been invited to the event!");
+                                                                    map.put("msg", "Congratulations! You have been invited to the event!");
                                                                     assert userToken != null;
                                                                     db.collection("notifications").document(userToken).set(map);
                                                                 }

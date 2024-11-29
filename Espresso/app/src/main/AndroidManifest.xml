@@ -9,7 +9,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -28,7 +27,8 @@
         tools:targetApi="31">
         <activity
             android:name=".Attendee.AttendeeHomeFragment"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".Attendee.ScanQR"
             android:exported="false" />
@@ -55,17 +55,18 @@
             android:name=".Attendee.AttendeeMyEvent"
             android:exported="false"
             android:label="@string/title_activity_attendee_my_event"
-            android:theme="@style/Theme.Espresso.NoActionBar" />
+            android:theme="@style/Theme.Espresso.NoActionBar"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".Event.EventDetails"
             android:exported="false" />
         <activity
             android:name=".Attendee.AttendeeProfile"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".Event.EventItem"
             android:exported="true" />
-
         <service
             android:name=".ReceivingNotifications"
             android:exported="false">
@@ -74,5 +75,6 @@
             </intent-filter>
         </service>
     </application>
+
 
 </manifest>
