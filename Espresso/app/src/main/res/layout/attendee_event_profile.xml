@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!-- Event Details Page -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
-    <!-- Go Back button in the top left corner -->
+
+    <!-- Go Back button -->
     <ImageButton
         android:id="@+id/go_back_button"
         android:layout_width="wrap_content"
@@ -20,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <!-- Share button in the top right corner -->
+    <!-- Share button -->
     <ImageButton
         android:id="@+id/share_button"
         android:layout_width="wrap_content"
@@ -33,6 +35,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- Edit button -->
     <ImageButton
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
@@ -58,12 +61,14 @@
         android:paddingHorizontal="20dp"
         android:orientation="vertical">
 
+        <!-- Event Poster -->
         <ImageView
             android:id="@+id/attendee_event_profile_banner_img"
             android:layout_width="match_parent"
             android:layout_height="218dp"
             app:srcCompat="@drawable/ic_launcher_background" />
 
+        <!-- Event Title/Name -->
         <TextView
             android:id="@+id/attendee_event_profile_title"
             android:layout_width="match_parent"
@@ -73,6 +78,7 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
+        <!-- Event Details (date, capacity, etc)-->
         <TextView
             android:id="@+id/attendee_event_profile_date"
             android:layout_width="match_parent"
@@ -133,7 +139,7 @@
 
         </LinearLayout>
 
-        <!-- Registation dates -->
+        <!-- Registration dates -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
