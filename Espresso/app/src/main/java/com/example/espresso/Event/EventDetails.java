@@ -260,9 +260,9 @@ public class EventDetails extends AppCompatActivity {
                                                             // Prepare notification data
                                                             HashMap<String, String> notificationData = new HashMap<>();
                                                             if (selectedRadioButtonId == R.id.radio_confirmed_users) {
-                                                                notificationData.put("eventID", eventId + "confirmed");
+                                                                notificationData.put("eventId", eventId + "confirmed");
                                                             } else if (selectedRadioButtonId == R.id.radio_all_users) {
-                                                                notificationData.put("eventID", eventId);
+                                                                notificationData.put("eventId", eventId);
                                                             }
                                                             notificationData.put("title", "You have a notification from event " + name + "!");
                                                             notificationData.put("msg", message);
@@ -409,7 +409,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String username = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId);
+                                                                    map.put("eventId",eventId);
                                                                     map.put("title", "New update from event " + name + "!");
                                                                     map.put("msg", "Congratulations! You have been invited to the event!");
                                                                     assert userToken != null;
