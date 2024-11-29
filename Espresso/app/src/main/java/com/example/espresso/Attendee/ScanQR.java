@@ -1,5 +1,7 @@
 package com.example.espresso.Attendee;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -95,42 +98,85 @@ public class ScanQR extends AppCompatActivity {
              */
             @Override
             public void barcodeResult(BarcodeResult result) {
-                // Handle the scanned QR code data
                 String qrCodeData = result.getText();
-                if (qrCodeData != null) {
-                    Toast.makeText(ScanQR.this, "Scanned: " + qrCodeData, Toast.LENGTH_LONG).show();
 
-                    // Fetch event details from Firestore using the QR code data
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("events").document(qrCodeData).get().addOnSuccessListener(documentSnapshot -> {
-                        Map<String, Object> eventData = documentSnapshot.getData();
-                        if (eventData != null) {
-                            name = (String) eventData.get("name");
-                            date = (String) eventData.get("date");
-                            time = (String) eventData.get("time");
-                            location = (String) eventData.get("location");
-                            description = (String) eventData.get("description");
-                            deadline = (String) eventData.get("deadline");
-                            capacity = ((Long) Objects.requireNonNull(eventData.get("capacity"))).intValue();
-                        }
-                    });
+                // Log the scanned QR code data
+                Log.d(TAG, "Raw QR Code Data: " + qrCodeData);
 
-                    // Pass the event details to the EventDetails activity
-                    Intent intent = new Intent(ScanQR.this, EventDetails.class);
-                    intent.putExtra("eventID", qrCodeData);
-                    intent.putExtra("name", name);
-                    intent.putExtra("date", date);
-                    intent.putExtra("time", time);
-                    intent.putExtra("location", location);
-                    intent.putExtra("description", description);
-                    intent.putExtra("deadline", deadline);
-                    intent.putExtra("capacity", capacity);
-                    startActivity(intent);
-
-                    // Stop further scans once the result is processed
-                    barcodeView.pause();
+                if (qrCodeData == null || qrCodeData.isEmpty()) {
+                    Log.e(TAG, "QR Code Data is null or empty");
+                    Toast.makeText(ScanQR.this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                // Fetch event details from Firestore using the QR code data as the document ID
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("events").document(qrCodeData).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                Map<String, Object> eventData = documentSnapshot.getData();
+
+                                if (eventData != null) {
+                                    // Extract event details safely
+                                    name = (String) eventData.get("name");
+                                    date = (String) eventData.get("date");
+                                    time = (String) eventData.get("time");
+                                    location = (String) eventData.get("location");
+                                    description = (String) eventData.get("description");
+                                    deadline = (String) eventData.get("deadline");
+
+                                    Object capacityObj = eventData.get("capacity");
+                                    if (capacityObj instanceof Long) {
+                                        capacity = ((Long) capacityObj).intValue();
+                                    } else {
+                                        capacity = 0;  // Default value if invalid
+                                    }
+
+                                    // Logging extracted event details
+                                    Log.d(TAG, "Extracted Event Details: " +
+                                            "Name=" + name + ", Date=" + date +
+                                            ", Time=" + time + ", Location=" + location +
+                                            ", Capacity=" + capacity);
+
+                                    // Check essential fields
+                                    if (name == null || date == null || time == null || location == null) {
+                                        Log.e(TAG, "Missing essential event details");
+                                        Toast.makeText(ScanQR.this, "Event details are incomplete", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    // Pass the event details to the EventDetails activity
+                                    Intent intent = new Intent(ScanQR.this, EventDetails.class);
+                                    intent.putExtra("eventId", qrCodeData);  // Ensure this value is passed
+                                    intent.putExtra("name", name);
+                                    intent.putExtra("date", date);
+                                    intent.putExtra("time", time);
+                                    intent.putExtra("location", location);
+                                    intent.putExtra("description", description);
+                                    intent.putExtra("deadline", deadline);
+                                    intent.putExtra("capacity", capacity);
+                                    intent.putExtra("status", "view");
+
+                                    Log.d(TAG, "Launching EventDetails with eventID: " + qrCodeData);
+                                    startActivity(intent);
+
+                                    // Stop scanning further
+                                    barcodeView.pause();
+                                } else {
+                                    Log.e(TAG, "Event data is null");
+                                    Toast.makeText(ScanQR.this, "Unable to retrieve event data", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Log.e(TAG, "Event not found for QR code: " + qrCodeData);
+                                Toast.makeText(ScanQR.this, "Event not found", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "Failed to fetch event document", e);
+                            Toast.makeText(ScanQR.this, "Failed to retrieve event details", Toast.LENGTH_SHORT).show();
+                        });
             }
+
 
             /**
              * Called to handle possible result points (optional for debugging or enhancement purposes).
