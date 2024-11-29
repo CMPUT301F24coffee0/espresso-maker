@@ -30,6 +30,7 @@ import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -511,6 +513,60 @@ public class EventDetails extends AppCompatActivity {
         // Go back button
         ImageButton goBackBtn = findViewById(R.id.go_back_button);
         goBackBtn.setOnClickListener(v -> finish());
+
+        ImageView participants = findViewById(R.id.attendee_event_profile_capacity_img);
+
+        participants.setOnClickListener(v -> {
+            db.collection("events")
+                    .document(eventId)
+                    .collection("participants")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<String> p = new ArrayList<>();
+                            List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                String docId = document.getId();
+                                Log.d("user: ", docId);
+
+                                // Fetch the participant details and keep track of the tasks
+                                tasks.add(db.collection("users").document(docId).get());
+                            }
+
+                            // Wait for all tasks to complete
+                            Tasks.whenAllComplete(tasks).addOnCompleteListener(allTasks -> {
+                                for (Task<?> singleTask : allTasks.getResult()) {
+                                    if (singleTask.isSuccessful()) {
+                                        DocumentSnapshot userDoc = (DocumentSnapshot) singleTask.getResult();
+                                        String participantName = (String) userDoc.get("name");
+                                        if (participantName != null) {
+                                            p.add(participantName);
+                                        }
+                                    }
+                                }
+
+                                // Build and display the dialog
+                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                builder.setTitle("Participants");
+
+                                if (p.isEmpty()) {
+                                    builder.setMessage("No participants yet.");
+                                } else {
+                                    StringBuilder participantList = new StringBuilder();
+                                    for (String participant : p) {
+                                        participantList.append(participant).append("\n");
+                                    }
+                                    builder.setMessage(participantList.toString());
+                                }
+
+                                builder.setPositiveButton("Go back", (dialog, which) -> dialog.dismiss());
+                                builder.show();
+                            });
+                        }
+                    });
+        });
+
     }
 
 }
