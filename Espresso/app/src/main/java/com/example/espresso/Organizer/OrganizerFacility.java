@@ -96,17 +96,15 @@ public class OrganizerFacility extends Fragment {
     }
 
     private void addFacilityToDatabase(String facilityName) {
-        // Create facility data
+        String facilityId = facilityName + "#" + deviceID;
         Map<String, Object> facilityData = new HashMap<>();
         facilityData.put("name", facilityName);
 
-        // Add facility to Firestore under the current user's deviceID
-        db.collection("users").document(deviceID).collection("facilities")
-                .add(facilityData)
-                .addOnSuccessListener(documentReference -> {
-                    // Update list view to show the new facility
+        db.collection("users").document(deviceID).collection("facilities").document(facilityId)
+                .set(facilityData)
+                .addOnSuccessListener(aVoid -> {
                     facilityNames.add(facilityName);
-                    facilityIds.add(documentReference.getId()); // Store the new document ID
+                    facilityIds.add(facilityId);
                     facilityAdapter.notifyDataSetChanged();
                     Toast.makeText(requireContext(), "Facility added successfully", Toast.LENGTH_SHORT).show();
                 })
@@ -115,6 +113,7 @@ public class OrganizerFacility extends Fragment {
                     Log.e("OrganizerFacility", "Error adding facility", e);
                 });
     }
+
 
     private void showDeleteConfirmationDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

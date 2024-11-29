@@ -50,6 +50,10 @@ public class AttendeeProfile extends Fragment {
     StorageReference pfpsRef;
     View view;
 
+    EditText name_text;
+    EditText email_text;
+    EditText phone_number_text;
+
     private static final int GALLERY_REQUEST_CODE = 101;  // Request code for gallery
     private ImageButton profilePicButton;
     /**
@@ -70,7 +74,6 @@ public class AttendeeProfile extends Fragment {
         }
 
         initial = view.findViewById(R.id.initial);
-
 
         String path = "pfps/"+deviceID+".png";
         pfpsRef = storageRef.child(path);
@@ -105,9 +108,7 @@ public class AttendeeProfile extends Fragment {
             pfpsRef.delete().addOnSuccessListener(aVoid -> {
                 Toast.makeText(requireContext(), "Profile picture removed successfully.", Toast.LENGTH_SHORT).show();
                 initial.setVisibility(View.VISIBLE);
-            }).addOnFailureListener(e -> {
-                Toast.makeText(requireContext(), "You can't remove this profile picture.", Toast.LENGTH_SHORT).show();
-            });
+            }).addOnFailureListener(e -> Toast.makeText(requireContext(), "You can't remove this profile picture.", Toast.LENGTH_SHORT).show());
         });
 
         //Fetching data from Firebase
@@ -131,7 +132,6 @@ public class AttendeeProfile extends Fragment {
                 ((TextView) view.findViewById(R.id.name)).setText(name);
                 ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", email));
                 ((TextView) view.findViewById(R.id.phoneNumber)).setText(String.format("Phone Number: %s", phone));
-                ((TextView) view.findViewById(R.id.role)).setText(String.format("Role: %s", type));
             } else {
                 Log.d("user", "No such document");
             }
@@ -148,39 +148,53 @@ public class AttendeeProfile extends Fragment {
                     View dialogView = inflater2.inflate(R.layout.edit_profile_dialog, null);
                     builder.setView(dialogView);
 
-                    EditText name_text = dialogView.findViewById(R.id.edit_name);
-                    EditText email_text = dialogView.findViewById(R.id.edit_email);
-                    EditText phone_number_text = dialogView.findViewById(R.id.edit_phone_number);
+                    name_text = dialogView.findViewById(R.id.edit_name);
+                    email_text = dialogView.findViewById(R.id.edit_email);
+                    phone_number_text = dialogView.findViewById(R.id.edit_phone_number);
 
                     name_text.setText(name);
                     email_text.setText(email);
                     phone_number_text.setText(phone);
 
-                    builder.setPositiveButton("Save", (dialog, id) -> {
-                        String newName = name_text.getText().toString();
-                        String newEmail = email_text.getText().toString();
-                        String newPhone = phone_number_text.getText().toString();
-
-                        Map<String, Object> updates = new HashMap<>();
-                        updates.put("name", newName);
-                        updates.put("email", newEmail);
-                        updates.put("phone", newPhone);
-
-                        docRef.update(updates)
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("user", "DocumentSnapshot successfully updated!");
-
-                                    ((TextView) view.findViewById(R.id.name)).setText(newName);
-                                    ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", newEmail));
-                                    ((TextView) view.findViewById(R.id.phoneNumber)).setText(String.format("Phone Number: %s", newPhone));
-                                    ((TextView) view.findViewById(R.id.role)).setText(String.format("Role: %s", type));
-                                })
-                                .addOnFailureListener(e -> Log.w("user", "Error updating document", e));
-                    });
-
+                    builder.setPositiveButton("Save", null);
                     builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
 
                     AlertDialog dialog = builder.create();
+                    dialog.setOnShowListener(dialogInterface -> {
+                        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(v1 -> {
+                            name_text.setError(null);
+                            email_text.setError(null);
+                            phone_number_text.setError(null);
+
+                            String newName = name_text.getText().toString().trim();
+                            String newEmail = email_text.getText().toString().trim();
+                            String newPhone = phone_number_text.getText().toString().trim();
+
+                            if (validateFields(newName, newEmail, newPhone)) {
+                                Map<String, Object> updates = new HashMap<>();
+                                updates.put("name", newName);
+                                updates.put("email", newEmail);
+                                updates.put("phone", newPhone);
+
+                                docRef.update(updates)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("user", "DocumentSnapshot successfully updated!");
+
+                                            ((TextView) view.findViewById(R.id.name)).setText(newName);
+                                            ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", newEmail));
+                                            ((TextView) view.findViewById(R.id.phoneNumber)).setText(String.format("Phone Number: %s", newPhone));
+
+                                            dialog.dismiss();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.w("user", "Error updating document", e);
+                                            Toast.makeText(requireContext(), "Failed to update profile", Toast.LENGTH_SHORT).show();
+                                        });
+                            }
+                        });
+                    });
+
                     dialog.show();
                 }
         );
@@ -195,6 +209,31 @@ public class AttendeeProfile extends Fragment {
 
         return view;
     }
+
+    private boolean validateFields(String newName, String newEmail, String newPhone) {
+        if (newName.isEmpty()) {
+            name_text.setError("Name must be non-empty");
+            return false;
+        }
+        if (newEmail.isEmpty()) {
+            email_text.setError("Email must be non-empty");
+            return false;
+        }
+        if (!newEmail.matches("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            email_text.setError("Enter a valid email");
+            return false;
+        }
+        if (newPhone.isEmpty())  {
+            phone_number_text.setError("Phone number must be non-empty");
+            return false;
+        }
+        if (!android.text.TextUtils.isDigitsOnly(newPhone)) {
+            phone_number_text.setError("Phone number should be numeric");
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Opens the image gallery for selecting a profile picture.
      *
@@ -246,9 +285,7 @@ public class AttendeeProfile extends Fragment {
                     Log.e("user", "Error opening InputStream", e);
                     Toast.makeText(requireContext(), "Error opening image", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Log.e("user", "Selected image URI is null.");
-            }
+            } else Log.e("user", "Selected image URI is null.");
         }
     }
 

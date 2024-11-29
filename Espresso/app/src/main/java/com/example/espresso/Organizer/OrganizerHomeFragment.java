@@ -120,49 +120,6 @@ public class OrganizerHomeFragment extends Fragment {
 
         });
 
-        listView.setOnItemLongClickListener((parent, view1, position, id) -> {
-            Event clickedEvent = events.get(position);
-            String eventId = clickedEvent.getId();
-
-            db.collection("events")
-                    .document(eventId)
-                    .collection("participants")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            List<String> participants = new ArrayList<>();
-                            for (DocumentSnapshot document : task.getResult()) {
-                                String participantName = document.getString("name");
-                                if (participantName != null) {
-                                    participants.add(participantName);
-                                } else {
-                                    participants.add(document.getId()); // Use document ID if name is missing
-                                }
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                            builder.setTitle("Participants");
-
-                            if (participants.isEmpty()) {
-                                builder.setMessage("No participants yet.");
-                            } else {
-                                StringBuilder participantList = new StringBuilder();
-                                for (String participant : participants) {
-                                    participantList.append(participant).append("\n");
-                                }
-                                builder.setMessage(participantList.toString());
-                            }
-
-                            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-                            builder.show();
-                        } else {
-                            Log.d("Participants", "Error getting participants: ", task.getException());
-                        }
-                    });
-
-            return true;
-        });
-
         return view;
     }
 }

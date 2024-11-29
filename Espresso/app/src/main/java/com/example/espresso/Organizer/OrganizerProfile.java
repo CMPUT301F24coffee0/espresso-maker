@@ -1,6 +1,7 @@
 package com.example.espresso.Organizer;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,9 @@ public class OrganizerProfile extends Fragment {
     private String name, email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+    EditText name_text;
+    EditText email_text;
     /**
      * Called to inflate the fragment's layout and initialize UI components.
      * This method retrieves the organizer's profile data from Firestore, displays it,
@@ -105,8 +109,8 @@ public class OrganizerProfile extends Fragment {
             View dialogView = d.inflate(R.layout.edit_profile_dialog, null);
             builder.setView(dialogView);
 
-            EditText name_text = dialogView.findViewById(R.id.edit_name);
-            EditText email_text = dialogView.findViewById(R.id.edit_email);
+            name_text = dialogView.findViewById(R.id.edit_name);
+            email_text = dialogView.findViewById(R.id.edit_email);
             dialogView.findViewById(R.id.edit_phone_number);
 
             // Pre-fill the dialog fields with current profile data
@@ -116,32 +120,62 @@ public class OrganizerProfile extends Fragment {
             // Hide the phone number field as it's not being edited
             dialogView.findViewById(R.id.edit_phone_number).setVisibility(View.GONE);
 
-            builder.setPositiveButton("Save", (dialog, id) -> {
-                String newName = name_text.getText().toString();
-                String newEmail = email_text.getText().toString();
-
-                // Prepare the updated data for Firestore
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("name", newName);
-                updates.put("email", newEmail);
-
-                // Update the Firestore document with the new values
-                docRef.update(updates)
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d("user", "DocumentSnapshot successfully updated!");
-                            // Update the UI with the new name and email
-                            ((TextView) view.findViewById(R.id.name)).setText(newName);
-                            ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", newEmail));
-                        })
-                        .addOnFailureListener(e -> Log.w("user", "Error updating document", e));
-            });
-
-            builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+            builder.setPositiveButton("Save", null); // Set to null initially
 
             AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialogInterface -> {
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(current_view -> {
+                    String newName = name_text.getText().toString().trim();
+                    String newEmail = email_text.getText().toString().trim();
+
+                    name_text.setError(null);
+                    email_text.setError(null);
+
+                    if (validateFields(newName, newEmail)) {
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("name", newName);
+                        updates.put("email", newEmail);
+
+                        docRef.update(updates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("user", "DocumentSnapshot successfully updated!");
+                                    ((TextView) view.findViewById(R.id.name)).setText(newName);
+                                    ((TextView) view.findViewById(R.id.email)).setText(String.format("Email: %s", newEmail));
+                                    dialog.dismiss();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w("user", "Error updating document", e);
+                                    AlertDialog errorDialog = new AlertDialog.Builder(getContext())
+                                            .setTitle("Update Failed")
+                                            .setMessage("Could not update profile. Please try again.")
+                                            .setPositiveButton("OK", null)
+                                            .create();
+                                    errorDialog.show();
+                                });
+                    }
+                });
+            });
+
             dialog.show();
         });
 
         return view;
+    }
+
+    private boolean validateFields(String newName, String newEmail) {
+        if (newName.isEmpty()) {
+            name_text.setError("Name must be non-empty");
+            return false;
+        }
+        if (newEmail.isEmpty()) {
+            email_text.setError("Email must be non-empty");
+            return false;
+        }
+        if (!newEmail.matches("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            email_text.setError("Enter a valid email");
+            return false;
+        }
+        return true;
     }
 }
