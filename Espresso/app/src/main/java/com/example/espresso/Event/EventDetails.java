@@ -1,6 +1,7 @@
 package com.example.espresso.Event;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -54,7 +55,7 @@ import java.util.Set;
  */
 public class EventDetails extends AppCompatActivity {
     Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, sendNotificationButton;
-    ImageButton editButton;
+    ImageButton editButton, notificationButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -80,6 +81,7 @@ public class EventDetails extends AppCompatActivity {
                 Intent intent = new Intent(EventDetails.this, AttendeeHomeActivity.class);
                 startActivity(intent);
             }
+
         });
 
         // Retrieve the extras
@@ -145,11 +147,43 @@ public class EventDetails extends AppCompatActivity {
         declineInviteButton = findViewById(R.id.decline_invite_button);
         editButton = findViewById(R.id.edit_button);
         sendNotificationButton = findViewById(R.id.notification);
+        notificationButton = findViewById(R.id.notification_button);
+
+        // Check if user wants to receive notifications
+        assert eventId != null;
+        db.collection("events").document(eventId)
+                .collection("participants").document(deviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            // Check if notif field exists and its value
+                            Boolean isNotificationEnabled = document.getBoolean("notif");
+
+                            // Update button icon based on notification status
+                            if (Boolean.TRUE.equals(isNotificationEnabled)) {
+                                notificationButton.setImageResource(R.drawable.ic_notif);
+                            } else {
+                                notificationButton.setImageResource(R.drawable.ic_notif_off);
+                            }
+                        } else {
+                            // Document doesn't exist, set default state
+                            notificationButton.setImageResource(R.drawable.ic_notif_off);
+                        }
+                    } else {
+                        // Error fetching document
+                        Log.e("Firestore", "Error getting document", task.getException());
+                        // Set default state on error
+                        notificationButton.setImageResource(R.drawable.ic_notif_off);
+                    }
+                });
 
         switch (Objects.requireNonNull(status)) {
             case "edit": // When user is organizer
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.GONE);
+                notificationButton.setVisibility(View.GONE);
                 drawLotteryButton.setVisibility(View.VISIBLE);
                 if (drawed) {
                     drawLotteryButton.setEnabled(false);
@@ -186,6 +220,64 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
                 break;
         }
+
+        notificationButton.setOnClickListener(v -> {
+            // Check current notification status
+            db.collection("events").document(eventId)
+                    .collection("participants").document(deviceID)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            boolean currentStatus = document != null &&
+                                    Boolean.TRUE.equals(document.getBoolean("notif"));
+
+                            // Toggle notification status
+                            boolean newStatus = !currentStatus;
+
+                            // Prepare update
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("notif", newStatus);
+
+                            // Update Firestore
+                            db.collection("events").document(eventId)
+                                    .collection("participants").document(deviceID)
+                                    .set(updates, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> {
+                                        // Update successful
+                                        if (newStatus) {
+                                            // Subscribe to topic
+                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                    .addOnCompleteListener(subscribeTask -> {
+                                                        if (subscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications enabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        } else {
+                                            // Unsubscribe from topic
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(eventId)
+                                                    .addOnCompleteListener(unsubscribeTask -> {
+                                                        if (unsubscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif_off);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications disabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Update failed
+                                        Toast.makeText(EventDetails.this,
+                                                "Failed to update notification settings",
+                                                Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    });
+        });
 
         editButton.setOnClickListener(v -> {
             // Edit the event
@@ -306,6 +398,70 @@ public class EventDetails extends AppCompatActivity {
             db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "pending"))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            // Pop-up ask for notification permission
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+                            builder.setTitle("Receive Notifications")
+                                    .setMessage("Do you want to receive notifications for this event?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // User clicked Yes
+                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            String msg = "Notification enabled";
+                                                            if (!task.isSuccessful()) {
+                                                                msg = "Subscribe failed";
+                                                            } else {
+                                                                Map<String, Object> notificationData = new HashMap<>();
+                                                                notificationData.put("notif", true);
+
+                                                                db.collection("events").document(eventId)
+                                                                        .collection("participants").document(deviceID)
+                                                                        .set(notificationData, SetOptions.merge())
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    Log.d("notif", "Notification field added successfully");
+                                                                                } else {
+                                                                                    Log.e("notif", "Failed to add notification field", task.getException());
+                                                                                }
+                                                                            }
+                                                                        });
+                                                            }
+                                                            Log.d("msg", msg);
+                                                            Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // User clicked No
+                                            Map<String, Object> notificationData = new HashMap<>();
+                                            notificationData.put("notif", false);
+
+                                            db.collection("events").document(eventId)
+                                                    .collection("participants").document(deviceID)
+                                                    .set(notificationData, SetOptions.merge())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("notif", "Notification field added successfully");
+                                                            } else {
+                                                                Log.e("notif", "Failed to add notification field", task.getException());
+                                                            }
+                                                        }
+                                                    });
+                                            Toast.makeText(EventDetails.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
                             // Lottery entered successfully
                             Log.d("Lottery", "Lottery entered successfully");
                             // Disable the button
@@ -313,19 +469,6 @@ public class EventDetails extends AppCompatActivity {
                             enterLotteryButton.setText("You have entered the lottery!");
                             enterLotteryButton.setTextColor(Color.WHITE);
                             enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-                            // Subscribed to notifications
-                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            String msg = "Subscribed";
-                                            if (!task.isSuccessful()) {
-                                                msg = "Subscribe failed";
-                                            }
-                                            Log.d("msg", msg);
-                                            Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
                         } else {
                             // Lottery entry failed
                             Log.d("Lottery", "Lottery entry failed");
