@@ -12,13 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Event.Event;
-import com.example.espresso.MainActivity;
+
+import com.example.espresso.Organizer.OrganizerHomeActivity;
 import com.example.espresso.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,6 +29,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * A fragment that handles the uploading of event images and related data to Firestore.
  * It retrieves event details from the arguments, allows the user to input event information,
@@ -40,6 +41,8 @@ public class ImageUploadFragment extends Fragment {
     private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     Uri selectedImageUri;
+    SwitchCompat geolocationSwitch;
+
     /**
      * Default constructor for the fragment.
      * Required for fragment instantiation. No implementation needed.
@@ -47,6 +50,7 @@ public class ImageUploadFragment extends Fragment {
     public ImageUploadFragment() {
         // Required empty public constructor
     }
+
     /**
      * Called to create the view for the fragment. This method inflates the layout,
      * retrieves event details passed through the fragment's arguments, and sets up
@@ -73,16 +77,7 @@ public class ImageUploadFragment extends Fragment {
             documentId = getArguments().getString("documentId");
         }
 
-        ImageButton close = view.findViewById(R.id.go_back_button);
-        close.setOnClickListener(v -> requireActivity().onBackPressed());
-
-        TextView exit = view.findViewById(R.id.exit_form_button);
-        exit.setOnClickListener(v -> {
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .remove(this)
-                        .commit();
-                requireActivity().finish();
-        });
+        geolocationSwitch = view.findViewById(R.id.geolocation_switch);
 
         uploadButton = view.findViewById(R.id.upload_poster_button);
         uploadButton.setOnClickListener(this::selectPoster);
@@ -93,7 +88,6 @@ public class ImageUploadFragment extends Fragment {
                 Intent data = result.getData();
                 if (data != null && data.getData() != null) {
                     selectedImageUri = data.getData();
-
                 }
             }
         });
@@ -115,7 +109,7 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
+            Event event = new Event(eventName, eventDate, eventTime, "", registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
@@ -133,13 +127,13 @@ public class ImageUploadFragment extends Fragment {
             Toast.makeText(getContext(), "Error opening image", Toast.LENGTH_SHORT).show();
         }
     }
+
     /**
      * Saves the event data to Firestore.
-     * This method creates a map of event details and either updates an existing event document
-     * or creates a new one in the Firestore database.
-     * After saving the event data, it navigates to the OrganizerHomeActivity.
+     * Handles the geolocation switch by setting the geolocation flag in the event data.
+     * If geolocation is enabled, an additional step to fetch geolocation information can be implemented here.
      *
-     * @param view The current fragment's view, used to retrieve additional UI input like description
+     * @param view The current fragment's view, used to retrieve additional UI input like description.
      */
     private void saveEventDataToFirestore(View view) {
         Map<String, Object> eventData = new HashMap<>();
@@ -156,10 +150,10 @@ public class ImageUploadFragment extends Fragment {
             eventData.put("description", descriptionText);
         }
 
-        SwitchCompat geolocationSwitch = view.findViewById(R.id.geolocation_switch);
-        if (geolocationSwitch != null) {
-            eventData.put("geolocation", geolocationSwitch.isChecked());
-        }
+        // Handle geolocation switch
+
+        eventData.put("geolocation", geolocationSwitch.isChecked());
+
 
         eventData.put("organizer", (new User(getContext())).getDeviceID());
         eventData.put("drawed", false);
