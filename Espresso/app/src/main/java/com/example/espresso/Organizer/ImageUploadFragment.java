@@ -38,7 +38,7 @@ import java.util.Map;
 public class ImageUploadFragment extends Fragment {
     private FirebaseFirestore db;
     private Button uploadButton;
-    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId;
+    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId, geo;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     Uri selectedImageUri;
     SwitchCompat geolocationSwitch;
@@ -66,6 +66,7 @@ public class ImageUploadFragment extends Fragment {
         View view = inflater.inflate(R.layout.event_image_upload, container, false);
 
         db = FirebaseFirestore.getInstance();
+        geolocationSwitch = view.findViewById(R.id.geolocation_switch);
 
         if (getArguments() != null) {
             eventName = getArguments().getString("eventName");
@@ -77,7 +78,7 @@ public class ImageUploadFragment extends Fragment {
             documentId = getArguments().getString("documentId");
         }
 
-        geolocationSwitch = view.findViewById(R.id.geolocation_switch);
+
 
         uploadButton = view.findViewById(R.id.upload_poster_button);
         uploadButton.setOnClickListener(this::selectPoster);
@@ -109,7 +110,7 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            Event event = new Event(eventName, eventDate, eventTime, "", registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
+            Event event = new Event(eventName, eventDate, eventTime, "", registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view", geolocationSwitch.isChecked());
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
@@ -175,7 +176,7 @@ public class ImageUploadFragment extends Fragment {
                         Integer.valueOf(waitingListCapacity),
                         new Facility(eventLocation),
                         false,
-                        "view").getId());
+                        "view", geolocationSwitch.isChecked()).getId());
 
         docRef.set(eventData)
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Event saved successfully", Toast.LENGTH_SHORT).show())

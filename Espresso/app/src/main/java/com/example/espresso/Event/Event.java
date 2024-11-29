@@ -19,6 +19,7 @@ public class Event {
     private int capacity;
     private boolean drawed;
     private String status;
+    private boolean geolocation;
 
 
     public static String hashWithSHA256(String text) throws NoSuchAlgorithmException {
@@ -38,7 +39,7 @@ public class Event {
      * Create a new event in a given facility.
      * @param facility  Facility the event takes place in.
      */
-    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed, String status) {
+    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed, String status, boolean geolocation) {
         String text = name + facility.getName() + time;
         try {
             id = hashWithSHA256(text);
@@ -54,6 +55,7 @@ public class Event {
         this.description = description;
         this.drawed = drawed;
         this.status = status;
+        this.geolocation = geolocation;
     }
 
     /**
@@ -128,6 +130,8 @@ public class Event {
     public interface OnUrlFetchedListener {
         void onUrlFetched(String url);
     }
+
+    public boolean getGeolocation() { return geolocation; }
 
     public void getUrl(OnUrlFetchedListener listener) {
         // Fetch image from Firebase Storage

@@ -67,8 +67,9 @@ public class ConfirmedEvents extends Fragment {
                             String description = (String) data.get("description");
                             String deadline = (String) data.get("deadline");
                             Object capacityObj = data.get("capacity");
+                            boolean geolocation = Boolean.TRUE.equals(data.get("geolocation"));
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), true, "confirmed"));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), true, "confirmed",geolocation ));
                         }
                         adapter.notifyDataSetChanged();
                     } else {

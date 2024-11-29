@@ -139,8 +139,9 @@ public class AttendeeHomeFragment extends Fragment {
         String deadline = doc.getString("deadline");
         int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
         boolean drawed = Boolean.TRUE.equals(doc.getBoolean("drawed"));
+        boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
 
-         events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, "view"));
+         events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, "view", geolocation));
     }
 
     /**
@@ -172,6 +173,7 @@ public class AttendeeHomeFragment extends Fragment {
         intent.putExtra("capacity", event.getCapacity());
         intent.putExtra("eventId", event.getId());
         intent.putExtra("status", "view");
+        intent.putExtra("geo", event.getGeolocation());
 
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);

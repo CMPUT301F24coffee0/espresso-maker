@@ -118,7 +118,7 @@ public class EventDetails extends AppCompatActivity {
             Log.e("Event", "Error getting download URL for poster", exception);
         });
 
-        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed);
+        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed + ", geolocation=" + geolocation);
 
         // Set the event details in the UI
         TextView nameTextView = findViewById(R.id.attendee_event_profile_title);
