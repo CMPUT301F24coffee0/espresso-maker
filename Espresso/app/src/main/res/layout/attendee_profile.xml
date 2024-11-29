@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <!-- Admin AttendeeDashboard Title -->
+    <!-- Attendee Profile Page -->
     <TextView
         android:id="@+id/admin_dashboard_title"
         android:layout_width="wrap_content"
@@ -12,10 +13,10 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:text="Profile"
-        android:textSize="34sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        android:textSize="40sp"
         android:textStyle="bold" />
-
-
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,14 +27,11 @@
         app:menu="@menu/bottom_nav_menu_entrant"
         app:labelVisibilityMode="labeled"
         app:itemTextColor="@color/black"
-        android:background="?android:attr/windowBackground" >
+        android:background="@color/veryLightBrown" >
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
+
     <!-- Remove Profile Picture Button -->
-
-    <!-- Image Button for Profile Picture -->
-
-
     <Button
         android:id="@+id/removeProfilePicButton"
         android:layout_width="100dp"
@@ -41,13 +39,14 @@
         android:layout_below="@+id/profilePicButton"
         android:layout_alignParentStart="true"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="13dp"
         android:backgroundTint="@android:color/darker_gray"
         android:contentDescription="Remove Profile Picture"
         android:text="Remove"
         android:textColor="@android:color/white"
         android:visibility="visible" />
 
+    <!-- Image Button for Profile Picture -->
     <ImageButton
         android:id="@+id/profilePicButton"
         android:layout_width="80dp"
@@ -55,7 +54,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="115dp"
         android:contentDescription="Select Profile Picture"
         android:background="?android:attr/windowBackground"
         android:padding="0dp"
@@ -69,12 +68,12 @@
         android:textSize="32sp"
         android:gravity="center"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="115dp"
         android:textColor="#000000"
         android:background="@drawable/circle_background"
-        android:visibility="visible"/>  <!-- Optional: set the text color -->
+        android:visibility="visible"/>
 
-
+    <!-- Attendee Profile details -->
     <TextView
         android:id="@+id/name"
         android:layout_width="279dp"
@@ -82,8 +81,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="106dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="136dp"
         android:text="Name"
+        android:textColor="@color/black"
         android:textSize="25sp" />
 
     <TextView
@@ -93,8 +93,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="212dp"
+        android:layout_marginTop="276dp"
         android:text="Email"
+        android:textColor="@color/black"
         android:textSize="20sp" />
 
     <TextView
@@ -104,8 +105,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="248dp"
+        android:layout_marginTop="312dp"
         android:text="Role:"
+        android:textColor="@color/black"
         android:textSize="20sp" />
 
     <TextView
@@ -115,10 +117,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="286dp"
+        android:layout_marginTop="350dp"
         android:text="Phone Number"
+        android:textColor="@color/black"
         android:textSize="20sp" />
 
+    <!-- Sign out button -->
     <Button
         android:id="@+id/button"
         android:layout_width="356dp"
@@ -126,10 +130,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="339dp"
+        android:layout_marginTop="403dp"
         android:text="Sign out"
+        android:backgroundTint="@color/lightBrown"
         android:textColorLink="#00B0FD" />
 
+    <!-- Edit profile button -->
     <ImageButton
         android:id="@+id/edit_profile_button"
         android:layout_width="65dp"
