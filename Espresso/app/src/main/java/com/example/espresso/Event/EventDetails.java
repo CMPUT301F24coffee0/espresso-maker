@@ -100,8 +100,9 @@ public class EventDetails extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
+
         boolean drawed = intent.getBooleanExtra("drawed", false);
-        boolean geolocation = intent.getBooleanExtra("geoLocation", false);
+        boolean geolocation = intent.getBooleanExtra("geo", false);
 
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
