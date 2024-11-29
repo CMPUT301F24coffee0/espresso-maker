@@ -25,14 +25,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
         <!-- Close Button -->
-        <ImageView
+        <ImageButton
             android:id="@+id/close_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="Close"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/page_name"
@@ -77,6 +79,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
+
             <!-- Choose Date Field with Calendar Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -105,6 +108,7 @@
                     android:src="@drawable/calendar_icon"
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
+
             <!-- Choose Time Field with Clock Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -133,6 +137,7 @@
                     android:padding="16dp"
                     tools:srcCompat="@drawable/clock_icon" />
             </LinearLayout>
+
             <!-- Waiting List Capacity Field -->
             <EditText
                 android:id="@+id/waiting_list_capacity"
@@ -145,6 +150,7 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/blueGrey"
                 android:textSize="16sp" />
+
             <!-- Open for Registration Until Field with Calendar Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,7 +180,21 @@
                     android:contentDescription="Calendar Icon" />
             </LinearLayout>
 
+            <!-- Attendee Sample Number Field -->
+            <EditText
+                android:id="@+id/attendee_sample_num"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/text_input_field_shape"
+                android:hint="Number of Attendees to Sample"
+                android:paddingHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/blueGrey"
+                android:textSize="16sp" />
+
         </LinearLayout>
+
         <!-- Next Button -->
         <Button
             android:id="@+id/next_button"
@@ -189,8 +209,9 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_fields_container"
-            app:layout_constraintVertical_bias="0.37" />
+            app:layout_constraintVertical_bias="0.589" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
