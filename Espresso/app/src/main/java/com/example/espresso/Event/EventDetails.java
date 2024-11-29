@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,13 +33,13 @@ import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
+
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -322,35 +322,28 @@ public class EventDetails extends AppCompatActivity {
                                     double latitude = userLocation.getLatitude();
                                     double longitude = userLocation.getLongitude();
 
-                                    // Update user document with location
-                                    db.collection("users").document(deviceID)
-                                            .update("latitude", latitude, "longitude", longitude)
-                                            .addOnCompleteListener(updateTask -> {
-                                                if (updateTask.isSuccessful()) {
-                                                    // Proceed with event sign-up
-                                                    db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
-                                                    db.collection("events").document(eventId).collection("participants").document(deviceID)
-                                                            .set(Map.of("status", "pending"))
-                                                            .addOnCompleteListener(task -> {
-                                                                if (task.isSuccessful()) {
-                                                                    // Success feedback
-                                                                    enterLotteryButton.setEnabled(false);
-                                                                    enterLotteryButton.setText("You have entered the lottery!");
-                                                                    enterLotteryButton.setTextColor(Color.WHITE);
-                                                                    enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                                    // Save location in the 'participants' sub-collection under the event document
+                                    db.collection("events").document(eventId).collection("participants").document(deviceID)
+                                            .set(Map.of(
+                                                    "latitude", latitude,
+                                                    "longitude", longitude
+                                            ))
+                                            .addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    // Success feedback
+                                                    enterLotteryButton.setEnabled(false);
+                                                    enterLotteryButton.setText("You have entered the lottery!");
+                                                    enterLotteryButton.setTextColor(Color.WHITE);
+                                                    enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
 
-                                                                    // Subscribe to notifications
-                                                                    FirebaseMessaging.getInstance().subscribeToTopic(eventId)
-                                                                            .addOnCompleteListener(subTask -> {
-                                                                                String msg = subTask.isSuccessful() ? "Subscribed" : "Subscribe failed";
-                                                                                Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
-                                                                            });
-                                                                } else {
-                                                                    Toast.makeText(this, "Failed to enter the lottery.", Toast.LENGTH_SHORT).show();
-                                                                }
+                                                    // Subscribe to notifications
+                                                    FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                            .addOnCompleteListener(subTask -> {
+                                                                String msg = subTask.isSuccessful() ? "Subscribed" : "Subscribe failed";
+                                                                Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
                                                             });
                                                 } else {
-                                                    Toast.makeText(this, "Failed to save location. Try again.", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(this, "Failed to enter the lottery.", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                 } else {
@@ -361,9 +354,11 @@ public class EventDetails extends AppCompatActivity {
                 }
             } else {
                 // Proceed without geolocation
-                db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
                 db.collection("events").document(eventId).collection("participants").document(deviceID)
-                        .set(Map.of("status", "pending"))
+                        .set(Map.of(
+                                "latitude", null,
+                                "longitude", null
+                        ))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 // Success feedback
@@ -384,6 +379,7 @@ public class EventDetails extends AppCompatActivity {
                         });
             }
         });
+
 
         withdrawButton.setOnClickListener(v -> {
             // User withdrew from the lottery
