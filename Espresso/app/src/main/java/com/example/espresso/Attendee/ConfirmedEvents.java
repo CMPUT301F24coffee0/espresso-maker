@@ -93,7 +93,7 @@ public class ConfirmedEvents extends Fragment {
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
 
-            Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
+            Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", eventId=" + eventId);
 
             // Start EventDetails activity with event information
             Intent intent = new Intent(requireActivity(), EventDetails.class);
