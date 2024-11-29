@@ -30,6 +30,7 @@ import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,7 +97,7 @@ public class EventDetails extends AppCompatActivity {
         boolean drawed = intent.getBooleanExtra("drawed", false);
 
         // Fetch poster from Firebase Storage
-        String path = "posters/"+eventId+".png";
+        String path = "posters/" + eventId + ".png";
         posterRef = storageRef.child(path);
         posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
             // Got the download URL for poster
@@ -400,7 +402,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String username = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId);
+                                                                    map.put("eventID", eventId);
                                                                     map.put("title", "New update from event " + name + "!");
                                                                     map.put("msg", "Congratulations " + username + "! You have been invited to the event!");
                                                                     assert userToken != null;
@@ -425,7 +427,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String eventName = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId);
+                                                                    map.put("eventID", eventId);
                                                                     map.put("title", eventName);
                                                                     map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
                                                                     assert userToken != null;
@@ -455,7 +457,7 @@ public class EventDetails extends AppCompatActivity {
             // Accept the invitation
             db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "confirmed");
             db.collection("events").document(eventId).collection("participants").document(deviceID).update("status", "confirmed")
-                    .addOnSuccessListener(aVoid ->{
+                    .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "You have accepted the invitation!", Toast.LENGTH_SHORT).show();
                         acceptInviteButton.setEnabled(false);
                     });
@@ -465,7 +467,7 @@ public class EventDetails extends AppCompatActivity {
             // Decline the invitation
             db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "declined");
             db.collection("events").document(eventId).collection("participants").document(deviceID).update("status", "declined")
-                    .addOnSuccessListener(aVoid ->{
+                    .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "You have declined the invitation!", Toast.LENGTH_SHORT).show();
                         declineInviteButton.setEnabled(false);
                     });
@@ -488,7 +490,7 @@ public class EventDetails extends AppCompatActivity {
 
             Button shareButton = dialogView.findViewById(R.id.share_qr_button);
             shareButton.setOnClickListener(v1 -> {
-                //Share qr code
+                // Share qr code
             });
 
             AlertDialog dialog = builder.create();
@@ -502,6 +504,57 @@ public class EventDetails extends AppCompatActivity {
         // Go back button
         ImageButton goBackBtn = findViewById(R.id.go_back_button);
         goBackBtn.setOnClickListener(v -> finish());
-    }
 
+        ImageView participants = findViewById(R.id.attendee_event_profile_capacity_img);
+
+        participants.setOnClickListener(v -> {
+            db.collection("events")
+                    .document(eventId)
+                    .collection("participants")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<String> p = new ArrayList<>();
+                            List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+                            for (DocumentSnapshot document : task.getResult()) {
+                                String docId = document.getId();
+                                Log.d("user: ", docId);
+
+                                // Fetch the participant details and keep track of the tasks
+                                tasks.add(db.collection("users").document(docId).get());
+                            }
+
+                            // Wait for all tasks to complete
+                            Tasks.whenAllComplete(tasks).addOnCompleteListener(allTasks -> {
+                                for (Task<?> singleTask : allTasks.getResult()) {
+                                    if (singleTask.isSuccessful()) {
+                                        DocumentSnapshot userDoc = (DocumentSnapshot) singleTask.getResult();
+                                        String participantName = (String) userDoc.get("name");
+                                        if (participantName != null) {
+                                            p.add(participantName);
+                                        }
+                                    }
+                                }
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                builder.setTitle("Participants");
+
+                                if (p.isEmpty()) {
+                                    builder.setMessage("No participants yet.");
+                                } else {
+                                    StringBuilder participantList = new StringBuilder();
+                                    for (String participant : p) {
+                                        participantList.append(participant).append("\n");
+                                    }
+                                    builder.setMessage(participantList.toString());
+                                }
+
+                                builder.setPositiveButton("Go back", (dialog, which) -> dialog.dismiss());
+                                builder.show();
+                            });
+                        }
+                    });
+        });
+    }
 }
