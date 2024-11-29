@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Event.Event;
+import com.example.espresso.MainActivity;
 import com.example.espresso.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,6 +73,16 @@ public class ImageUploadFragment extends Fragment {
             documentId = getArguments().getString("documentId");
         }
 
+        ImageButton close = view.findViewById(R.id.go_back_button);
+        close.setOnClickListener(v -> requireActivity().onBackPressed());
+
+        TextView exit = view.findViewById(R.id.exit_form_button);
+        exit.setOnClickListener(v -> {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .remove(this)
+                        .commit();
+                requireActivity().finish();
+        });
 
         uploadButton = view.findViewById(R.id.upload_poster_button);
         uploadButton.setOnClickListener(this::selectPoster);

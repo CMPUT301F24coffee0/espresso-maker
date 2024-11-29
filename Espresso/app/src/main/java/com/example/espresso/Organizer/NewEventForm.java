@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.content.Intent;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
@@ -77,6 +78,11 @@ public class NewEventForm extends AppCompatActivity {
 
         // Set up the 'next' button to navigate to the image upload fragment
         Button nextButton = findViewById(R.id.next_button);
+
+        ImageButton close = findViewById(R.id.close_button);
+
+        close.setOnClickListener(v -> finish());
+
         nextButton.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
 
