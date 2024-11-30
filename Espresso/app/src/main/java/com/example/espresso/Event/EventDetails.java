@@ -14,8 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -236,66 +239,71 @@ public class EventDetails extends AppCompatActivity {
             // Show map here
         });
 
-        notificationButton.setOnClickListener(v -> {
-            // Check current notification status
+        entrantButton.setOnClickListener(v -> {
+            // Create a dialog to show the list of entrants
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_entrant_list, null);
+
+            // Find the ListView and close button in the dialog layout
+            ListView entrantListView = dialogView.findViewById(R.id.entrant_list_view);
+            ImageButton closeButton = dialogView.findViewById(R.id.close_button1);
+
+            // Create the dialog
+            AlertDialog dialog = builder.create();
+            dialog.setView(dialogView);
+
+            // Fetch participants from Firestore
             db.collection("events").document(eventId)
-                    .collection("participants").document(deviceID)
+                    .collection("participants")
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            boolean currentStatus = document != null &&
-                                    Boolean.TRUE.equals(document.getBoolean("notif"));
+                            // Create a list to hold participant details
+                            List<Map<String, String>> participantDetailsList = new ArrayList<>();
 
-                            // Toggle notification status
-                            boolean newStatus = !currentStatus;
+                            // Process each participant document
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Get the participant's device ID
+                                String participantId = document.getId();
+                                String status1 = document.getString("status");
 
-                            // Prepare update
-                            Map<String, Object> updates = new HashMap<>();
-                            updates.put("notif", newStatus);
+                                // Fetch user details for each participant
+                                db.collection("users").document(participantId).get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists()) {
+                                                String name1 = userDoc.getString("name");
 
-                            // Update Firestore
-                            db.collection("events").document(eventId)
-                                    .collection("participants").document(deviceID)
-                                    .set(updates, SetOptions.merge())
-                                    .addOnSuccessListener(unused -> {
-                                        // Update successful
-                                        if (newStatus) {
-                                            // Subscribe to topic
-                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
-                                                    .addOnCompleteListener(subscribeTask -> {
-                                                        if (subscribeTask.isSuccessful()) {
-                                                            notificationButton.setImageResource(R.drawable.ic_notif);
-                                                            Toast.makeText(EventDetails.this,
-                                                                    "Notifications enabled",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        } else {
-                                            // Unsubscribe from topic
-                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(eventId)
-                                                    .addOnCompleteListener(unsubscribeTask -> {
-                                                        if (unsubscribeTask.isSuccessful()) {
-                                                            notificationButton.setImageResource(R.drawable.ic_notif_off);
-                                                            Toast.makeText(EventDetails.this,
-                                                                    "Notifications disabled",
-                                                                    Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Update failed
-                                        Toast.makeText(EventDetails.this,
-                                                "Failed to update notification settings",
-                                                Toast.LENGTH_SHORT).show();
-                                    });
+                                                // Create a map for each participant
+                                                Map<String, String> participantDetails = new HashMap<>();
+                                                participantDetails.put("name", name1);
+                                                participantDetails.put("status", status1);
+                                                participantDetailsList.add(participantDetails);
+
+                                                // Create a custom adapter for the list view
+                                                SimpleAdapter adapter = new SimpleAdapter(
+                                                        EventDetails.this,
+                                                        participantDetailsList,
+                                                        android.R.layout.simple_list_item_2,
+                                                        new String[]{"name", "status"},
+                                                        new int[]{android.R.id.text1, android.R.id.text2}
+                                                );
+                                                entrantListView.setAdapter(adapter);
+                                            }
+                                        });
+                            }
+                        } else {
+                            // Handle error
+                            Log.e("EntrantList", "Error getting participants", task.getException());
+                            Toast.makeText(EventDetails.this, "Failed to load entrants", Toast.LENGTH_SHORT).show();
                         }
                     });
-        });
 
-        entrantButton.setOnClickListener(v -> {
-            // Show entrant list here
+            // Set up close button
+            closeButton.setOnClickListener(closeView -> dialog.dismiss());
+
+            // Show the dialog
+            dialog.show();
         });
 
         editButton.setOnClickListener(v -> {
@@ -621,6 +629,64 @@ public class EventDetails extends AppCompatActivity {
         });
 
         // For attendee
+        notificationButton.setOnClickListener(v -> {
+            // Check current notification status
+            db.collection("events").document(eventId)
+                    .collection("participants").document(deviceID)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            boolean currentStatus = document != null &&
+                                    Boolean.TRUE.equals(document.getBoolean("notif"));
+
+                            // Toggle notification status
+                            boolean newStatus = !currentStatus;
+
+                            // Prepare update
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("notif", newStatus);
+
+                            // Update Firestore
+                            db.collection("events").document(eventId)
+                                    .collection("participants").document(deviceID)
+                                    .set(updates, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> {
+                                        // Update successful
+                                        if (newStatus) {
+                                            // Subscribe to topic
+                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                    .addOnCompleteListener(subscribeTask -> {
+                                                        if (subscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications enabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        } else {
+                                            // Unsubscribe from topic
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(eventId)
+                                                    .addOnCompleteListener(unsubscribeTask -> {
+                                                        if (unsubscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif_off);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications disabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Update failed
+                                        Toast.makeText(EventDetails.this,
+                                                "Failed to update notification settings",
+                                                Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    });
+        });
+
         enterLotteryButton.setOnClickListener(v -> {
             // User entered the lottery system
             db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
@@ -660,6 +726,7 @@ public class EventDetails extends AppCompatActivity {
                                                                             }
                                                                         });
                                                             }
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
                                                             Log.d("msg", msg);
                                                             Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
                                                         }
