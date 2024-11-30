@@ -2,6 +2,7 @@ package com.example.espresso.Event;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,24 +23,28 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.espresso.Attendee.AttendeeHomeActivity;
 import com.example.espresso.Attendee.QRCode;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.SetOptions;
+
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
+import android.Manifest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -95,7 +100,9 @@ public class EventDetails extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
+
         boolean drawed = intent.getBooleanExtra("drawed", false);
+        boolean geolocation = intent.getBooleanExtra("geo", false);
 
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
@@ -112,7 +119,7 @@ public class EventDetails extends AppCompatActivity {
             Log.e("Event", "Error getting download URL for poster", exception);
         });
 
-        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed);
+        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed + ", geolocation=" + geolocation);
 
         // Set the event details in the UI
         TextView nameTextView = findViewById(R.id.attendee_event_profile_title);
@@ -302,35 +309,79 @@ public class EventDetails extends AppCompatActivity {
         });
 
         enterLotteryButton.setOnClickListener(v -> {
-            // User entered the lottery system
-            assert eventId != null;
-            db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
-            db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "pending"))
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Lottery entered successfully
-                            Log.d("Lottery", "Lottery entered successfully");
-                            // Disable the button
-                            enterLotteryButton.setEnabled(false);
-                            enterLotteryButton.setText("You have entered the lottery!");
-                            enterLotteryButton.setTextColor(Color.WHITE);
-                            enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
-                            // Subscribed to notifications
-                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
-                                    .addOnCompleteListener(task1 -> {
-                                        String msg = "Subscribed";
-                                        if (!task1.isSuccessful()) {
-                                            msg = "Subscribe failed";
-                                        }
-                                        Log.d("msg", msg);
-                                        Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
-                                    });
-                        } else {
-                            // Lottery entry failed
-                            Log.d("Lottery", "Lottery entry failed");
-                        }
-                    });
+   
+            if (geolocation) {
+                // Check for location permissions
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                } else {
+                    // Location permissions already granted
+                    FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+                    fusedLocationClient.getLastLocation()
+                            .addOnSuccessListener(userLocation -> {
+                                if (userLocation != null) {
+                                    double latitude = userLocation.getLatitude();
+                                    double longitude = userLocation.getLongitude();
+
+                                    // Save location in the 'participants' sub-collection under the event document
+                                    db.collection("events").document(eventId).collection("participants").document(deviceID)
+                                            .set(Map.of(
+                                                    "latitude", latitude,
+                                                    "longitude", longitude
+                                            ))
+                                            .addOnCompleteListener(task -> {
+                                                if (task.isSuccessful()) {
+                                                    // Success feedback
+                                                    enterLotteryButton.setEnabled(false);
+                                                    enterLotteryButton.setText("You have entered the lottery!");
+                                                    enterLotteryButton.setTextColor(Color.WHITE);
+                                                    enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+
+                                                    // Subscribe to notifications
+                                                    FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                            .addOnCompleteListener(subTask -> {
+                                                                String msg = subTask.isSuccessful() ? "Subscribed" : "Subscribe failed";
+                                                                Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
+                                                            });
+                                                } else {
+                                                    Toast.makeText(this, "Failed to enter the lottery.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(this, "Unable to retrieve location. Please try again.", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(this, "Error retrieving location.", Toast.LENGTH_SHORT).show());
+                }
+            } else {
+                // Proceed without geolocation
+                db.collection("events").document(eventId).collection("participants").document(deviceID)
+                        .set(Map.of(
+                                "latitude", null,
+                                "longitude", null
+                        ))
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Success feedback
+                                enterLotteryButton.setEnabled(false);
+                                enterLotteryButton.setText("You have entered the lottery!");
+                                enterLotteryButton.setTextColor(Color.WHITE);
+                                enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+
+                                // Subscribe to notifications
+                                FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                        .addOnCompleteListener(subTask -> {
+                                            String msg = subTask.isSuccessful() ? "Subscribed" : "Subscribe failed";
+                                            Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
+                                        });
+                            } else {
+                                Toast.makeText(this, "Failed to enter the lottery.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
         });
+
 
         withdrawButton.setOnClickListener(v -> {
             // User withdrew from the lottery
@@ -557,5 +608,21 @@ public class EventDetails extends AppCompatActivity {
                 }));
 
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                enterLotteryButton.performClick();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Location access is required to join this event.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
 }

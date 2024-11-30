@@ -64,10 +64,12 @@ public class OrganizerHomeFragment extends Fragment {
                             String description = document.getString("description");
                             String deadline = document.getString("deadline");
                             String status = document.getString("status") ;
+                            boolean geolocation = Boolean.TRUE.equals(document.get("geolocation"));
+
                             if (status == null) status = "edit";
                             boolean drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, status));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, status, geolocation));
                         }
                         adapter.notifyDataSetChanged();
 
