@@ -62,12 +62,6 @@ public class OrganizerProfile extends Fragment {
         // Set up the logout button
         Button logout = view.findViewById(R.id.sign_out);
         logout.setOnClickListener(v -> {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            if (user != null) {
-                FirebaseAuth.getInstance().signOut();
-                Log.d("user", "User signed out");
-            }
             // Navigate back to the main activity (login screen)
             Intent intent = new Intent(requireActivity(), MainActivity.class);
             startActivity(intent);

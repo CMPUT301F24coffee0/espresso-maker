@@ -92,11 +92,6 @@ public class AttendeeProfile extends Fragment {
 
         logout = view.findViewById(R.id.button);
         logout.setOnClickListener(v -> {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user != null) {
-                FirebaseAuth.getInstance().signOut();
-                Log.d("user", "User signed out");
-            }
             Intent intent = new Intent(requireActivity(), MainActivity.class);
             startActivity(intent);
         });
