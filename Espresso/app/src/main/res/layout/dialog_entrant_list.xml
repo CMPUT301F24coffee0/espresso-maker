@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
 
     <ImageButton
         android:id="@+id/close_button1"
@@ -21,6 +22,7 @@
         android:text="Event Entrants"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
         android:layout_marginBottom="8dp"/>
 
     <ListView
