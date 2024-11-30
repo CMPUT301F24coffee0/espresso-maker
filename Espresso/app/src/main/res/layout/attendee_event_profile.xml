@@ -237,9 +237,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/grey"
-            android:textColor="@color/red"
             android:text="Decline Invitation"
-            android:visibility="gone"/>
+            android:textColor="@color/red"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/withdraw_button"

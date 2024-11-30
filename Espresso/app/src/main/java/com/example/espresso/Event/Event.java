@@ -133,6 +133,7 @@ public class Event {
 
     public boolean getGeolocation() { return geolocation; }
 
+
     public void getUrl(OnUrlFetchedListener listener) {
         // Fetch image from Firebase Storage
         FirebaseStorage storage = FirebaseStorage.getInstance();

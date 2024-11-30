@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.espresso.Admin.AdminActivity;
 import com.example.espresso.Attendee.AttendeeHomeActivity;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Organizer.OrganizerHomeActivity;
@@ -238,8 +239,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Set listener for admin sign-in button
         admin_sign_in_btn.setOnClickListener(v -> {
-            Toast toast = Toast.makeText(this, "To be implemented", Toast.LENGTH_SHORT);
-            toast.show();
+            if (isLoggedIn) {
+                // Navigate to AttendeeHomeActivity if user is logged in
+                Intent i = new Intent(MainActivity.this, AdminActivity.class);
+                MainActivity.this.startActivity(i);
+            } else {
+                // Create new user profile if not logged in
+                createNewUserProfile("Admin");
+            }
         });
 
         // Set listener for attendee sign-in button
