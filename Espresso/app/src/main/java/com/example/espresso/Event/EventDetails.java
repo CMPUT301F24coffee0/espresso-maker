@@ -309,6 +309,7 @@ public class EventDetails extends AppCompatActivity {
         });
 
         enterLotteryButton.setOnClickListener(v -> {
+   
             if (geolocation) {
                 // Check for location permissions
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -378,6 +379,7 @@ public class EventDetails extends AppCompatActivity {
                             }
                         });
             }
+
         });
 
 
@@ -448,24 +450,22 @@ public class EventDetails extends AppCompatActivity {
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "invited")
-                                            .addOnSuccessListener(aVoid -> {
-                                                db.collection("users").document(participantId).get()
-                                                        .addOnCompleteListener(userTask -> {
-                                                            if (userTask.isSuccessful()) {
-                                                                DocumentSnapshot userDoc = userTask.getResult();
-                                                                if (userDoc.exists()) {
-                                                                    String userToken = userDoc.getString("deviceToken");
-                                                                    String username = userDoc.getString("name");
-                                                                    HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventId",eventId);
-                                                                    map.put("title", "New update from event " + name + "!");
-                                                                    map.put("msg", "Congratulations! You have been invited to the event!");
-                                                                    assert userToken != null;
-                                                                    db.collection("notifications").document(userToken).set(map);
-                                                                }
+                                            .addOnSuccessListener(aVoid -> db.collection("users").document(participantId).get()
+                                                    .addOnCompleteListener(userTask -> {
+                                                        if (userTask.isSuccessful()) {
+                                                            DocumentSnapshot userDoc = userTask.getResult();
+                                                            if (userDoc.exists()) {
+                                                                String userToken = userDoc.getString("deviceToken");
+                                                                String username = userDoc.getString("name");
+                                                                HashMap<String, String> map = new HashMap<>();
+                                                                map.put("eventId",eventId);
+                                                                map.put("title", "New update from event " + name + "!");
+                                                                map.put("msg", "Congratulations! You have been invited to the event!");
+                                                                assert userToken != null;
+                                                                db.collection("notifications").document(userToken).set(map);
                                                             }
-                                                        });
-                                            })
+                                                        }
+                                                    }))
                                             .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to invited", e));
                                 } else {
                                     // Update to "not-invited" and send decline notification
@@ -473,24 +473,22 @@ public class EventDetails extends AppCompatActivity {
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "not-invited")
-                                            .addOnSuccessListener(aVoid -> {
-                                                db.collection("users").document(participantId).get()
-                                                        .addOnCompleteListener(userTask -> {
-                                                            if (userTask.isSuccessful()) {
-                                                                DocumentSnapshot userDoc = userTask.getResult();
-                                                                if (userDoc.exists()) {
-                                                                    String userToken = userDoc.getString("deviceToken");
-                                                                    String eventName = userDoc.getString("name");
-                                                                    HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId);
-                                                                    map.put("title", eventName);
-                                                                    map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
-                                                                    assert userToken != null;
-                                                                    db.collection("notifications").document(userToken).set(map);
-                                                                }
+                                            .addOnSuccessListener(aVoid -> db.collection("users").document(participantId).get()
+                                                    .addOnCompleteListener(userTask -> {
+                                                        if (userTask.isSuccessful()) {
+                                                            DocumentSnapshot userDoc = userTask.getResult();
+                                                            if (userDoc.exists()) {
+                                                                String userToken = userDoc.getString("deviceToken");
+                                                                String eventName = userDoc.getString("name");
+                                                                HashMap<String, String> map = new HashMap<>();
+                                                                map.put("eventID",eventId);
+                                                                map.put("title", eventName);
+                                                                map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
+                                                                assert userToken != null;
+                                                                db.collection("notifications").document(userToken).set(map);
                                                             }
-                                                        });
-                                            })
+                                                        }
+                                                    }))
                                             .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to not-invited", e));
                                 }
                             }
@@ -551,9 +549,7 @@ public class EventDetails extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
             Button cancelButton = dialogView.findViewById(R.id.cancel_button);
-            cancelButton.setOnClickListener(v1 -> {
-                dialog.dismiss();
-            });
+            cancelButton.setOnClickListener(v1 -> dialog.dismiss());
         });
 
         // Go back button
@@ -562,56 +558,54 @@ public class EventDetails extends AppCompatActivity {
 
         ImageView participants = findViewById(R.id.attendee_event_profile_capacity_img);
 
-        participants.setOnClickListener(v -> {
-            db.collection("events")
-                    .document(eventId)
-                    .collection("participants")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            List<String> p = new ArrayList<>();
-                            List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+        participants.setOnClickListener(v -> db.collection("events")
+                .document(eventId)
+                .collection("participants")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> p = new ArrayList<>();
+                        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
 
-                            for (DocumentSnapshot document : task.getResult()) {
-                                String docId = document.getId();
-                                Log.d("user: ", docId);
+                        for (DocumentSnapshot document : task.getResult()) {
+                            String docId = document.getId();
+                            Log.d("user: ", docId);
 
-                                // Fetch the participant details and keep track of the tasks
-                                tasks.add(db.collection("users").document(docId).get());
+                            // Fetch the participant details and keep track of the tasks
+                            tasks.add(db.collection("users").document(docId).get());
+                        }
+
+                        // Wait for all tasks to complete
+                        Tasks.whenAllComplete(tasks).addOnCompleteListener(allTasks -> {
+                            for (Task<?> singleTask : allTasks.getResult()) {
+                                if (singleTask.isSuccessful()) {
+                                    DocumentSnapshot userDoc = (DocumentSnapshot) singleTask.getResult();
+                                    String participantName = (String) userDoc.get("name");
+                                    if (participantName != null) {
+                                        p.add(participantName);
+                                    }
+                                }
                             }
 
-                            // Wait for all tasks to complete
-                            Tasks.whenAllComplete(tasks).addOnCompleteListener(allTasks -> {
-                                for (Task<?> singleTask : allTasks.getResult()) {
-                                    if (singleTask.isSuccessful()) {
-                                        DocumentSnapshot userDoc = (DocumentSnapshot) singleTask.getResult();
-                                        String participantName = (String) userDoc.get("name");
-                                        if (participantName != null) {
-                                            p.add(participantName);
-                                        }
-                                    }
+                            // Build and display the dialog
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            builder.setTitle("Participants");
+
+                            if (p.isEmpty()) {
+                                builder.setMessage("No participants yet.");
+                            } else {
+                                StringBuilder participantList = new StringBuilder();
+                                for (String participant : p) {
+                                    participantList.append(participant).append("\n");
                                 }
+                                builder.setMessage(participantList.toString());
+                            }
 
-                                // Build and display the dialog
-                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                                builder.setTitle("Participants");
-
-                                if (p.isEmpty()) {
-                                    builder.setMessage("No participants yet.");
-                                } else {
-                                    StringBuilder participantList = new StringBuilder();
-                                    for (String participant : p) {
-                                        participantList.append(participant).append("\n");
-                                    }
-                                    builder.setMessage(participantList.toString());
-                                }
-
-                                builder.setPositiveButton("Go back", (dialog, which) -> dialog.dismiss());
-                                builder.show();
-                            });
-                        }
-                    });
-        });
+                            builder.setPositiveButton("Go back", (dialog, which) -> dialog.dismiss());
+                            builder.show();
+                        });
+                    }
+                }));
 
     }
 

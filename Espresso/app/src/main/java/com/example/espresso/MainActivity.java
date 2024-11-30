@@ -289,16 +289,15 @@ public class MainActivity extends AppCompatActivity {
         // Generate a random username
         Random random = new Random();
         Map<String, Object> docData = new HashMap<>();
-        docData.put("type", userType); // Set user type (Attendee or Organizer)
+        docData.put("type", "Not Admin"); // Set user type
         docData.put("deviceID", deviceID);
         docData.put("name", random.ints(48, 122 + 1)
                 .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                 .limit(10)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString());
-        docData.put("email", "Not set");
-        docData.put("phone", 123);
-        docData.put("facility", "Not set");
+        docData.put("email", "email@example.com");
+        docData.put("phone", "80085");
         docData.put("deviceToken", deviceToken);
 
         // Add the new user profile data to Firestore

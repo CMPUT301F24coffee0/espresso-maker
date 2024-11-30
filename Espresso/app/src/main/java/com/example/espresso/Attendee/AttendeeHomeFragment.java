@@ -38,25 +38,13 @@ public class AttendeeHomeFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(new User(requireContext()).getDeviceID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
-            } else {
-                // Handle failure (e.g., user not found or error fetching data)
-                Log.d("User", "Error retrieving user data: ", task.getException());
-            }
-        });
+            if (task.isSuccessful()) ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
+            else Log.d("User", "Error retrieving user data: ", task.getException());});
 
         setupEventList(db);
         db.collection("users").document(new User(requireContext()).getDeviceID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                //Toast.makeText(requireContext(), "Welcome " + userName + "!", Toast.LENGTH_SHORT).show();
-                ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
-            } else {
-                // Handle failure (e.g., user not found or error fetching data)
-                Log.d("User", "Error retrieving user data: ", task.getException());
-            }
-        });
-
+            if (task.isSuccessful()) ((TextView) view.findViewById(R.id.page_name)).setText(String.format("Welcome!"));
+            else Log.d("User", "Error retrieving user data: ", task.getException());});
         return view;
     }
 
@@ -75,10 +63,7 @@ public class AttendeeHomeFragment extends Fragment {
             if (task.isSuccessful()) {
                 Log.d("Event", "Events found");
                 processEvents(task, events, adapter, db);  // Call processEvents to handle event data loading
-            } else {
-                Log.d("Event", "Error getting events: ", task.getException());
-            }
-        });
+            } else Log.d("Event", "Error getting events: ", task.getException());});
 
         setupEventItemClickListener(listView, events);
     }
@@ -104,10 +89,7 @@ public class AttendeeHomeFragment extends Fragment {
                         if (task1.isSuccessful() && !task1.getResult().exists()) {
                             addEventToList(task, events, finalI);
                             adapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Event", "Event already joined: " + eventId);
-                        }
-                    });
+                        } else Log.d("Event", "Event already joined: " + eventId);});
         }
     }
 
@@ -139,10 +121,12 @@ public class AttendeeHomeFragment extends Fragment {
         String deadline = doc.getString("deadline");
         int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
 
-        boolean drawed = doc.getBoolean("drawed");
-        boolean geolocation = doc.getBoolean("geolocation");
+        
+        boolean drawed = Boolean.TRUE.equals(doc.getBoolean("drawed"));
+        boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
 
          events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, "view", geolocation));
+
     }
 
     /**
@@ -154,8 +138,7 @@ public class AttendeeHomeFragment extends Fragment {
     private void setupEventItemClickListener(ListView listView, List<Event> events) {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event clickedEvent = events.get(position);
-            openEventDetails(clickedEvent);
-        });
+            openEventDetails(clickedEvent);});
     }
 
     /**
@@ -178,8 +161,7 @@ public class AttendeeHomeFragment extends Fragment {
 
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);
-            startActivity(intent);
-        });
+            startActivity(intent);});
     }
 
 }

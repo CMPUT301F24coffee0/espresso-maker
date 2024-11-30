@@ -75,9 +75,7 @@ public class DeclinedEvents extends Fragment {
                             events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), true, "declined", geolocation));
                         }
                         adapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("Event", "Error getting documents: ", task.getException());
-                    }
+                    } else Log.d("Event", "Error getting documents: ", task.getException());
                 });
 
         // Item click listener for opening event details

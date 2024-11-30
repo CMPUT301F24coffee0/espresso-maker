@@ -30,7 +30,7 @@ public class NewEventForm extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // EditText fields for event details
-    private EditText eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity;
+    private EditText eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, attendee_sample_num;
 
     // Document ID to identify the event for editing
     private String documentId;
@@ -61,6 +61,7 @@ public class NewEventForm extends AppCompatActivity {
         eventTime = findViewById(R.id.choose_time);
         registrationDeadline = findViewById(R.id.registration_until);
         waitingListCapacity = findViewById(R.id.waiting_list_capacity);
+        // attendee_sample_num = findViewById(R.id.attendee_sample_num);
 
         // Retrieve the event type (create or edit) from the intent
         Intent intent = getIntent();
@@ -94,6 +95,7 @@ public class NewEventForm extends AppCompatActivity {
             bundle.putString("registrationDeadline", registrationDeadline.getText().toString());
             bundle.putString("waitingListCapacity", waitingListCapacity.getText().toString());
             bundle.putString("documentId", documentId);
+            // bundle.putString("sample", attendee_sample_num.getText().toString());
 
             // Start the image upload fragment
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -128,6 +130,7 @@ public class NewEventForm extends AppCompatActivity {
                         registrationDeadline.setText(documentSnapshot.getString("deadline"));
                         Long capacity = documentSnapshot.getLong("capacity");
                         waitingListCapacity.setText(capacity != null ? String.valueOf(capacity) : "");
+                        // attendee_sample_num.setText(documentSnapshot.getString("sample"));
                     }
                     Log.d("document ID: ", documentId);
                 })
