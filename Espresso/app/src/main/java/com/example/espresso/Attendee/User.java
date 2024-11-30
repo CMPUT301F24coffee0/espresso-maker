@@ -21,4 +21,12 @@ public class User {
     public String getDeviceID() {
         return deviceID;
     }
+
+    /**
+     * Set the device ID.
+     * @param deviceID The device ID.
+     */
+    public void setDeviceID(String deviceID) {
+        this.deviceID = deviceID;
+    }
 }
