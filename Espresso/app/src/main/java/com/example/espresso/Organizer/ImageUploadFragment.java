@@ -78,7 +78,7 @@ public class ImageUploadFragment extends Fragment {
             registrationDeadline = getArguments().getString("registrationDeadline");
             waitingListCapacity = getArguments().getString("waitingListCapacity");
             documentId = getArguments().getString("documentId");
-            sample = getArguments().getString("sample");
+
         }
 
 
