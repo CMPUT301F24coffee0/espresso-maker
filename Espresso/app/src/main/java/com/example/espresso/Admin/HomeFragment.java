@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment {
             String status = doc.getString("status");
             int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
 
-            boolean drawed = Boolean.TRUE.equals(doc.getBoolean("drawed"));
+            int drawn = Objects.requireNonNull(doc.getLong("drawn")).intValue();
             boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
 
             events.add(new Event(
@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment {
                     status,
                     capacity,
                     new Facility(location),
-                    drawed,
+                    drawn,
                     deadline, geolocation
             ));
         }
@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
                     String deadline = document.getString("deadline");
                     int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
 
-                    boolean drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
+                    int drawn = Objects.requireNonNull(document.getLong("drawn")).intValue();
                     boolean geolocation = Boolean.TRUE.equals(document.getBoolean("geolocation"));
 
                     events.add(new Event(
@@ -234,7 +234,7 @@ public class HomeFragment extends Fragment {
                             description,
                             capacity,
                             new Facility(location),
-                            drawed,
+                            drawn,
                             deadline,
                             geolocation
                     ));
