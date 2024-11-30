@@ -17,7 +17,7 @@ public class Event {
     private String description;
     private String deadline;
     private int capacity;
-    private boolean drawed;
+    private int drawn;
     private String status;
 
 
@@ -38,7 +38,7 @@ public class Event {
      * Create a new event in a given facility.
      * @param facility  Facility the event takes place in.
      */
-    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, boolean drawed, String status) {
+    public Event(String name, String date, String time, String description, String deadline, int capacity, Facility facility, int drawn, String status) {
         String text = name + facility.getName() + time;
         try {
             id = hashWithSHA256(text);
@@ -52,7 +52,7 @@ public class Event {
         this.deadline = deadline;
         this.capacity = capacity;
         this.description = description;
-        this.drawed = drawed;
+        this.drawn = drawn;
         this.status = status;
     }
 
@@ -113,7 +113,7 @@ public class Event {
      * Get the status of the event.
      * @return  Status of the event.
      */
-    public boolean getDrawed() { return drawed; }
+    public int getDrawn() { return drawn; }
 
     /**
      * Get the status of the event.

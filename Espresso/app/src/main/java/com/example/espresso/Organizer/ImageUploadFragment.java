@@ -29,6 +29,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 /**
  * A fragment that handles the uploading of event images and related data to Firestore.
  * It retrieves event details from the arguments, allows the user to input event information,
@@ -115,12 +117,13 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), false, "view");
+            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), 2, "view");
 
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference pfpsRef = storageRef.child("posters/" + eventId + ".png");
 
+            assert inputStream != null;
             UploadTask uploadTask = pfpsRef.putStream(inputStream);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 Toast.makeText(getContext(), "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
@@ -150,7 +153,7 @@ public class ImageUploadFragment extends Fragment {
         eventData.put("time", eventTime);
         eventData.put("deadline", registrationDeadline);
         eventData.put("capacity", Integer.parseInt(waitingListCapacity));
-        // eventData.put("sample", sample);
+        //eventData.put("sample", sample);
 
         TextView descriptionView = view.findViewById(R.id.description);
         if (descriptionView != null) {
@@ -163,8 +166,8 @@ public class ImageUploadFragment extends Fragment {
             eventData.put("geolocation", geolocationSwitch.isChecked());
         }
 
-        eventData.put("organizer", (new User(getContext())).getDeviceID());
-        eventData.put("drawed", false);
+        eventData.put("organizer", (new User(requireContext())).getDeviceID());
+        eventData.put("drawn", 2);
 
         DocumentReference docRef;
         if (documentId != null && !documentId.isEmpty()) {
@@ -182,7 +185,7 @@ public class ImageUploadFragment extends Fragment {
                         eventDate,
                         Integer.valueOf(waitingListCapacity),
                         new Facility(eventLocation),
-                        false,
+                        2,
                         "view").getId());
 
         docRef.set(eventData)

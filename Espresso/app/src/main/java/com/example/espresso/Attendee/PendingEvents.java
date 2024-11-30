@@ -76,7 +76,9 @@ public class PendingEvents extends Fragment {
                             Object capacityObj = data.get("capacity");
                             String status = (String) data.get("status");
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), false, status));
+                            Object drawnObj = data.get("drawn");
+                            int drawn = (drawnObj instanceof Number) ? ((Number) drawnObj).intValue() : 0;
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status));
                             adapter.notifyDataSetChanged();
                         }
                     } else Log.d("Event", "Error getting documents: ", task.getException());
