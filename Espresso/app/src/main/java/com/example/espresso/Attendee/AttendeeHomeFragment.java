@@ -120,12 +120,8 @@ public class AttendeeHomeFragment extends Fragment {
         String description = doc.getString("description");
         String deadline = doc.getString("deadline");
         int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
-
-        
-        boolean drawed = Boolean.TRUE.equals(doc.getBoolean("drawed"));
-        boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
-
-         events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, "view", geolocation));
+        int drawn = Objects.requireNonNull(doc.getLong("drawn")).intValue();
+        events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, "view", geolocation));
 
     }
 

@@ -67,9 +67,10 @@ public class OrganizerHomeFragment extends Fragment {
                             boolean geolocation = Boolean.TRUE.equals(document.get("geolocation"));
 
                             if (status == null) status = "edit";
-                            boolean drawed = Boolean.TRUE.equals(document.getBoolean("drawed"));
+                            int drawn = Objects.requireNonNull(document.getLong("drawn")).intValue();
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawed, status, geolocation));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status, geolocation));
+
                         }
                         adapter.notifyDataSetChanged();
 
@@ -88,7 +89,7 @@ public class OrganizerHomeFragment extends Fragment {
             String location = clickedEvent.getFacility();
             String description = clickedEvent.getDescription();
             String deadline = clickedEvent.getDeadline();
-            boolean drawed = clickedEvent.getDrawed();
+            int drawn = clickedEvent.getDrawn();
             String status = clickedEvent.getStatus();
 
             int capacity = clickedEvent.getCapacity();
@@ -104,7 +105,7 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Capacity=" + capacity +
                             ", EventId=" + eventId +
                             ", Status=" + status +
-                            ", Drawed=" + drawed);
+                            ", Drawn=" + drawn);
 
             Intent intent = new Intent(requireActivity(), EventDetails.class);
 
@@ -117,7 +118,7 @@ public class OrganizerHomeFragment extends Fragment {
             intent.putExtra("capacity", capacity);
             intent.putExtra("eventId", eventId);
             intent.putExtra("status", status);
-            intent.putExtra("drawed", drawed);
+            intent.putExtra("drawn", drawn);
             startActivity(intent);
 
         });

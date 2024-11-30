@@ -1,6 +1,7 @@
 package com.example.espresso.Event;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -14,8 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
+import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +38,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -46,6 +48,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import android.Manifest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,8 +63,8 @@ import java.util.Set;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, sendNotificationButton;
-    ImageButton editButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, drawLotteryButton2, acceptInviteButton, declineInviteButton, sendNotificationButton;
+    ImageButton editButton, notificationButton, shareBtn, goBackBtn, mapButton, entrantButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     StorageReference posterRef;
@@ -87,6 +90,7 @@ public class EventDetails extends AppCompatActivity {
                 Intent intent = new Intent(EventDetails.this, AttendeeHomeActivity.class);
                 startActivity(intent);
             }
+
         });
 
         // Retrieve the extras
@@ -100,10 +104,8 @@ public class EventDetails extends AppCompatActivity {
         String eventId = intent.getStringExtra("eventId");
         String posterUrl = intent.getStringExtra("posterUrl");
         String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
-
-        boolean drawed = intent.getBooleanExtra("drawed", false);
+        int drawn = intent.getIntExtra("drawn", 0);
         boolean geolocation = intent.getBooleanExtra("geo", false);
-
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
         posterRef = storageRef.child(path);
@@ -118,9 +120,6 @@ public class EventDetails extends AppCompatActivity {
             Log.e("Event", path);
             Log.e("Event", "Error getting download URL for poster", exception);
         });
-
-        Log.d("Event", "Event after clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId + ", Status=" + status + ", Drawed=" + drawed + ", geolocation=" + geolocation);
-
         // Set the event details in the UI
         TextView nameTextView = findViewById(R.id.attendee_event_profile_title);
         nameTextView.setText(name);
@@ -154,17 +153,60 @@ public class EventDetails extends AppCompatActivity {
         declineInviteButton = findViewById(R.id.decline_invite_button);
         editButton = findViewById(R.id.edit_button);
         sendNotificationButton = findViewById(R.id.notification);
+        notificationButton = findViewById(R.id.notification_button);
+        shareBtn = findViewById(R.id.share_button);
+        goBackBtn = findViewById(R.id.go_back_button);
+        drawLotteryButton2 = findViewById(R.id.draw_lottery_2);
+        mapButton = findViewById(R.id.map_button);
+        entrantButton = findViewById(R.id.entrant_button);
+
+        // Check if user wants to receive notifications
+        assert eventId != null;
+        db.collection("events").document(eventId)
+                .collection("participants").document(deviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            // Check if notif field exists and its value
+                            Boolean isNotificationEnabled = document.getBoolean("notif");
+
+                            // Update button icon based on notification status
+                            if (Boolean.TRUE.equals(isNotificationEnabled)) {
+                                notificationButton.setImageResource(R.drawable.ic_notif);
+                            } else {
+                                notificationButton.setImageResource(R.drawable.ic_notif_off);
+                            }
+                        } else {
+                            // Document doesn't exist, set default state
+                            notificationButton.setImageResource(R.drawable.ic_notif_off);
+                        }
+                    } else {
+                        // Error fetching document
+                        Log.e("Firestore", "Error getting document", task.getException());
+                        // Set default state on error
+                        notificationButton.setImageResource(R.drawable.ic_notif_off);
+                    }
+                });
 
         switch (Objects.requireNonNull(status)) {
             case "edit": // When user is organizer
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.GONE);
+                notificationButton.setVisibility(View.GONE);
+                shareBtn.setVisibility(View.GONE);
+                mapButton.setVisibility(View.VISIBLE);
+                entrantButton.setVisibility(View.VISIBLE);
                 drawLotteryButton.setVisibility(View.VISIBLE);
-                if (drawed) {
+                if (drawn == 0) {
                     drawLotteryButton.setEnabled(false);
                     drawLotteryButton.setText("You already drawn the lottery!");
                     drawLotteryButton.setTextColor(Color.RED);
                     drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                } else if (drawn == 1) {
+                    drawLotteryButton.setVisibility(View.GONE);
+                    drawLotteryButton2.setVisibility(View.VISIBLE);
                 }
                 editButton.setVisibility(View.VISIBLE);
                 sendNotificationButton.setVisibility(View.VISIBLE);
@@ -195,6 +237,78 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
                 break;
         }
+
+        // For organizer
+        mapButton.setOnClickListener(v -> {
+            // Show map here
+        });
+
+        entrantButton.setOnClickListener(v -> {
+            // Create a dialog to show the list of entrants
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_entrant_list, null);
+
+            // Find the ListView and close button in the dialog layout
+            ListView entrantListView = dialogView.findViewById(R.id.entrant_list_view);
+            ImageButton closeButton = dialogView.findViewById(R.id.close_button1);
+
+            // Create the dialog
+            AlertDialog dialog = builder.create();
+            dialog.setView(dialogView);
+
+            // Fetch participants from Firestore
+            db.collection("events").document(eventId)
+                    .collection("participants")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Create a list to hold participant details
+                            List<Map<String, String>> participantDetailsList = new ArrayList<>();
+
+                            // Process each participant document
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Get the participant's device ID
+                                String participantId = document.getId();
+                                String status1 = document.getString("status");
+
+                                // Fetch user details for each participant
+                                db.collection("users").document(participantId).get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists()) {
+                                                String name1 = userDoc.getString("name");
+
+                                                // Create a map for each participant
+                                                Map<String, String> participantDetails = new HashMap<>();
+                                                participantDetails.put("name", name1);
+                                                participantDetails.put("status", status1);
+                                                participantDetailsList.add(participantDetails);
+
+                                                // Create a custom adapter for the list view
+                                                SimpleAdapter adapter = new SimpleAdapter(
+                                                        EventDetails.this,
+                                                        participantDetailsList,
+                                                        android.R.layout.simple_list_item_2,
+                                                        new String[]{"name", "status"},
+                                                        new int[]{android.R.id.text1, android.R.id.text2}
+                                                );
+                                                entrantListView.setAdapter(adapter);
+                                            }
+                                        });
+                            }
+                        } else {
+                            // Handle error
+                            Log.e("EntrantList", "Error getting participants", task.getException());
+                            Toast.makeText(EventDetails.this, "Failed to load entrants", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            // Set up close button
+            closeButton.setOnClickListener(closeView -> dialog.dismiss());
+
+            // Show the dialog
+            dialog.show();
+        });
 
         editButton.setOnClickListener(v -> {
             // Edit the event
@@ -402,7 +516,6 @@ public class EventDetails extends AppCompatActivity {
         });
 
         drawLotteryButton.setOnClickListener(v -> {
-            assert eventId != null;
             db.collection("events").document(eventId).collection("participants").get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -442,30 +555,31 @@ public class EventDetails extends AppCompatActivity {
                                             .collection("participants")
                                             .get()
                                             .addOnSuccessListener(queryDocumentSnapshots -> {
-                                                        for (QueryDocumentSnapshot participantDoc : queryDocumentSnapshots) {
-                                                            String pID = participantDoc.getId();
-                                                            db.collection("users").document(pID).collection("events").document(eventId).update("status", "invited");
-                                                        }
+                                                for (QueryDocumentSnapshot participantDoc : queryDocumentSnapshots) {
+                                                    String pID = participantDoc.getId();
+                                                    db.collection("users").document(pID).collection("events").document(eventId).update("status", "invited");
+                                                }
                                             });
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "invited")
-                                            .addOnSuccessListener(aVoid -> db.collection("users").document(participantId).get()
-                                                    .addOnCompleteListener(userTask -> {
-                                                        if (userTask.isSuccessful()) {
-                                                            DocumentSnapshot userDoc = userTask.getResult();
-                                                            if (userDoc.exists()) {
-                                                                String userToken = userDoc.getString("deviceToken");
-                                                                String username = userDoc.getString("name");
-                                                                HashMap<String, String> map = new HashMap<>();
-                                                                map.put("eventId",eventId);
-                                                                map.put("title", "New update from event " + name + "!");
-                                                                map.put("msg", "Congratulations! You have been invited to the event!");
-                                                                assert userToken != null;
-                                                                db.collection("notifications").document(userToken).set(map);
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventId",eventId);
+                                                                    map.put("title", "New update from event " + name + "!");
+                                                                    map.put("msg", "Congratulations! You have been invited to the event!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
                                                             }
-                                                        }
-                                                    }))
+                                                        });
+                                            })
                                             .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to invited", e));
                                 } else {
                                     // Update to "not-invited" and send decline notification
@@ -473,37 +587,303 @@ public class EventDetails extends AppCompatActivity {
                                     db.collection("events").document(eventId)
                                             .collection("participants").document(participantId)
                                             .update("status", "not-invited")
-                                            .addOnSuccessListener(aVoid -> db.collection("users").document(participantId).get()
-                                                    .addOnCompleteListener(userTask -> {
-                                                        if (userTask.isSuccessful()) {
-                                                            DocumentSnapshot userDoc = userTask.getResult();
-                                                            if (userDoc.exists()) {
-                                                                String userToken = userDoc.getString("deviceToken");
-                                                                String eventName = userDoc.getString("name");
-                                                                HashMap<String, String> map = new HashMap<>();
-                                                                map.put("eventID",eventId);
-                                                                map.put("title", eventName);
-                                                                map.put("msg", "Unfortunately, you were not selected for the event. Thank you for participating!");
-                                                                assert userToken != null;
-                                                                db.collection("notifications").document(userToken).set(map);
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    String eventName = userDoc.getString("name");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventID",eventId);
+                                                                    map.put("title", eventName);
+                                                                    map.put("msg", "Unfortunately, you were not selected for the event. However, you still have a chance to participate!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
                                                             }
-                                                        }
-                                                    }))
+                                                        });
+                                            })
                                             .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to not-invited", e));
                                 }
                             }
 
-                            // Update the "drawed" status for the event
-                            db.collection("events").document(eventId).update("drawed", true);
+                            // Update the "drawn" status for the event
+                            db.collection("events").document(eventId).update("drawn", 1);
+                            db.collection("events").document(eventId).update("capacity", capacity - selectCount);
                             Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
-                            drawLotteryButton.setEnabled(false);
-                            drawLotteryButton.setText("You already drawn the lottery!");
-                            drawLotteryButton.setTextColor(Color.WHITE);
-                            drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                            drawLotteryButton.setVisibility(View.GONE);
+                            drawLotteryButton2.setVisibility(View.VISIBLE);
                         } else {
                             Log.e("Lottery", "Error retrieving participants", task.getException());
                         }
                     });
+        });
+
+        drawLotteryButton2.setOnClickListener(v -> {
+            db.collection("events").document(eventId).collection("participants").whereEqualTo("status", "not-invited")
+                    .get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            List<DocumentSnapshot> participants = task.getResult().getDocuments();
+
+                            // Check if the participants list is empty
+                            if (participants.isEmpty()) {
+                                Toast.makeText(this, "No participants left to invite.", Toast.LENGTH_SHORT).show();
+                                return; // Exit early since there's nothing to process
+                            }
+                            int size = participants.size();
+
+                            // Ensure we don't select more than the total number of participants
+                            int selectCount = Math.min(capacity, size);
+
+                            // Shuffle the participant list to get a random order
+                            Collections.shuffle(participants);
+
+                            // Select the first `selectCount` participants from the shuffled list
+                            List<DocumentSnapshot> selectedParticipants = participants.subList(0, selectCount);
+
+                            // Create a set of IDs for the selected participants
+                            Set<String> invitedParticipantIds = new HashSet<>();
+                            for (DocumentSnapshot participant : selectedParticipants) {
+                                invitedParticipantIds.add(participant.getId());
+                            }
+
+                            // Process all participants
+                            for (DocumentSnapshot participant : participants) {
+                                String participantId = participant.getId();
+
+                                // Check if the participant is in the invited list
+                                if (invitedParticipantIds.contains(participantId)) {
+                                    // Update to "invited" and send invitation notification
+                                    db.collection("events").document(eventId)
+                                            .collection("participants")
+                                            .get()
+                                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                for (QueryDocumentSnapshot participantDoc : queryDocumentSnapshots) {
+                                                    String pID = participantDoc.getId();
+                                                    db.collection("users").document(pID).collection("events").document(eventId).update("status", "invited");
+                                                }
+                                            });
+                                    db.collection("events").document(eventId)
+                                            .collection("participants").document(participantId)
+                                            .update("status", "invited")
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventId",eventId);
+                                                                    map.put("title", "New update from event " + name + "!");
+                                                                    map.put("msg", "Congratulations! You have been invited to the event!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
+                                                            }
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to invited", e));
+                                } else {
+                                    // Update to "declined" and send decline notification
+                                    db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "not-invited");
+                                    db.collection("events").document(eventId)
+                                            .collection("participants").document(participantId)
+                                            .update("status", "declined")
+                                            .addOnSuccessListener(aVoid -> {
+                                                db.collection("users").document(participantId).get()
+                                                        .addOnCompleteListener(userTask -> {
+                                                            if (userTask.isSuccessful()) {
+                                                                DocumentSnapshot userDoc = userTask.getResult();
+                                                                if (userDoc.exists()) {
+                                                                    String userToken = userDoc.getString("deviceToken");
+                                                                    String eventName = userDoc.getString("name");
+                                                                    HashMap<String, String> map = new HashMap<>();
+                                                                    map.put("eventID",eventId);
+                                                                    map.put("title", eventName);
+                                                                    map.put("msg", "Unfortunately, you were not selected for the event :(. Better luck next time!");
+                                                                    assert userToken != null;
+                                                                    db.collection("notifications").document(userToken).set(map);
+                                                                }
+                                                            }
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> Log.e("Lottery", "Error updating participant to not-invited", e));
+                                }
+                            }
+                            db.collection("events").document(eventId).update("drawn", 0);
+                            drawLotteryButton2.setEnabled(false);
+                            drawLotteryButton2.setText("You already drawn the lottery!");
+                            drawLotteryButton2.setTextColor(Color.RED);
+                            drawLotteryButton2.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                            Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("Lottery", "Error retrieving participants", task.getException());
+                        }
+                    });
+        });
+
+        // For attendee
+        notificationButton.setOnClickListener(v -> {
+            // Check current notification status
+            db.collection("events").document(eventId)
+                    .collection("participants").document(deviceID)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            boolean currentStatus = document != null &&
+                                    Boolean.TRUE.equals(document.getBoolean("notif"));
+
+                            // Toggle notification status
+                            boolean newStatus = !currentStatus;
+
+                            // Prepare update
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("notif", newStatus);
+
+                            // Update Firestore
+                            db.collection("events").document(eventId)
+                                    .collection("participants").document(deviceID)
+                                    .set(updates, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> {
+                                        // Update successful
+                                        if (newStatus) {
+                                            // Subscribe to topic
+                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                    .addOnCompleteListener(subscribeTask -> {
+                                                        if (subscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications enabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        } else {
+                                            // Unsubscribe from topic
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(eventId)
+                                                    .addOnCompleteListener(unsubscribeTask -> {
+                                                        if (unsubscribeTask.isSuccessful()) {
+                                                            notificationButton.setImageResource(R.drawable.ic_notif_off);
+                                                            Toast.makeText(EventDetails.this,
+                                                                    "Notifications disabled",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Update failed
+                                        Toast.makeText(EventDetails.this,
+                                                "Failed to update notification settings",
+                                                Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    });
+        });
+
+        enterLotteryButton.setOnClickListener(v -> {
+            // User entered the lottery system
+            db.collection("users").document(deviceID).collection("events").document(eventId).set(eventData);
+            db.collection("events").document(eventId).collection("participants").document(deviceID).set(Map.of("status", "pending"))
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Pop-up ask for notification permission
+                            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
+                            builder.setTitle("Receive Notifications")
+                                    .setMessage("Do you want to receive notifications for this event?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // User clicked Yes
+                                            FirebaseMessaging.getInstance().subscribeToTopic(eventId)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            String msg = "Notification enabled";
+                                                            if (!task.isSuccessful()) {
+                                                                msg = "Subscribe failed";
+                                                            } else {
+                                                                Map<String, Object> notificationData = new HashMap<>();
+                                                                notificationData.put("notif", true);
+
+                                                                db.collection("events").document(eventId)
+                                                                        .collection("participants").document(deviceID)
+                                                                        .set(notificationData, SetOptions.merge())
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                if (task.isSuccessful()) {
+                                                                                    Log.d("notif", "Notification field added successfully");
+                                                                                } else {
+                                                                                    Log.e("notif", "Failed to add notification field", task.getException());
+                                                                                }
+                                                                            }
+                                                                        });
+                                                            }
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
+                                                            Log.d("msg", msg);
+                                                            Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // User clicked No
+                                            Map<String, Object> notificationData = new HashMap<>();
+                                            notificationData.put("notif", false);
+
+                                            db.collection("events").document(eventId)
+                                                    .collection("participants").document(deviceID)
+                                                    .set(notificationData, SetOptions.merge())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("notif", "Notification field added successfully");
+                                                            } else {
+                                                                Log.e("notif", "Failed to add notification field", task.getException());
+                                                            }
+                                                        }
+                                                    });
+                                            Toast.makeText(EventDetails.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                            // Lottery entered successfully
+                            Log.d("Lottery", "Lottery entered successfully");
+                            // Disable the button
+                            enterLotteryButton.setEnabled(false);
+                            enterLotteryButton.setText("You have entered the lottery!");
+                            enterLotteryButton.setTextColor(Color.WHITE);
+                            enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+                        } else {
+                            // Lottery entry failed
+                            Log.d("Lottery", "Lottery entry failed");
+                        }
+                    });
+        });
+
+        withdrawButton.setOnClickListener(v -> {
+            // User withdrew from the lottery
+            db.collection("users").document(deviceID).collection("events").document(eventId).delete();
+            db.collection("events").document(eventId).collection("participants").document(deviceID).delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Lottery withdrawn successfully
+                    Toast.makeText(this, "You have successfully withdrawn from the lottery!", Toast.LENGTH_SHORT).show();
+                    // Go back to the previous activity
+                    Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                    startActivity(intent2);
+                } else {
+                    // Lottery withdrawal failed
+                    Toast.makeText(this, "Failed to withdraw from the lottery.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         acceptInviteButton.setOnClickListener(v -> {
@@ -526,8 +906,6 @@ public class EventDetails extends AppCompatActivity {
                     });
         });
 
-        // Share button
-        ImageButton shareBtn = findViewById(R.id.share_button);
         shareBtn.setOnClickListener(v -> {
             //Generate qr code from eventID
             Bitmap bitmap = new QRCode(eventId).generateQRCode();
@@ -549,64 +927,13 @@ public class EventDetails extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
             Button cancelButton = dialogView.findViewById(R.id.cancel_button);
-            cancelButton.setOnClickListener(v1 -> dialog.dismiss());
+            cancelButton.setOnClickListener(v1 -> {
+                dialog.dismiss();
+            });
         });
 
-        // Go back button
-        ImageButton goBackBtn = findViewById(R.id.go_back_button);
+        // For both organizer and attendee
         goBackBtn.setOnClickListener(v -> finish());
-
-        ImageView participants = findViewById(R.id.attendee_event_profile_capacity_img);
-
-        participants.setOnClickListener(v -> db.collection("events")
-                .document(eventId)
-                .collection("participants")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<String> p = new ArrayList<>();
-                        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
-
-                        for (DocumentSnapshot document : task.getResult()) {
-                            String docId = document.getId();
-                            Log.d("user: ", docId);
-
-                            // Fetch the participant details and keep track of the tasks
-                            tasks.add(db.collection("users").document(docId).get());
-                        }
-
-                        // Wait for all tasks to complete
-                        Tasks.whenAllComplete(tasks).addOnCompleteListener(allTasks -> {
-                            for (Task<?> singleTask : allTasks.getResult()) {
-                                if (singleTask.isSuccessful()) {
-                                    DocumentSnapshot userDoc = (DocumentSnapshot) singleTask.getResult();
-                                    String participantName = (String) userDoc.get("name");
-                                    if (participantName != null) {
-                                        p.add(participantName);
-                                    }
-                                }
-                            }
-
-                            // Build and display the dialog
-                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            builder.setTitle("Participants");
-
-                            if (p.isEmpty()) {
-                                builder.setMessage("No participants yet.");
-                            } else {
-                                StringBuilder participantList = new StringBuilder();
-                                for (String participant : p) {
-                                    participantList.append(participant).append("\n");
-                                }
-                                builder.setMessage(participantList.toString());
-                            }
-
-                            builder.setPositiveButton("Go back", (dialog, which) -> dialog.dismiss());
-                            builder.show();
-                        });
-                    }
-                }));
-
     }
 
 

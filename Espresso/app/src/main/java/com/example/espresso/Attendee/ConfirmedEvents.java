@@ -69,7 +69,10 @@ public class ConfirmedEvents extends Fragment {
                             Object capacityObj = data.get("capacity");
                             boolean geolocation = Boolean.TRUE.equals(data.get("geolocation"));
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), true, "confirmed",geolocation ));
+                            Object drawnObj = data.get("drawn");
+                            int drawn = (drawnObj instanceof Number) ? ((Number) drawnObj).intValue() : 0;
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, "confirmed", geolocation));
+
                         }
                         adapter.notifyDataSetChanged();
                     } else Log.d("Event", "Error getting documents: ", task.getException());
