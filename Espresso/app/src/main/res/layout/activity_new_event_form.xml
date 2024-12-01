@@ -176,7 +176,10 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/blueGrey"
                     android:textSize="16sp"
-                    android:background="@null" />
+                    android:background="@null"
+                    android:focusable="false"/>
+
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -1,8 +1,6 @@
 package com.example.espresso;
 
 import android.app.Dialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -35,7 +33,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import android.Manifest;
 
 /**
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     boolean isLoggedIn;
     String deviceToken;
+
+    String role;
 
     private void showNotificationPermissionDialog() {
         Dialog dialog = new Dialog(this);
@@ -215,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
+        role = "Not Admin";
         // Check if the user already exists in Firestore
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -223,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 if (document.exists()) {
                     isLoggedIn = true;
                     Log.d("auth", "User exists: " + document.getData());
+                    role = document.getData().get("type").toString();
                 } else {
                     isLoggedIn = false;
                     Log.d("auth", "User does not exist");
@@ -239,13 +243,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Set listener for admin sign-in button
         admin_sign_in_btn.setOnClickListener(v -> {
-            if (isLoggedIn) {
-                // Navigate to AttendeeHomeActivity if user is logged in
+            if (isLoggedIn && role.equals("Admin")) {
                 Intent i = new Intent(MainActivity.this, AdminActivity.class);
                 MainActivity.this.startActivity(i);
             } else {
-                // Create new user profile if not logged in
-                createNewUserProfile("Admin");
+                Toast.makeText(this, "Sorry, you don't have administrative permissions", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -297,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString());
         docData.put("email", "email@example.com");
-        docData.put("phone", "80085");
+        docData.put("phone", "0");
         docData.put("deviceToken", deviceToken);
 
         // Add the new user profile data to Firestore
@@ -306,14 +308,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("add_user", "DocumentSnapshot successfully written!");
                     // Navigate to the appropriate home activity
                     Intent i;
-                    if ("Attendee".equals(userType)) {
-                        i = new Intent(MainActivity.this, AttendeeHomeActivity.class);
-                    } else {
-                        i = new Intent(MainActivity.this, OrganizerHomeActivity.class);
-                    }
+
+                    if ("Attendee".equals(userType)) i = new Intent(MainActivity.this, AttendeeHomeActivity.class);
+                    else if ("Organizer".equals(userType)) i = new Intent(MainActivity.this, OrganizerHomeActivity.class);
+                    else i = new Intent(MainActivity.this, AdminActivity.class);
+
                     MainActivity.this.startActivity(i);
                     isLoggedIn = true;
                 })
                 .addOnFailureListener(e -> Log.w("add_user", "Error writing document", e));
+        Toast.makeText(this, "Welcome! Kindly Update your personal Information in Profile section", Toast.LENGTH_LONG).show();
     }
+
 }
