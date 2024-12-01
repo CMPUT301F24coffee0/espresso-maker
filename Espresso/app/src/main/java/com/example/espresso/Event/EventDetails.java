@@ -848,6 +848,7 @@ public class EventDetails extends AppCompatActivity {
         });
 
         shareBtn.setOnClickListener(v -> {
+            Log.d("EventDetails", String.valueOf(disableQR));
             if (disableQR) {
                 Toast.makeText(this, "QR code is disabled for this event.", Toast.LENGTH_SHORT).show();
                 return;
