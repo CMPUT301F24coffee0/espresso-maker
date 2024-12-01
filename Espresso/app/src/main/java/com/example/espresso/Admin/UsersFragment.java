@@ -1,10 +1,13 @@
 package com.example.espresso.Admin;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import com.example.espresso.R;
 import com.example.espresso.Attendee.User;
@@ -28,7 +31,6 @@ public class UsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
         // Initialize Firebase Firestore
@@ -44,6 +46,12 @@ public class UsersFragment extends Fragment {
 
         // Fetch users from Firestore and update the ListView
         fetchUsersFromFirestore();
+
+        // Set item click listener
+        usersListView.setOnItemClickListener((parent, view1, position, id) -> {
+            User selectedUser = usersList.get(position);
+            showDeleteConfirmationDialog(getContext(), selectedUser);
+        });
 
         return view;
     }
@@ -61,13 +69,10 @@ public class UsersFragment extends Fragment {
 
                         // Process the results and add each user to the list
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Create a new User object with deviceID (assuming this is the unique identifier)
                             User user = new User(getContext());
-                            // Assuming the deviceID is stored as a field in Firestore
                             String deviceID = document.getString("deviceID");
 
                             if (deviceID != null) {
-                                // Set the deviceID in the user object
                                 user.setDeviceID(deviceID);
                                 usersList.add(user);
                             }
@@ -77,7 +82,67 @@ public class UsersFragment extends Fragment {
                         usersListAdapter.notifyDataSetChanged();
                     } else {
                         // Handle the error
-                        // e.g., show a Toast or Log the error
+                        Toast.makeText(getContext(), "Error fetching users", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * Show a confirmation dialog to delete the user.
+     */
+    private void showDeleteConfirmationDialog(Context context, User user) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete User")
+                .setMessage("Are you sure you want to delete this user?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteUser(user))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    /**
+     * Delete the user from Firestore.
+     */
+    private void deleteUser(User user) {
+        String deviceID = user.getDeviceID();
+
+        // Remove the user from the 'users' collection
+        db.collection("users")
+                .whereEqualTo("deviceID", deviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            document.getReference().delete();
+                        }
+
+                        // Remove the user from all 'participants' sub-collections
+                        db.collection("events")
+                                .get()
+                                .addOnCompleteListener(eventTask -> {
+                                    if (eventTask.isSuccessful()) {
+                                        for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
+                                            eventDoc.getReference()
+                                                    .collection("participants")
+                                                    .whereEqualTo("deviceID", deviceID)
+                                                    .get()
+                                                    .addOnCompleteListener(participantTask -> {
+                                                        if (participantTask.isSuccessful()) {
+                                                            for (QueryDocumentSnapshot participantDoc : participantTask.getResult()) {
+                                                                participantDoc.getReference().delete();
+                                                            }
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                });
+
+                        // Update the UI
+                        usersList.remove(user);
+                        usersListAdapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(), "User deleted successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Error deleting user", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
