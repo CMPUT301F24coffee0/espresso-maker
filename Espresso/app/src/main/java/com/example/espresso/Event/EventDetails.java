@@ -244,7 +244,6 @@ public class EventDetails extends AppCompatActivity {
         });
 
 
-
         entrantButton.setOnClickListener(v -> {
             // Create an instance of TabbedDialogFragment
             TabbedDialogFragment dialog = new TabbedDialogFragment();
@@ -257,8 +256,6 @@ public class EventDetails extends AppCompatActivity {
             // Show the dialog
             dialog.show(getSupportFragmentManager(), "TabbedDialog");
         });
-
-
 
         editButton.setOnClickListener(v -> {
             // Edit the event
@@ -717,6 +714,7 @@ public class EventDetails extends AppCompatActivity {
                 Map<String, Object> participantData = new HashMap<>();
                 participantData.put("latitude", null);
                 participantData.put("longitude", null);
+                participantData.put("deviceId", deviceID);
                 participantData.put("status", "pending");
 
                 db.collection("events").document(eventId).collection("participants").document(deviceID)
@@ -738,6 +736,7 @@ public class EventDetails extends AppCompatActivity {
                                                             // Update notification field
                                                             Map<String, Object> notificationData = new HashMap<>();
                                                             notificationData.put("notif", true);
+                                                            notificationButton.setImageResource(R.drawable.ic_notif);
                                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                                     .set(notificationData, SetOptions.merge());
                                                         }
@@ -748,6 +747,7 @@ public class EventDetails extends AppCompatActivity {
                                             // Disable notifications
                                             Map<String, Object> notificationData = new HashMap<>();
                                             notificationData.put("notif", false);
+                                            notificationButton.setImageResource(R.drawable.ic_notif_off);
                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                     .set(notificationData, SetOptions.merge());
                                             Toast.makeText(EventDetails.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
@@ -766,7 +766,6 @@ public class EventDetails extends AppCompatActivity {
                         });
             }
         });
-
 
         withdrawButton.setOnClickListener(v -> {
             // User withdrew from the lottery

@@ -310,6 +310,28 @@
             android:visibility="gone"
             android:text="Withdraw from the lottery" />
 
+        <Button
+            android:id="@+id/remove_qr_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/grey"
+            android:textColor="@color/red"
+            android:visibility="gone"
+            android:text="Remove QR Code" />
+
+        <Button
+            android:id="@+id/remove_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/red"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:text="Remove Event" />
+
 
     </LinearLayout>
 
