@@ -37,7 +37,7 @@ public class ScanQR extends AppCompatActivity {
     private Button goBackButton, flashButton;
     private boolean isTorchOn = false;  // Variable to keep track of torch state
     String name, date, time, location, description, deadline;
-    int capacity;
+    int capacity, sample;
 
     /**
      * Called when the activity is first created. This method initializes the user interface,
@@ -112,6 +112,8 @@ public class ScanQR extends AppCompatActivity {
                                     description = (String) eventData.get("description");
                                     deadline = (String) eventData.get("deadline");
                                     capacity = ((Long) Objects.requireNonNull(eventData.get("capacity"))).intValue();
+                                    sample = ((Long) Objects.requireNonNull(eventData.get("sample"))).intValue();
+
 
                                     // Pass the event details to the EventDetails activity
                                     Intent intent = new Intent(ScanQR.this, EventDetails.class);
@@ -123,6 +125,7 @@ public class ScanQR extends AppCompatActivity {
                                     intent.putExtra("description", description);
                                     intent.putExtra("deadline", deadline);
                                     intent.putExtra("capacity", capacity);
+                                    intent.putExtra("sample", sample);
                                     startActivity(intent);
 
                                     // Stop further scans once the result is processed

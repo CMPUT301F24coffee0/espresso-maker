@@ -41,7 +41,8 @@ public class ImageUploadFragment extends Fragment {
     private FirebaseFirestore db;
     private Button uploadButton;
 
-    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId, geo;
+    private String eventName, eventLocation, eventDate, eventTime, registrationDeadline, waitingListCapacity, documentId, sample, eventType;
+    TextView descriptionView;
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     Uri selectedImageUri;
@@ -80,10 +81,22 @@ public class ImageUploadFragment extends Fragment {
             registrationDeadline = getArguments().getString("registrationDeadline");
             waitingListCapacity = getArguments().getString("waitingListCapacity");
             documentId = getArguments().getString("documentId");
-
+            sample = getArguments().getString("sample");
+            eventType = getArguments().getString("status");
         }
 
-
+        descriptionView = view.findViewById(R.id.description);
+        if (eventType.equals("edit")) {
+            db.collection("events").document(documentId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            descriptionView.setText(documentSnapshot.getString("description"));
+                            geolocationSwitch.setChecked(Boolean.TRUE.equals(documentSnapshot.getBoolean("geolocation")));
+                        }
+                        Log.d("document ID: ", documentId);
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to load data", Toast.LENGTH_SHORT).show());
+        }
 
         uploadButton = view.findViewById(R.id.upload_poster_button);
         uploadButton.setOnClickListener(this::selectPoster);
@@ -103,6 +116,9 @@ public class ImageUploadFragment extends Fragment {
                     saveEventDataToFirestore(view);
                     uploadImageToFirebase(selectedImageUri);
                 });
+
+        (view.findViewById(R.id.go_back_button)).setOnClickListener(v -> getActivity().onBackPressed());
+        (view.findViewById(R.id.exit_form_button)).setOnClickListener(v -> getActivity().finish());
         return view;
     }
 
@@ -115,7 +131,7 @@ public class ImageUploadFragment extends Fragment {
     private void uploadImageToFirebase(Uri imageUri) {
         try {
             InputStream inputStream = requireActivity().getContentResolver().openInputStream(imageUri);
-            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), 2, "view", geolocationSwitch.isChecked());
+            Event event = new Event(eventName, eventDate, eventTime, "" , registrationDeadline, Integer.parseInt(waitingListCapacity), new Facility(eventLocation), 2, "view", geolocationSwitch.isChecked(), Integer.parseInt(sample));
 
             String eventId = event.getId();
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -151,21 +167,17 @@ public class ImageUploadFragment extends Fragment {
         eventData.put("time", eventTime);
         eventData.put("deadline", registrationDeadline);
         eventData.put("capacity", Integer.parseInt(waitingListCapacity));
-        //eventData.put("sample", sample);
+        eventData.put("sample", sample);
 
-        TextView descriptionView = view.findViewById(R.id.description);
-        if (descriptionView != null) {
-            String descriptionText = descriptionView.getText().toString();
-            eventData.put("description", descriptionText);
-        }
+        String descriptionText = descriptionView.getText().toString();
+        eventData.put("description", descriptionText);
 
         // Handle geolocation switch
 
         eventData.put("geolocation", geolocationSwitch.isChecked());
-
-
         eventData.put("organizer", (new User(requireContext())).getDeviceID());
         eventData.put("drawn", 2);
+        eventData.put("sample", Integer.parseInt(sample));
 
         DocumentReference docRef;
         if (documentId != null && !documentId.isEmpty()) {
@@ -184,7 +196,8 @@ public class ImageUploadFragment extends Fragment {
                         Integer.valueOf(waitingListCapacity),
                         new Facility(eventLocation),
                         2,
-                        "view", geolocationSwitch.isChecked()).getId());
+                        "view",
+                        geolocationSwitch.isChecked(), Integer.parseInt(sample)).getId());
 
         docRef.set(eventData)
                 .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Event saved successfully", Toast.LENGTH_SHORT).show())

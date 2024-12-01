@@ -122,7 +122,9 @@ public class HomeFragment extends Fragment {
             String description = doc.getString("description");
             String deadline = doc.getString("deadline");
             String status = doc.getString("status");
+
             int capacity = Objects.requireNonNull(doc.getLong("capacity")).intValue();
+            int sample = Objects.requireNonNull(doc.getLong("sample")).intValue();
 
             int drawn = Objects.requireNonNull(doc.getLong("drawn")).intValue();
             boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
@@ -136,7 +138,7 @@ public class HomeFragment extends Fragment {
                     capacity,
                     new Facility(location),
                     drawn,
-                    deadline, geolocation
+                    deadline, geolocation, sample
             ));
         }
         adapter.notifyDataSetChanged();  // Notify the adapter to refresh the ListView
@@ -179,6 +181,7 @@ public class HomeFragment extends Fragment {
         intent.putExtra("eventId", event.getId());
         intent.putExtra("status", "view");
         intent.putExtra("geo", event.getGeolocation());
+        intent.putExtra("sample", event.getSample());
 
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);
@@ -226,6 +229,8 @@ public class HomeFragment extends Fragment {
                     int drawn = Objects.requireNonNull(document.getLong("drawn")).intValue();
                     boolean geolocation = Boolean.TRUE.equals(document.getBoolean("geolocation"));
 
+                    int sample = Objects.requireNonNull(document.getLong("sample")).intValue();
+
                     events.add(new Event(
                             document.getId(),
                             name,
@@ -236,7 +241,7 @@ public class HomeFragment extends Fragment {
                             new Facility(location),
                             drawn,
                             deadline,
-                            geolocation
+                            geolocation, sample
                     ));
                 }
                 adapter.notifyDataSetChanged();  // Refresh the adapter

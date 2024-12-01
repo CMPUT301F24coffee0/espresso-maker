@@ -69,9 +69,13 @@ public class ConfirmedEvents extends Fragment {
                             Object capacityObj = data.get("capacity");
                             boolean geolocation = Boolean.TRUE.equals(data.get("geolocation"));
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
+
+                            Object sampleObj = data.get("sample");
+                            int sample = (sampleObj instanceof Number) ? ((Number) sampleObj).intValue() : 0;
+
                             Object drawnObj = data.get("drawn");
                             int drawn = (drawnObj instanceof Number) ? ((Number) drawnObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, "confirmed", geolocation));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, "confirmed", geolocation, sample));
 
                         }
                         adapter.notifyDataSetChanged();
@@ -94,6 +98,7 @@ public class ConfirmedEvents extends Fragment {
             String deadline = clickedEvent.getDeadline();
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
+            int sample = clickedEvent.getSample();
 
             Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", eventId=" + eventId);
 
@@ -108,6 +113,7 @@ public class ConfirmedEvents extends Fragment {
             intent.putExtra("capacity", capacity);
             intent.putExtra("eventId", eventId);
             intent.putExtra("status", "confirmed");
+            intent.putExtra("sample", sample);
 
             // Fetch and add the event poster URL to the intent
             clickedEvent.getUrl(url -> intent.putExtra("posterUrl", url));
