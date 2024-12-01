@@ -176,7 +176,6 @@ public class HomeFragment extends Fragment {
         intent.putExtra("status", "admin");
         intent.putExtra("geo", event.getGeolocation());
         intent.putExtra("sample", event.getSample());
-
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);
             startActivity(intent);
