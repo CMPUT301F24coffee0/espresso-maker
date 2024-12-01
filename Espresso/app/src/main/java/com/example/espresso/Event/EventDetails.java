@@ -700,6 +700,7 @@ public class EventDetails extends AppCompatActivity {
                                     participantData.put("latitude", latitude);
                                     participantData.put("longitude", longitude);
                                     participantData.put("status", "pending");
+                                    participantData.put("deviceId", deviceID);
 
                                     db.collection("events").document(eventId).collection("participants").document(deviceID)
                                             .set(participantData, SetOptions.merge())
@@ -758,6 +759,7 @@ public class EventDetails extends AppCompatActivity {
                 participantData.put("latitude", null);
                 participantData.put("longitude", null);
                 participantData.put("status", "pending");
+                participantData.put("deviceId", deviceID);
 
                 db.collection("events").document(eventId).collection("participants").document(deviceID)
                         .set(participantData, SetOptions.merge())
@@ -778,7 +780,6 @@ public class EventDetails extends AppCompatActivity {
                                                             // Update notification field
                                                             Map<String, Object> notificationData = new HashMap<>();
                                                             notificationData.put("notif", true);
-                                                            notificationData.put("deviceId", deviceID);
                                                             notificationButton.setImageResource(R.drawable.ic_notif);
                                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                                     .set(notificationData, SetOptions.merge());
@@ -790,7 +791,6 @@ public class EventDetails extends AppCompatActivity {
                                             // Disable notifications
                                             Map<String, Object> notificationData = new HashMap<>();
                                             notificationData.put("notif", false);
-                                            notificationData.put("deviceId", deviceID);
                                             notificationButton.setImageResource(R.drawable.ic_notif_off);
                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                     .set(notificationData, SetOptions.merge());
