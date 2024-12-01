@@ -3,12 +3,19 @@ package com.example.espresso.Admin;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.espresso.R;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +32,10 @@ public class ImagesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView recyclerView;
+    private ImageAdapter imageAdapter;
+    private List<String> imageUrls;
 
     public ImagesFragment() {
         // Required empty public constructor
@@ -58,9 +69,36 @@ public class ImagesFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_images, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_images, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        imageUrls = new ArrayList<>();
+        imageAdapter = new ImageAdapter(imageUrls);
+        recyclerView.setAdapter(imageAdapter);
+
+        fetchImages("pfps/");
+        fetchImages("posters/");
+
+        return view;
+    }
+
+    private void fetchImages(String directory) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child(directory);
+
+        storageReference.listAll()
+                .addOnSuccessListener(listResult -> {
+                    for (StorageReference item : listResult.getItems()) {
+                        item.getDownloadUrl().addOnSuccessListener(uri -> {
+                            imageUrls.add(uri.toString());
+                            imageAdapter.notifyDataSetChanged();
+                        });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle any errors
+                });
     }
 }
