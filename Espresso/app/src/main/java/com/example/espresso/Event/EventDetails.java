@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.espresso.Admin.AdminActivity;
 import com.example.espresso.Organizer.MapActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.SetOptions;
@@ -65,7 +66,7 @@ import java.util.Set;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton, drawLotteryButton2, acceptInviteButton, declineInviteButton, sendNotificationButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, drawLotteryButton2, acceptInviteButton, declineInviteButton, sendNotificationButton, removeEventButton, removeQRButton;
     ImageButton editButton, notificationButton, shareBtn, goBackBtn, mapButton, entrantButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -166,6 +167,8 @@ public class EventDetails extends AppCompatActivity {
         drawLotteryButton2 = findViewById(R.id.draw_lottery_2);
         mapButton = findViewById(R.id.map_button);
         entrantButton = findViewById(R.id.entrant_button);
+        removeEventButton = findViewById(R.id.remove_button);
+        removeQRButton = findViewById(R.id.remove_qr_button);
 
         // Check if user wants to receive notifications
         assert eventId != null;
@@ -198,6 +201,14 @@ public class EventDetails extends AppCompatActivity {
                 });
 
         switch (Objects.requireNonNull(status)) {
+            case "admin": // When user is admin
+                enterLotteryButton.setEnabled(false);
+                enterLotteryButton.setVisibility(View.GONE);
+                notificationButton.setVisibility(View.GONE);
+                shareBtn.setVisibility(View.GONE);
+                removeEventButton.setVisibility(View.VISIBLE);
+                removeQRButton.setVisibility(View.VISIBLE);
+                break;
             case "edit": // When user is organizer
                 enterLotteryButton.setEnabled(false);
                 enterLotteryButton.setVisibility(View.GONE);
@@ -244,6 +255,23 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("red")));
                 break;
         }
+
+        // For admin
+        removeEventButton.setOnClickListener(v -> {
+            // Remove the event in users
+            db.collection("events").document(eventId).collection("participants").get().addOnSuccessListener(task -> {
+                for (DocumentSnapshot document : task.getDocuments()) {
+                    String participantId = document.getId();
+                    db.collection("users").document(participantId).collection("events").document(eventId).delete();
+                }
+            });
+            // Remove the event in events
+            db.collection("events").document(eventId).delete().addOnSuccessListener(aVoid -> {
+                Intent intent2 = new Intent(EventDetails.this, AdminActivity.class);
+                startActivity(intent2);
+            });
+
+        });
 
         // For organizer
         mapButton.setOnClickListener(v -> {
@@ -395,7 +423,7 @@ public class EventDetails extends AppCompatActivity {
                             int size = participants.size();
 
                             // Ensure we don't select more than the total number of participants
-                            int selectCount = Math.min(capacity, size);
+                            int selectCount = Math.min(sample, size);
 
                             // Shuffle the participant list to get a random order
                             Collections.shuffle(participants);
@@ -476,7 +504,7 @@ public class EventDetails extends AppCompatActivity {
 
                             // Update the "drawn" status for the event
                             db.collection("events").document(eventId).update("drawn", 1);
-                            db.collection("events").document(eventId).update("capacity", capacity - selectCount);
+                            db.collection("events").document(eventId).update("sample", sample - selectCount);
                             Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
                             drawLotteryButton.setVisibility(View.GONE);
                             drawLotteryButton2.setVisibility(View.VISIBLE);
@@ -500,7 +528,7 @@ public class EventDetails extends AppCompatActivity {
                             int size = participants.size();
 
                             // Ensure we don't select more than the total number of participants
-                            int selectCount = Math.min(capacity, size);
+                            int selectCount = Math.min(sample, size);
 
                             // Shuffle the participant list to get a random order
                             Collections.shuffle(participants);
