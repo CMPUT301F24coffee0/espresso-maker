@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SplashActivity"
-    android:background="#B6917B">
+    android:background="@drawable/app_background">
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/app_name_anim"
