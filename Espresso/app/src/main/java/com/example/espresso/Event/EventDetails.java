@@ -864,11 +864,6 @@ public class EventDetails extends AppCompatActivity {
             ImageView qrCodeImage = dialogView.findViewById(R.id.qr_code_image);
             qrCodeImage.setImageBitmap(bitmap);
 
-            Button shareButton = dialogView.findViewById(R.id.share_qr_button);
-            shareButton.setOnClickListener(v1 -> {
-                //Share qr code
-            });
-
             AlertDialog dialog = builder.create();
             dialog.show();
             Button cancelButton = dialogView.findViewById(R.id.cancel_button);
@@ -891,7 +886,7 @@ public class EventDetails extends AppCompatActivity {
                 enterLotteryButton.performClick();
             } else {
                 // Permission denied
-                Toast.makeText(this, "Location access is required to join this event.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Precise location access is required to join this event.", Toast.LENGTH_SHORT).show();
             }
         }
     }
