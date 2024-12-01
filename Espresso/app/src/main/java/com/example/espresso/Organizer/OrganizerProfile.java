@@ -52,7 +52,7 @@ public class OrganizerProfile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_profile, container, false);
 
         // Get the device ID for the current user
-        String deviceID = new User(getContext()).getDeviceID();
+        String deviceID = new User(requireContext()).getDeviceID();
 
         if (deviceID == null) {
             Log.d("user", "Device ID is null");

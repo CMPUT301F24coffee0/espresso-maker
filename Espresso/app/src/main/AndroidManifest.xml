@@ -29,6 +29,11 @@
         android:theme="@style/Theme.Espresso"
         tools:targetApi="31">
         <activity
+            android:name=".EntrantList"
+            android:exported="false"
+            android:label="@string/title_activity_entrant_list"
+            android:theme="@style/Theme.Espresso.NoActionBar" />
+        <activity
             android:name=".Admin.AdminActivity"
             android:exported="false" />
         <activity

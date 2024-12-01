@@ -15,10 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +31,7 @@ import com.example.espresso.Attendee.QRCode;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Organizer.NewEventForm;
 import com.example.espresso.R;
+import com.example.espresso.EntrantList.TabbedDialogFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -49,8 +47,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import android.Manifest;
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -246,71 +243,19 @@ public class EventDetails extends AppCompatActivity {
         });
 
         entrantButton.setOnClickListener(v -> {
-            // Create a dialog to show the list of entrants
-            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetails.this);
-            LayoutInflater inflater = getLayoutInflater();
-            View dialogView = inflater.inflate(R.layout.dialog_entrant_list, null);
+            // Create an instance of TabbedDialogFragment
+            TabbedDialogFragment dialog = new TabbedDialogFragment();
 
-            // Find the ListView and close button in the dialog layout
-            ListView entrantListView = dialogView.findViewById(R.id.entrant_list_view);
-            ImageButton closeButton = dialogView.findViewById(R.id.close_button1);
-
-            // Create the dialog
-            AlertDialog dialog = builder.create();
-            dialog.setView(dialogView);
-
-            // Fetch participants from Firestore
-            db.collection("events").document(eventId)
-                    .collection("participants")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Create a list to hold participant details
-                            List<Map<String, String>> participantDetailsList = new ArrayList<>();
-
-                            // Process each participant document
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Get the participant's device ID
-                                String participantId = document.getId();
-                                String status1 = document.getString("status");
-
-                                // Fetch user details for each participant
-                                db.collection("users").document(participantId).get()
-                                        .addOnSuccessListener(userDoc -> {
-                                            if (userDoc.exists()) {
-                                                String name1 = userDoc.getString("name");
-
-                                                // Create a map for each participant
-                                                Map<String, String> participantDetails = new HashMap<>();
-                                                participantDetails.put("name", name1);
-                                                participantDetails.put("status", status1);
-                                                participantDetailsList.add(participantDetails);
-
-                                                // Create a custom adapter for the list view
-                                                SimpleAdapter adapter = new SimpleAdapter(
-                                                        EventDetails.this,
-                                                        participantDetailsList,
-                                                        android.R.layout.simple_list_item_2,
-                                                        new String[]{"name", "status"},
-                                                        new int[]{android.R.id.text1, android.R.id.text2}
-                                                );
-                                                entrantListView.setAdapter(adapter);
-                                            }
-                                        });
-                            }
-                        } else {
-                            // Handle error
-                            Log.e("EntrantList", "Error getting participants", task.getException());
-                            Toast.makeText(EventDetails.this, "Failed to load entrants", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-            // Set up close button
-            closeButton.setOnClickListener(closeView -> dialog.dismiss());
+            // Pass eventId to the dialog
+            Bundle args = new Bundle();
+            args.putString("eventId", eventId);
+            dialog.setArguments(args);
 
             // Show the dialog
-            dialog.show();
+            dialog.show(getSupportFragmentManager(), "TabbedDialog");
         });
+
+
 
         editButton.setOnClickListener(v -> {
             // Edit the event
@@ -496,25 +441,6 @@ public class EventDetails extends AppCompatActivity {
                         });
             }
 
-        });
-
-
-        withdrawButton.setOnClickListener(v -> {
-            // User withdrew from the lottery
-            assert eventId != null;
-            db.collection("users").document(deviceID).collection("events").document(eventId).delete();
-            db.collection("events").document(eventId).collection("participants").document(deviceID).delete().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    // Lottery withdrawn successfully
-                    Toast.makeText(this, "You have successfully withdrawn from the lottery!", Toast.LENGTH_SHORT).show();
-                    // Go back to the previous activity
-                    Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
-                    startActivity(intent2);
-                } else {
-                    // Lottery withdrawal failed
-                    Toast.makeText(this, "Failed to withdraw from the lottery.", Toast.LENGTH_SHORT).show();
-                }
-            });
         });
 
         drawLotteryButton.setOnClickListener(v -> {
@@ -810,6 +736,7 @@ public class EventDetails extends AppCompatActivity {
                                                             } else {
                                                                 Map<String, Object> notificationData = new HashMap<>();
                                                                 notificationData.put("notif", true);
+                                                                notificationData.put("deviceId", deviceID);
 
                                                                 db.collection("events").document(eventId)
                                                                         .collection("participants").document(deviceID)
