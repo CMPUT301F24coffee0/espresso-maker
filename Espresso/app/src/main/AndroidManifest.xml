@@ -32,6 +32,19 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".Organizer.MapActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBMW9UBDIhr5YbpHbyLnGPCew5b3SM8zDY" />
+
+        <activity
+            android:name=".EntrantList"
+            android:exported="false"
+            android:label="@string/title_activity_entrant_list"
+            android:theme="@style/Theme.Espresso.NoActionBar" />
+        <activity
             android:name=".Admin.AdminActivity"
             android:exported="false" />
         <activity
