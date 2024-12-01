@@ -32,15 +32,13 @@
         android:textStyle="bold"
         android:textColor="@color/black" />
 
-    <!-- ListView for images -->
-    <ListView
-        android:id="@+id/event_list_view"
+    <!-- RecyclerView for images -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="510dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/upcoming_events_header"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
-        android:layout_marginTop="8dp" />
-
-
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

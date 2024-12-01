@@ -156,12 +156,6 @@ public class HomeFragment extends Fragment {
             Event clickedEvent = events.get(position);
             openEventDetails(clickedEvent);
         });
-
-        listView.setOnItemLongClickListener((parent, view, position, id) -> {
-            Event clickedEvent = events.get(position);
-            deleteEvent(clickedEvent.getId(), db);
-            return true;  // Indicate the event was successfully deleted
-        });
     }
 
     /**
@@ -186,26 +180,6 @@ public class HomeFragment extends Fragment {
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);
             startActivity(intent);
-        });
-    }
-
-    /**
-     * Deletes an event from Firestore.
-     *
-     * @param eventId The ID of the event to be deleted.
-     * @param db      The FirebaseFirestore instance to delete the event from.
-     */
-    private void deleteEvent(String eventId, FirebaseFirestore db) {
-        db.collection("events").document(eventId).delete().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(requireContext(), "Event deleted successfully", Toast.LENGTH_SHORT).show();
-                Log.d("AdminHomeFragment", "Event deleted: " + eventId);
-                // Optionally refresh the list after deletion
-                loadEvents();  // This is to refresh the list of events
-            } else {
-                Toast.makeText(requireContext(), "Failed to delete event", Toast.LENGTH_SHORT).show();
-                Log.e("AdminHomeFragment", "Error deleting event", task.getException());
-            }
         });
     }
 

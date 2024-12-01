@@ -178,6 +178,7 @@ public class ImageUploadFragment extends Fragment {
         eventData.put("organizer", (new User(requireContext())).getDeviceID());
         eventData.put("drawn", 2);
         eventData.put("sample", Integer.parseInt(sample));
+        eventData.put("disableQR", false);
 
         DocumentReference docRef;
         if (documentId != null && !documentId.isEmpty()) {
