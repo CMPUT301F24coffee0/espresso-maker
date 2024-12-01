@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class AttendeeHomeFragment extends Fragment {
+    boolean disableQR;
     View view;
     public AttendeeHomeFragment() {
         // Required empty public constructor
@@ -125,6 +126,7 @@ public class AttendeeHomeFragment extends Fragment {
 
         int drawn = Objects.requireNonNull(doc.getLong("drawn")).intValue();
         boolean geolocation = Boolean.TRUE.equals(doc.getBoolean("geolocation"));
+        disableQR = Boolean.TRUE.equals(doc.getBoolean("disableQR"));
         events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, "view", geolocation, sample));
 
     }
@@ -159,6 +161,7 @@ public class AttendeeHomeFragment extends Fragment {
         intent.putExtra("status", "view");
         intent.putExtra("geo", event.getGeolocation());
         intent.putExtra("sample", event.getSample());
+        intent.putExtra("disableQR", disableQR);
 
         event.getUrl(url -> {
             intent.putExtra("posterUrl", url);

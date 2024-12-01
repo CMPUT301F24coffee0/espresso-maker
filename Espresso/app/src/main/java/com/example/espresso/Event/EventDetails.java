@@ -109,8 +109,8 @@ public class EventDetails extends AppCompatActivity {
         String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
         int drawn = intent.getIntExtra("drawn", 0);
         boolean geolocation = intent.getBooleanExtra("geo", false);
-
         int sample = intent.getIntExtra("sample", 0);
+        boolean disableQR = intent.getBooleanExtra("disableQR", false);
 
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
@@ -273,13 +273,17 @@ public class EventDetails extends AppCompatActivity {
 
         });
 
+        removeQRButton.setOnClickListener(v -> {
+            db.collection("events").document(eventId).update("disableQR", true);
+            Toast.makeText(this, "QR disabled", Toast.LENGTH_SHORT).show();
+        });
+
         // For organizer
         mapButton.setOnClickListener(v -> {
             Intent i = new Intent(EventDetails.this, MapActivity.class);
             i.putExtra("eventId", eventId);
             startActivity(i);
         });
-
 
         entrantButton.setOnClickListener(v -> {
             // Create an instance of TabbedDialogFragment
@@ -844,6 +848,10 @@ public class EventDetails extends AppCompatActivity {
         });
 
         shareBtn.setOnClickListener(v -> {
+            if (disableQR) {
+                Toast.makeText(this, "QR code is disabled for this event.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             //Generate qr code from eventID
             Bitmap bitmap = new QRCode(eventId).generateQRCode();
             // Open a pop-up
