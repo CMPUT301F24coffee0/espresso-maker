@@ -77,10 +77,13 @@ public class PendingEvents extends Fragment {
                             String status = (String) data.get("status");
                             boolean geolocation = Boolean.TRUE.equals(data.get("geolocation"));
 
+                            Object sampleObj = data.get("sample");
+                            int sample = (sampleObj instanceof Number) ? ((Number) sampleObj).intValue() : 0;
+
                             int capacity = (capacityObj instanceof Number) ? ((Number) capacityObj).intValue() : 0;
                             Object drawnObj = data.get("drawn");
                             int drawn = (drawnObj instanceof Number) ? ((Number) drawnObj).intValue() : 0;
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status, geolocation));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status, geolocation, sample));
                             adapter.notifyDataSetChanged();
                         }
                     } else Log.d("Event", "Error getting documents: ", task.getException());
@@ -103,6 +106,7 @@ public class PendingEvents extends Fragment {
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
             String status = clickedEvent.getStatus();
+            int sample = clickedEvent.getSample();
 
             Log.d("Event", "Event clicked: Name=" + name + ", Date=" + date + ", Time=" + time + ", Location=" + location + ", Description=" + description + ", Deadline=" + deadline + ", Capacity=" + capacity + ", EventId=" + eventId);
 
@@ -117,6 +121,9 @@ public class PendingEvents extends Fragment {
             intent.putExtra("capacity", capacity);
             intent.putExtra("eventId", eventId);
             intent.putExtra("status", status);
+
+            intent.putExtra("sample", sample);
+
             // Fetch the event poster URL and pass it to the intent
             clickedEvent.getUrl(url -> intent.putExtra("posterUrl", url));
             startActivity(intent);

@@ -64,12 +64,14 @@ public class OrganizerHomeFragment extends Fragment {
                             String description = document.getString("description");
                             String deadline = document.getString("deadline");
                             String status = document.getString("status") ;
+
+                            int sample = Objects.requireNonNull(document.getLong("sample")).intValue();
                             boolean geolocation = Boolean.TRUE.equals(document.get("geolocation"));
 
                             if (status == null) status = "edit";
                             int drawn = Objects.requireNonNull(document.getLong("drawn")).intValue();
                             int capacity = Objects.requireNonNull(document.getLong("capacity")).intValue();
-                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status, geolocation));
+                            events.add(new Event(name, date, time, description, deadline, capacity, new Facility(location), drawn, status, geolocation, sample));
 
                         }
                         adapter.notifyDataSetChanged();
@@ -91,6 +93,7 @@ public class OrganizerHomeFragment extends Fragment {
             String deadline = clickedEvent.getDeadline();
             int drawn = clickedEvent.getDrawn();
             String status = clickedEvent.getStatus();
+            int sample = clickedEvent.getSample();
 
             int capacity = clickedEvent.getCapacity();
             String eventId = clickedEvent.getId();
@@ -105,7 +108,8 @@ public class OrganizerHomeFragment extends Fragment {
                             ", Capacity=" + capacity +
                             ", EventId=" + eventId +
                             ", Status=" + status +
-                            ", Drawn=" + drawn);
+                            ", Drawn=" + drawn +
+                            ", Sample=" + sample);
 
             Intent intent = new Intent(requireActivity(), EventDetails.class);
 
@@ -119,10 +123,9 @@ public class OrganizerHomeFragment extends Fragment {
             intent.putExtra("eventId", eventId);
             intent.putExtra("status", status);
             intent.putExtra("drawn", drawn);
+            intent.putExtra("sample", sample);
             startActivity(intent);
 
-        });
-
-        return view;
+        }); return view;
     }
 }

@@ -88,7 +88,7 @@ public class OrganizerHomeActivity extends AppCompatActivity {
      */
     public void launchEventForm(View view) {
         Intent intent = new Intent(this, NewEventForm.class);
-        intent.putExtra("type", "new");
+        intent.putExtra("action", "new");
         startActivity(intent);
     }
 }

@@ -19,6 +19,10 @@ import com.example.espresso.Attendee.User;
 import com.example.espresso.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,49 +32,47 @@ import java.util.Map;
 public class OrganizerFacility extends Fragment {
     private FirebaseFirestore db;
     private ArrayAdapter<String> facilityAdapter;
-    private List<String> facilityNames = new ArrayList<>();
-    private List<String> facilityIds = new ArrayList<>();
+    private List<String> facilities = new ArrayList<>();
     private String deviceID;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_organizer_facility, container, false);
 
         ListView facilityListView = view.findViewById(R.id.event_list_view);
         Button addFacilityButton = view.findViewById(R.id.add_facility);
 
-        facilityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, facilityNames);
+        facilityAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, facilities);
         facilityListView.setAdapter(facilityAdapter);
 
         deviceID = new User(requireContext()).getDeviceID();
 
         db = FirebaseFirestore.getInstance();
+
         fetchUserFacilities();
+
         addFacilityButton.setOnClickListener(v -> showAddFacilityDialog());
 
-        facilityListView.setOnItemClickListener((parent, view1, position, id) -> showDeleteConfirmationDialog(position));
+        facilityListView.setOnItemClickListener((parent, view1, position, id) -> showEditConfirmationDialog(0));
 
         return view;
     }
 
     private void fetchUserFacilities() {
-        db.collection("users").document(deviceID).collection("facilities")
+        db.collection("users").document(deviceID)
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    facilityNames.clear();
-                    facilityIds.clear();
-                    for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        String name = document.getString("name");
-                        if (name != null) {
-                            facilityNames.add(name);
-                            facilityIds.add(document.getId());
-                        }
+                .addOnSuccessListener(documentSnapshot -> {
+                    String facility = documentSnapshot.getString("facility");
+
+                    if (facility != null) {
+                        facilities.add(facility);
+                        facilityAdapter.notifyDataSetChanged();
                     }
-                    facilityAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to load facilities", Toast.LENGTH_SHORT).show();
-                    Log.e("OrganizerFacility", "Error fetching facilities", e);
+                    Toast.makeText(requireContext(), "Failed to load facility", Toast.LENGTH_SHORT).show();
+                    Log.e("OrganizerFacility", "Error fetching facility", e);
                 });
     }
 
@@ -86,9 +88,7 @@ public class OrganizerFacility extends Fragment {
             String facilityName = input.getText().toString().trim();
             if (!facilityName.isEmpty()) {
                 addFacilityToDatabase(facilityName);
-            } else {
-                Toast.makeText(requireContext(), "Facility name cannot be empty", Toast.LENGTH_SHORT).show();
-            }
+            } else Toast.makeText(requireContext(), "Facility name cannot be empty", Toast.LENGTH_SHORT).show();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
@@ -96,15 +96,14 @@ public class OrganizerFacility extends Fragment {
     }
 
     private void addFacilityToDatabase(String facilityName) {
-        String facilityId = facilityName + "#" + deviceID;
-        Map<String, Object> facilityData = new HashMap<>();
-        facilityData.put("name", facilityName);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("facility", facilityName);
 
-        db.collection("users").document(deviceID).collection("facilities").document(facilityId)
-                .set(facilityData)
+        db.collection("users").document(deviceID)
+                .update(updates)
                 .addOnSuccessListener(aVoid -> {
-                    facilityNames.add(facilityName);
-                    facilityIds.add(facilityId);
+                    facilities.clear();
+                    facilities.add(facilityName);
                     facilityAdapter.notifyDataSetChanged();
                     Toast.makeText(requireContext(), "Facility added successfully", Toast.LENGTH_SHORT).show();
                 })
@@ -114,33 +113,109 @@ public class OrganizerFacility extends Fragment {
                 });
     }
 
-
-    private void showDeleteConfirmationDialog(int position) {
+    private void showEditConfirmationDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Delete Facility");
-        builder.setMessage("Are you sure you want to delete this facility?");
+        builder.setTitle("Facility Options");
 
-        builder.setPositiveButton("Yes", (dialog, which) -> deleteFacility(position));
-        builder.setNegativeButton("No", (dialog, which) -> dialog.cancel());
+        String[] options = {"Edit Facility", "Delete Facility"};
+        builder.setItems(options, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    showEditFacilityDialog(position);
+                    break;
+                case 1:
+                    deleteFacility();
+                    break;
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    private void showEditFacilityDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Edit Facility");
+
+        final EditText input = new EditText(requireContext());
+        input.setHint("Enter new facility name");
+        input.setText(facilities.get(position));
+        builder.setView(input);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String newFacilityName = input.getText().toString().trim();
+            if (!newFacilityName.isEmpty()) {
+                updateFacilityInDatabase(newFacilityName);
+            } else {
+                Toast.makeText(requireContext(), "Facility name cannot be empty", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
 
-    private void deleteFacility(int position) {
-        String facilityId = facilityIds.get(position); // Get the document ID of the facility to delete
+    private void updateFacilityInDatabase(String newFacilityName) {
+        String oldFacilityName = facilities.get(0);
 
-        db.collection("users").document(deviceID).collection("facilities").document(facilityId)
-                .delete()
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("facility", newFacilityName);
+
+        db.collection("users").document(deviceID)
+                .update(updates)
                 .addOnSuccessListener(aVoid -> {
-                    // Remove the facility from the list and update the adapter
-                    facilityNames.remove(position);
-                    facilityIds.remove(position);
+                    db.collection("events")
+                            .whereEqualTo("location", oldFacilityName)
+                            .whereEqualTo("organizer", deviceID)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                                    document.getReference().update("location", newFacilityName)
+                                            .addOnSuccessListener(aVoid1 -> Log.d("EditFacility", "Event location updated"))
+                                            .addOnFailureListener(e -> Log.e("EditFacility", "Error updating event location", e));
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.e("EditFacility", "Error querying events", e));
+
+                    facilities.clear();
+                    facilities.add(newFacilityName);
                     facilityAdapter.notifyDataSetChanged();
-                    Toast.makeText(requireContext(), "Facility deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Facility updated successfully", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to delete facility", Toast.LENGTH_SHORT).show();
-                    Log.e("OrganizerFacility", "Error deleting facility", e);
+                    Toast.makeText(requireContext(), "Failed to update facility", Toast.LENGTH_SHORT).show();
+                    Log.e("OrganizerFacility", "Error updating facility", e);
                 });
     }
+
+    private void deleteFacility() {
+        String currentFacilityName = facilities.get(0);
+
+        db.collection("events")
+                .whereEqualTo("location", currentFacilityName)
+                .whereEqualTo("organizer", deviceID)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        Toast.makeText(requireContext(), "Cannot delete facility with existing events", Toast.LENGTH_SHORT).show();
+                    } else {
+                        db.collection("users").document(deviceID)
+                                .update("facility", null)
+                                .addOnSuccessListener(aVoid -> {
+                                    facilities.clear();
+                                    facilityAdapter.notifyDataSetChanged();
+                                    Toast.makeText(requireContext(), "Facility deleted successfully", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(requireContext(), "Failed to delete facility", Toast.LENGTH_SHORT).show();
+                                    Log.e("OrganizerFacility", "Error deleting facility", e);
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Error checking for events", Toast.LENGTH_SHORT).show();
+                    Log.e("OrganizerFacility", "Error querying events", e);
+                });
+    }
+
 }

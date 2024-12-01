@@ -108,6 +108,9 @@ public class EventDetails extends AppCompatActivity {
         String status = intent.getStringExtra("status") != null ? intent.getStringExtra("status") : "view";
         int drawn = intent.getIntExtra("drawn", 0);
         boolean geolocation = intent.getBooleanExtra("geo", false);
+
+        int sample = intent.getIntExtra("sample", 0);
+
         // Fetch poster from Firebase Storage
         String path = "posters/"+eventId+".png";
         posterRef = storageRef.child(path);
@@ -139,6 +142,7 @@ public class EventDetails extends AppCompatActivity {
         Picasso.get().load(posterUrl).into(imageView);
 
         Map<String, Object> eventData = new HashMap<>();
+
         eventData.put("name", name);
         eventData.put("date", date);
         eventData.put("time", time);
@@ -147,6 +151,7 @@ public class EventDetails extends AppCompatActivity {
         eventData.put("deadline", deadline);
         eventData.put("capacity", capacity);
         eventData.put("status", "pending");
+        eventData.put("sample", sample);
 
         enterLotteryButton = findViewById(R.id.enter_lottery_button);
         withdrawButton = findViewById(R.id.withdraw_button);
@@ -274,6 +279,8 @@ public class EventDetails extends AppCompatActivity {
             intent2.putExtra("capacity", capacity);
             intent2.putExtra("eventId", eventId);
             intent2.putExtra("status", status);
+            intent2.putExtra("sample", sample);
+            intent2.putExtra("action", "edit");
             startActivity(intent2);
         });
 
