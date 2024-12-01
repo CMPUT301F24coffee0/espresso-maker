@@ -130,6 +130,21 @@ public class NewEventForm extends AppCompatActivity {
         waitingListCapacity = findViewById(R.id.waiting_list_capacity);
         attendee_sample_num = findViewById(R.id.attendee_sample_num);
 
+        registrationDeadline.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    NewEventForm.this,
+                    (view, year, monthOfYear, dayOfMonth) -> {
+                        String date = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                        registrationDeadline.setText(date);
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            );
+            datePickerDialog.show();
+        });
+
         eventDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -237,6 +252,11 @@ public class NewEventForm extends AppCompatActivity {
         }
         if (!android.text.TextUtils.isDigitsOnly(waitingListCapacity.getText().toString())) {
             waitingListCapacity.setError("Enter a valid number");
+            isValid = false;
+        }
+        if (registrationDeadline.getText().toString().trim().isEmpty()) {
+            registrationDeadline.setError("Enter a valid date");
+            isValid = false;
         }
         return isValid;
     }

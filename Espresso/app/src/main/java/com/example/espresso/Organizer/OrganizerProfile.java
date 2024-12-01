@@ -115,6 +115,8 @@ public class OrganizerProfile extends Fragment {
             dialogView.findViewById(R.id.edit_phone_number).setVisibility(View.GONE);
 
             builder.setPositiveButton("Save", null); // Set to null initially
+            builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+
 
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {
