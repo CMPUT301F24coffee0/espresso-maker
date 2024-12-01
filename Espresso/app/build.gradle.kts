@@ -65,5 +65,5 @@ dependencies {
     implementation ("com.google.zxing:core:3.4.1")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.firebase:firebase-messaging")
-    implementation ("com.google.android.gms:play-services-maps:18.0.0")
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
 }
