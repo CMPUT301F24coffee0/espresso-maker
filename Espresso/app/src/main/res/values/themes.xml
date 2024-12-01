@@ -4,6 +4,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:statusBarColor">@color/veryLightBrown</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="Theme.Espresso" parent="Base.Theme.Espresso" />
@@ -16,4 +17,5 @@
     <style name="Theme.Espresso.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Espresso.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
