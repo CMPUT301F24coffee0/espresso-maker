@@ -136,6 +136,18 @@ public class FacilitiesFragment extends Fragment {
                                                 Log.e("FacilitiesFragment", "Error fetching events", task.getException());
                                             }
                                         });
+
+                                db.collection("users").document(removedDeviceID)
+                                        .update("facility", null)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("FacilitiesFragment", "Facility field removed from user document");
+                                            Toast.makeText(requireContext(), "Facility " + removedFacility + " deleted.", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("FacilitiesFragment", "Error removing facility field", e);
+                                            Toast.makeText(requireContext(), "Error deleting facility.", Toast.LENGTH_SHORT).show();
+                                        });
+
                                 Toast.makeText(requireContext(), "Facility " + removedFacility + " deleted.", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             })
