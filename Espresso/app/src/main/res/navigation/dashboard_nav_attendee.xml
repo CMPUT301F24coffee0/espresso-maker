@@ -13,14 +13,14 @@
 
     <fragment
         android:id="@+id/nav_my_event_attendee"
-        android:name="com.example.espresso.ui.slideshow.SlideshowFragment"
+        android:name="com.example.espresso.Attendee.AttendeeMyEvent"
         android:label="@string/menu_facilities_organizer"
         tools:layout="@layout/activity_attendee_my_event" />
 
 
     <fragment
         android:id="@+id/nav_profile_attendee"
-        android:name="com.example.espresso.ui.slideshow.SlideshowFragment"
+        android:name="com.example.espresso.Attendee.AttendeeProfile"
         android:label="@string/menu_profile_organizer"
         tools:layout="@layout/attendee_profile" />
 </navigation>
