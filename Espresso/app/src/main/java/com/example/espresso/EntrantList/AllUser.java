@@ -64,7 +64,7 @@ public class AllUser extends Fragment {
                             for (QueryDocumentSnapshot document : querySnapshot) {
                                 String deviceId = document.getString("deviceId");
                                 String status = document.getString("status");
-
+                                Log.d("AllUser", "Event ID: " + deviceId);
                                 // Fetch participant's name from the users collection
                                 db.collection("users").document(deviceId).get()
                                         .addOnCompleteListener(task1 -> {
