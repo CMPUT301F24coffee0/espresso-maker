@@ -179,7 +179,7 @@ public class HomeFragment extends Fragment {
         intent.putExtra("deadline", event.getDeadline());
         intent.putExtra("capacity", event.getCapacity());
         intent.putExtra("eventId", event.getId());
-        intent.putExtra("status", "view");
+        intent.putExtra("status", "admin");
         intent.putExtra("geo", event.getGeolocation());
         intent.putExtra("sample", event.getSample());
 
