@@ -52,7 +52,7 @@ public class OrganizerProfile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_organizer_profile, container, false);
 
         // Get the device ID for the current user
-        String deviceID = new User(getContext()).getDeviceID();
+        String deviceID = new User(requireContext()).getDeviceID();
 
         if (deviceID == null) {
             Log.d("user", "Device ID is null");
@@ -62,12 +62,6 @@ public class OrganizerProfile extends Fragment {
         // Set up the logout button
         Button logout = view.findViewById(R.id.sign_out);
         logout.setOnClickListener(v -> {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-            if (user != null) {
-                FirebaseAuth.getInstance().signOut();
-                Log.d("user", "User signed out");
-            }
             // Navigate back to the main activity (login screen)
             Intent intent = new Intent(requireActivity(), MainActivity.class);
             startActivity(intent);

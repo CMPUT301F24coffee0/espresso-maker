@@ -45,14 +45,14 @@ public class AdminActivity extends AppCompatActivity {
                 Fragment selectedFragment = null;
 
                 // Select fragment based on the item clicked in the bottom navigation
-                if (item.getItemId() == R.id.nav_users_admin) {
+                if (item.getItemId() == R.id.users) {
                     selectedFragment = new UsersFragment();
                     Log.d("AdminActivity", "UsersFragment selected");
-                } else if (item.getItemId() == R.id.nav_facilities_admin) {
+                } else if (item.getItemId() == R.id.facilities) {
                     selectedFragment = new FacilitiesFragment();
-                } else if (item.getItemId() == R.id.nav_images_admin) {
+                } else if (item.getItemId() == R.id.images) {
                     selectedFragment = new ImagesFragment();
-                } else if (item.getItemId() == R.id.nav_profile_admin) {
+                } else if (item.getItemId() == R.id.profile) {
                     selectedFragment = new ProfileFragment();
                 } else {
                     selectedFragment = new HomeFragment(); // Default to HomeFragment
