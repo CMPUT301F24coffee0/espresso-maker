@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.espresso.Organizer.MapActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.SetOptions;
 import androidx.activity.OnBackPressedCallback;
@@ -240,7 +242,9 @@ public class EventDetails extends AppCompatActivity {
 
         // For organizer
         mapButton.setOnClickListener(v -> {
-            // Show map here
+            Intent i = new Intent(EventDetails.this, MapActivity.class);
+            i.putExtra("eventId", eventId);
+            startActivity(i);
         });
 
 
