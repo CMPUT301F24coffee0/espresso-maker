@@ -22,6 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This fragment displays Confirmed users in Users display tab. A confirmed user is one that has been selected by an event referenced by eventID
+ */
 public class ConfirmedUser extends Fragment {
     private String eventId;
 

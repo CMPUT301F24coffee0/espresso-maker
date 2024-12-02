@@ -18,8 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.espresso.MainActivity;
 import com.example.espresso.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -260,6 +258,7 @@ public class AttendeeProfile extends Fragment {
                     // Open an InputStream from the content URI
                     InputStream inputStream = requireContext().getContentResolver().openInputStream(selectedImageUri);
                     // Upload the InputStream to Firebase Storage
+                    assert inputStream != null;
                     UploadTask uploadTask = pfpsRef.putStream(inputStream);
                     uploadTask.addOnSuccessListener(taskSnapshot -> {
                         Toast.makeText(requireContext(), "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
@@ -268,9 +267,7 @@ public class AttendeeProfile extends Fragment {
                         // Optionally, update the displayed image by reloading it from Firebase Storage
                         pfpsRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             Picasso.get().load(uri).into(profilePicButton); // Load image from Firebase Storage
-                        }).addOnFailureListener(exception -> {
-                            Log.e("user", "Error fetching uploaded image URL", exception);
-                        });
+                        }).addOnFailureListener(exception -> Log.e("user", "Error fetching uploaded image URL", exception));
                     }).addOnFailureListener(e -> {
                         Toast.makeText(requireContext(), "Failed to upload image.", Toast.LENGTH_SHORT).show();
                         Log.e("user", "Error uploading image", e);

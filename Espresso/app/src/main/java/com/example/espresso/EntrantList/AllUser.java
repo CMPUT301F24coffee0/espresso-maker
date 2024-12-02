@@ -21,6 +21,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This object displays a list of all users registered with a particular event inside a fragment.
+ */
 public class AllUser extends Fragment {
     private String eventId;
 
@@ -50,6 +53,11 @@ public class AllUser extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches all users assigned to a given event in Firebase
+     * @param allUsers List of Users
+     * @param adapter ListView Adapter
+     */
     private void fetchAllUsers(List<AllUserModel> allUsers, AllUserAdapter adapter) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -66,6 +74,7 @@ public class AllUser extends Fragment {
                                 String status = document.getString("status");
                                 Log.d("AllUser", "Event ID: " + deviceId);
                                 // Fetch participant's name from the users collection
+                                assert deviceId != null;
                                 db.collection("users").document(deviceId).get()
                                         .addOnCompleteListener(task1 -> {
                                             if (task1.isSuccessful()) {

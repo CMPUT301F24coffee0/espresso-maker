@@ -17,14 +17,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.List;
 
+/**
+ * Overrides RecyclerView class in order to display images as List elements
+ */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
     private List<String> imageUrls;
     private Context context;
 
+    /**
+     * Sets up an Image Adapter object
+     * @param imageUrls List of URLs of different images on the app
+     */
     public ImageAdapter(List<String> imageUrls) {
         this.imageUrls = imageUrls;
     }
@@ -76,7 +82,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         });
     }
 
-    // Helper method to extract filename from URL
+    /**
+     * Helper method to extract filename from URL
+     * @param url URL for the image
+     * @return String filename
+     */
     private String extractFilenameFromUrl(String url) {
         try {
             // Split by "/o/" and take the second part
@@ -97,12 +107,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         }
     }
 
-
     @Override
     public int getItemCount() {
         return imageUrls.size();
     }
 
+    /**
+     * Adds delete button and ImageView to ViewHolder Object
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         ImageButton deleteButton;

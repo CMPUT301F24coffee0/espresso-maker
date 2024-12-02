@@ -22,6 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a fragment containing DeclinedUsers in the User Display tabs.
+ */
 public class DeclinedUser extends Fragment {
     private String eventId;
 

@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.espresso.databinding.ActivityAttendeeMyEventBinding;
-
 import java.util.Objects;
 
 /**
@@ -27,7 +25,6 @@ public class AttendeeMyEvent extends Fragment {
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     ViewPageAdapter adapter;
-    ActivityAttendeeMyEventBinding binding;
 
     /**
      * Initializes the activity, sets up the BottomNavigationView navigation, and configures
