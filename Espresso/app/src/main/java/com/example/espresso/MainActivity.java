@@ -141,6 +141,17 @@ public class MainActivity extends AppCompatActivity {
                     if (Objects.equals(document.getString("status"), "confirmed")) {
                         // Subscribe to the topic
                         FirebaseMessaging.getInstance().subscribeToTopic(eventId+"confirmed");
+                    } else if (document.getString("status").equals("invited")) {
+                        // Subscribe to the topic
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventId+"invited");
+                    } else if (document.getString("status").equals("pending")) {
+                        // Subscribe to the topic
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventId+"pending");
+                    } else if (document.getString("status").equals("not-invited")) {
+                        // Subscribe to the topic
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventId+"not-invited");
+                    } else {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(eventId+"declined");
                     }
                 }
                 else {

@@ -258,16 +258,6 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/draw_lottery_2"
-            android:layout_width="350dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/lightBrown"
-            android:text="Draw the second Lottery"
-            android:visibility="gone" />
-
-        <Button
             android:id="@+id/notification"
             android:layout_width="350dp"
             android:layout_height="70dp"
