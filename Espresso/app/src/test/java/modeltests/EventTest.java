@@ -1,4 +1,4 @@
-package com.example.espresso;
+package modeltests;
 
 import android.net.Uri;
 
@@ -10,7 +10,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito .ArgumentCaptor;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -36,7 +36,7 @@ public class EventTest {
         facility = new Facility("Main Hall");
 
         // Create a new Event with mock data
-        event = new Event("Concert", "2024-12-01", "19:00", "A great concert", "2024-11-30", 500, facility);
+        event = new Event("Concert", "2024-12-01", "19:00", "A great concert", "2024-11-30", 500, facility, 5, "Open", false, 10);
     }
 
     @Test
@@ -86,6 +86,30 @@ public class EventTest {
     public void testGetCapacity() {
         // Test if the event capacity is correct
         assertEquals(500, event.getCapacity());
+    }
+
+    @Test
+    public void testGetDrawn() {
+        // Test if the event drawn count is correct
+        assertEquals(5, event.getDrawn());
+    }
+
+    @Test
+    public void testGetStatus() {
+        // Test if the event status is correct
+        assertEquals("Open", event.getStatus());
+    }
+
+    @Test
+    public void testGetGeolocation() {
+        // Test if the event geolocation setting is correct
+        assertFalse(event.getGeolocation());
+    }
+
+    @Test
+    public void testGetSample() {
+        // Test if the event sample parameter is correct
+        assertEquals(10, event.getSample());
     }
 
     @Test

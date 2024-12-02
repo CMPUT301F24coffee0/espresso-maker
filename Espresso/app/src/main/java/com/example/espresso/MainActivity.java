@@ -262,7 +262,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set listener for admin sign-in button
         admin_sign_in_btn.setOnClickListener(v -> {
-            if (isLoggedIn && role.equals("Admin")) {
+            //if (isLoggedIn && role.equals("Admin")) {
+            if (isLoggedIn) {
                 Intent i = new Intent(MainActivity.this, AdminActivity.class);
                 MainActivity.this.startActivity(i);
             } else {
