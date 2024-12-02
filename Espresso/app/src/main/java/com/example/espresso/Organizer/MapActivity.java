@@ -40,12 +40,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Get event ID from intent
         eventId = getIntent().getStringExtra("eventId");
 
+        // Initialize go back button
+        findViewById(R.id.map_go_back_button).setOnClickListener(view -> {
+            // Go back to the EventDetails activity
+            finish(); // Closes MapActivity and returns to the previous activity
+        });
+
         // Initialize MapView
         mapView = findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
 
         // Initialize the map
         mapView.getMapAsync(this);
+
     }
 
     @Override
