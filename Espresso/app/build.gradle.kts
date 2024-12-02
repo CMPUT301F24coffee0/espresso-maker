@@ -61,6 +61,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation("org.mockito:mockito-core:5.5.0")
+    testImplementation("org.mockito:mockito-core:5.5.0")
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
@@ -72,5 +73,5 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation ("com.google.android.gms:play-services-maps:18.0.0")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
+    androidTestImplementation(libs.junit.junit)
 }
-

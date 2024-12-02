@@ -15,6 +15,7 @@ firebaseMessaging = "24.1.0"
 rules = "1.6.0-alpha01"
 rulesVersion = "1.6.1"
 espressoContrib = "3.6.1"
+junitJunit = "4.12"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -32,6 +33,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 test-rules = { group = "androidx.test", name = "rules", version.ref = "rulesVersion" }
 espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espressoContrib" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
