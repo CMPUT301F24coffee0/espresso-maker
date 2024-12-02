@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
  * Test the user signup functionality
  */
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class SignUpTest {
     @Rule
     public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule<MainActivity>(MainActivity.class);
