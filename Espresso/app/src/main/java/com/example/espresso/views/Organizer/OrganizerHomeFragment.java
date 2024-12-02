@@ -2,6 +2,7 @@ package com.example.espresso.views.Organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.espresso.models.Attendee.User;
 import com.example.espresso.models.Event;
@@ -29,6 +31,16 @@ import java.util.Objects;
  * When an event is clicked, the user is directed to a form to either edit or view the event details.
  */
 public class OrganizerHomeFragment extends Fragment {
+    private SwipeRefreshLayout swipeRefreshLayout;;
+    FirebaseFirestore db;
+    View view;
+
+    List<Event> events;
+    ListView listView;
+    EventAdapter adapter;
+
+    String deviceID;
+
     /**
      * Called to inflate the fragment's layout and set up the list of events.
      * This method retrieves event data from Firestore, populates a list view with the events,
@@ -41,16 +53,37 @@ public class OrganizerHomeFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        View view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
+        view = inflater.inflate(R.layout.fragment_organizer_home, container, false);
 
-        List<Event> events = new ArrayList<>();
-        ListView listView = view.findViewById(R.id.event_list_view);
-        EventAdapter adapter = new EventAdapter(requireActivity(), events);
+        setupEventList(db, deviceID);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setupEventList(db, deviceID);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop the refreshing animation after the data is updated
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
+
+        return view;
+    }
+
+    private void setupEventList(FirebaseFirestore db, String deviceID) {
+        events = new ArrayList<>();
+        listView = view.findViewById(R.id.event_list_view);
+        adapter = new EventAdapter(requireActivity(), events);
         listView.setAdapter(adapter);
 
-        String deviceID = new User(requireActivity()).getDeviceID();
+        deviceID = new User(requireActivity()).getDeviceID();
         db.collection("events")
                 .whereEqualTo("organizer", deviceID)
                 .get(Source.SERVER)
@@ -126,6 +159,8 @@ public class OrganizerHomeFragment extends Fragment {
             intent.putExtra("sample", sample);
             startActivity(intent);
 
-        }); return view;
+        });
+
+
     }
 }

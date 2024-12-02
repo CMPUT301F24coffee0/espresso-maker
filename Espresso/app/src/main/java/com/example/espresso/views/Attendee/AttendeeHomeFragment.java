@@ -2,6 +2,7 @@ package com.example.espresso.views.Attendee;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.espresso.models.Attendee.User;
 import com.example.espresso.models.Event;
@@ -30,6 +32,7 @@ import java.util.Objects;
 
 public class AttendeeHomeFragment extends Fragment {
     private View view;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public AttendeeHomeFragment() {
         // Required empty public constructor
@@ -58,6 +61,23 @@ public class AttendeeHomeFragment extends Fragment {
 
             setupEventList(db, deviceID); // Pass deviceID to reuse it in other methods
         }
+
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setupEventList(db, deviceID);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop the refreshing animation after the data is updated
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 2000);
+            }
+        });
+
         return view;
     }
 
