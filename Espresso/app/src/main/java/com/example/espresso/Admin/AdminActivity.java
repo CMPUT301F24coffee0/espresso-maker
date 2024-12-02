@@ -14,7 +14,8 @@ import com.example.espresso.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * Launched after use chooses to continue as an Admin. Pathway into different Admin fragments
+ * Launched after the user chooses to continue as an Admin.
+ * Serves as the entry point to different Admin fragments.
  */
 public class AdminActivity extends AppCompatActivity {
 
@@ -43,7 +44,8 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     /**
-     * Bottom navigation listener to switch between fragments
+     * Listener for bottom navigation item selections.
+     * Switches between Admin fragments based on the selected item.
      */
     private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
             item -> {
@@ -67,8 +69,11 @@ public class AdminActivity extends AppCompatActivity {
                 loadFragment(selectedFragment);
                 return true;
             };
+
     /**
-     * Method to load fragments into the container
+     * Loads the given fragment into the fragment container.
+     *
+     * @param fragment the fragment to load
      */
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

@@ -19,15 +19,25 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 /**
- * Shows different tabs to launch Confirmed, Invited, Declined, or All user fragments. This allows organizers to pick a certain view for a specific type of Entrants.
+ * This DialogFragment shows different tabs for displaying confirmed, invited, declined, or all user fragments.
+ * It allows organizers to pick a certain view for a specific type of entrants.
  */
 public class TabbedDialogFragment extends DialogFragment {
-    String eventId;
+    private String eventId;
 
     public TabbedDialogFragment() {
         super(R.layout.dialog_tabbed_view);
     }
 
+    /**
+     * Initializes the fragment's view, sets up the TabLayout and ViewPager2, and connects them.
+     * The fragment is passed an eventId to identify which event's data to display.
+     *
+     * @param inflater LayoutInflater to inflate the layout
+     * @param container Parent view group to attach the view to
+     * @param savedInstanceState Bundle containing saved state (if any)
+     * @return The inflated view for this fragment
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_tabbed_view, container, false);
@@ -37,14 +47,14 @@ public class TabbedDialogFragment extends DialogFragment {
         ImageButton closeButton = view.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(v -> dismiss()); // Dismiss the dialog
 
-        // Other initializations (TabLayout and ViewPager2 setup)
+        // TabLayout and ViewPager2 initialization
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         ViewPager2 viewPager = view.findViewById(R.id.viewPager);
 
-        // Pass eventId to the adapter
+        // Set adapter to ViewPager2, passing eventId
         viewPager.setAdapter(new TabPagerAdapter(requireActivity(), eventId));
 
-        // Connect TabLayout with ViewPager2
+        // Connect TabLayout with ViewPager2 and set tab titles
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
@@ -65,8 +75,9 @@ public class TabbedDialogFragment extends DialogFragment {
         return view;
     }
 
-
-
+    /**
+     * FragmentStateAdapter used by the ViewPager2 to display the appropriate fragment for each tab.
+     */
     private static class TabPagerAdapter extends FragmentStateAdapter {
         private final String eventId;
 
@@ -75,6 +86,12 @@ public class TabbedDialogFragment extends DialogFragment {
             this.eventId = eventId; // Store eventId for use in fragments
         }
 
+        /**
+         * Creates the appropriate fragment based on the selected tab position.
+         *
+         * @param position The position of the tab
+         * @return The fragment for the selected tab
+         */
         @NonNull
         @Override
         public Fragment createFragment(int position) {
@@ -102,11 +119,14 @@ public class TabbedDialogFragment extends DialogFragment {
             return fragment;
         }
 
+        /**
+         * Returns the total number of tabs.
+         *
+         * @return The number of tabs (4)
+         */
         @Override
         public int getItemCount() {
             return 4; // Number of tabs
         }
     }
-
 }
-

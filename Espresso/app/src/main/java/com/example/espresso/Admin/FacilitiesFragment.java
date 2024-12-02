@@ -22,9 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FacilitiesFragment#newInstance} factory method to
- * create an instance of this fragment. Used to display Facilities on the app.
+ * A fragment used to display and manage facilities on the app.
+ * Allows administrators to view, delete facilities, and associated events.
  */
 public class FacilitiesFragment extends Fragment {
     private FirebaseFirestore db;
@@ -41,20 +40,15 @@ public class FacilitiesFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Factory method to create a new instance of this fragment.
+     *
+     * @return a new instance of {@link FacilitiesFragment}.
      */
-    // TODO: Rename and change types and number of parameters
     public static FacilitiesFragment newInstance() {
         FacilitiesFragment fragment = new FacilitiesFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -71,6 +65,7 @@ public class FacilitiesFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
+        // Fetches user data and populates the facilities list.
         db.collection("users")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -89,6 +84,7 @@ public class FacilitiesFragment extends Fragment {
                     }
                 });
 
+        // Sets up a click listener for the facility list to handle deletion of facilities.
         facilityListView.setOnItemClickListener(
                 (parent, view1, position, id) -> {
                     AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -101,6 +97,7 @@ public class FacilitiesFragment extends Fragment {
                                 String removedDeviceID = IDs.remove(position);
                                 names.remove(position);
 
+                                // Deletes events associated with the removed facility.
                                 db.collection("events")
                                         .whereEqualTo("organizer", removedDeviceID)
                                         .get()
@@ -116,6 +113,7 @@ public class FacilitiesFragment extends Fragment {
                                             }
                                         });
 
+                                // Removes facility from the user's record.
                                 db.collection("users").document(removedDeviceID)
                                         .update("facility", null)
                                         .addOnSuccessListener(aVoid -> {
@@ -134,6 +132,7 @@ public class FacilitiesFragment extends Fragment {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-        ); return view;
+        );
+        return view;
     }
 }

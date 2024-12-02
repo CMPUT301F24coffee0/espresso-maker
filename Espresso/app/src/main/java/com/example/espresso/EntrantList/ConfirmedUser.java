@@ -23,15 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This fragment displays Confirmed users in Users display tab. A confirmed user is one that has been selected by an event referenced by eventID
+ * Fragment that displays confirmed users for a given event. A confirmed user is one
+ * who has been selected by the event referenced by eventId.
  */
 public class ConfirmedUser extends Fragment {
     private String eventId;
 
+    /**
+     * Constructor for ConfirmedUser fragment, using the layout file fragment_confirmed_tab.
+     */
     public ConfirmedUser() {
         super(R.layout.fragment_confirmed_tab);
     }
 
+    /**
+     * Called to create the fragment's view. Initializes the ListView and fetches confirmed participants.
+     *
+     * @param inflater The LayoutInflater object to inflate the fragment's view.
+     * @param container The ViewGroup in which the fragment's UI should be inserted.
+     * @param savedInstanceState The saved instance state of the fragment.
+     * @return The View representing the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +70,12 @@ public class ConfirmedUser extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches the list of confirmed participants from Firestore and updates the ListView.
+     *
+     * @param confirmedEntrants The list to store participant names.
+     * @param adapter The adapter to notify when data changes.
+     */
     private void fetchConfirmedParticipants(List<String> confirmedEntrants, ArrayAdapter<String> adapter) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

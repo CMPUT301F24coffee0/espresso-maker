@@ -39,7 +39,6 @@ import java.util.Locale;
  * It collects event details from the user and allows them to upload an event image.
  * If editing an existing event, it loads the existing event data from Firestore.
  */
-
 public class NewEventForm extends AppCompatActivity {
     // Firestore instance to interact with the database
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -51,7 +50,6 @@ public class NewEventForm extends AppCompatActivity {
     private EditText eventName, eventDate, eventTime, registrationDeadline, waitingListCapacity, attendee_sample_num;
     private Spinner eventLocation;
     // Document ID to identify the event for editing
-
     private String documentId;
 
     /**
@@ -95,12 +93,7 @@ public class NewEventForm extends AppCompatActivity {
                     Log.e("OrganizerFacility", "Error fetching facility", e);
                 });
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                locations
-        );
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eventLocation.setAdapter(adapter);
 
@@ -120,16 +113,15 @@ public class NewEventForm extends AppCompatActivity {
             }
         });
 
-
         // Initialize EditText fields
         eventName = findViewById(R.id.event_name);
-        eventLocation = findViewById(R.id.location);
         eventDate = findViewById(R.id.choose_date);
         eventTime = findViewById(R.id.choose_time);
         registrationDeadline = findViewById(R.id.registration_until);
         waitingListCapacity = findViewById(R.id.waiting_list_capacity);
         attendee_sample_num = findViewById(R.id.attendee_sample_num);
 
+        // Date and time pickers for registration deadline, event date, and event time
         registrationDeadline.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -161,12 +153,10 @@ public class NewEventForm extends AppCompatActivity {
         });
 
         eventTime.setOnClickListener(v -> {
-            // Get the current time
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            // Create a TimePickerDialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(
                     NewEventForm.this,
                     (view, selectedHour, selectedMinute) -> {
@@ -196,14 +186,11 @@ public class NewEventForm extends AppCompatActivity {
         Button nextButton = findViewById(R.id.next_button);
 
         ImageButton close = findViewById(R.id.close_button);
-
         close.setOnClickListener(v -> finish());
 
         nextButton.setOnClickListener(v -> {
             if (validateInputs()) {
                 Bundle bundle = new Bundle();
-
-                // Put the event details into the bundle
                 bundle.putString("eventName", eventName.getText().toString());
                 bundle.putString("eventLocation", selectedLocation);
                 bundle.putString("eventDate", eventDate.getText().toString());
@@ -213,9 +200,7 @@ public class NewEventForm extends AppCompatActivity {
                 bundle.putString("documentId", documentId);
                 bundle.putString("sample", attendee_sample_num.getText().toString());
                 bundle.putString("status", eventType);
-                bundle.putString("sample", attendee_sample_num.getText().toString());
 
-                // Start the image upload fragment
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 ImageUploadFragment fragment = new ImageUploadFragment();
@@ -227,6 +212,11 @@ public class NewEventForm extends AppCompatActivity {
         });
     }
 
+    /**
+     * Validates user inputs for event details to ensure the fields are filled correctly.
+     *
+     * @return true if all inputs are valid, false otherwise.
+     */
     private boolean validateInputs() {
         boolean isValid = true;
         if (eventName.getText().toString().trim().isEmpty()) {
@@ -261,6 +251,12 @@ public class NewEventForm extends AppCompatActivity {
         return isValid;
     }
 
+    /**
+     * Retrieves the position of a given location in the spinner.
+     *
+     * @param location The location to search for.
+     * @return The position of the location in the spinner, or -1 if not found.
+     */
     private int getLocationPosition(String location) {
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) eventLocation.getAdapter();
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -301,7 +297,6 @@ public class NewEventForm extends AppCompatActivity {
                         registrationDeadline.setText(documentSnapshot.getString("deadline"));
                         Long capacity = documentSnapshot.getLong("capacity");
                         waitingListCapacity.setText(capacity != null ? String.valueOf(capacity) : "");
-
 
                         Long sample = documentSnapshot.getLong("sample");
                         attendee_sample_num.setText(sample != null ? String.valueOf(sample) : "");
