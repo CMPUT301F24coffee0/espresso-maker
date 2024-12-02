@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.espresso"},{"l":"com.example.espresso.Admin"},{"l":"com.example.espresso.Attendee"},{"l":"com.example.espresso.EntrantList"},{"l":"com.example.espresso.Event"},{"l":"com.example.espresso.Organizer"},{"l":"com.example.espresso.uitests"}];updateSearchResults();
