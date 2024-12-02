@@ -2,16 +2,13 @@ package com.example.espresso.db;
 
 import static org.junit.Assert.assertSame;
 
-import android.os.SystemClock;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
 
-import com.example.espresso.Attendee.AttendeeHomeActivity;
-import com.example.espresso.Attendee.User;
-import com.example.espresso.Event.Event;
-import com.example.espresso.Organizer.Facility;
+import com.example.espresso.views.Attendee.AttendeeHomeActivity;
+import com.example.espresso.models.Attendee.User;
+import com.example.espresso.models.Event;
+import com.example.espresso.models.Organizer.Facility;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

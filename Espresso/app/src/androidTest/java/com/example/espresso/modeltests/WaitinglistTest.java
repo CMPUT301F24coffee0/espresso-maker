@@ -7,14 +7,11 @@ import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import com.example.espresso.Attendee.Entrant;
-import com.example.espresso.Organizer.Facility;
-import com.example.espresso.Organizer.WaitingList;
+import com.example.espresso.models.Attendee.Entrant;
+import com.example.espresso.models.Organizer.Facility;
+import com.example.espresso.models.Organizer.WaitingList;
 
 import org.junit.Test;
-
-import java.util.Optional;
-import java.util.UUID;
 
 public class WaitinglistTest {
     private Entrant entrant;
