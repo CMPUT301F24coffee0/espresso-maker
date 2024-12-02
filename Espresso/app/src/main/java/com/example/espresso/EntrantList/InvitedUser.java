@@ -23,15 +23,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This fragment shows a ListView containing Invented participants. An invited participant is one that has won the lottery. This allows organizers to view a list of invited participants
+ * This fragment displays a ListView containing invited participants. An invited participant is one that has won the lottery.
+ * This allows organizers to view a list of invited participants for the event.
  */
 public class InvitedUser extends Fragment {
     private String eventId;
 
+    /**
+     * Default constructor for InvitedUser fragment, using the layout fragment_invited_tab.
+     */
     public InvitedUser() {
         super(R.layout.fragment_invited_tab);
     }
 
+    /**
+     * Creates the view for the fragment. Initializes the ListView, sets the adapter, and fetches the invited participants
+     * from Firestore.
+     *
+     * @param inflater The LayoutInflater object used to inflate views.
+     * @param container The parent container in which the view will be placed.
+     * @param savedInstanceState A bundle containing saved state information.
+     * @return The root view of the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,6 +69,13 @@ public class InvitedUser extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches invited participants from Firestore and adds them to the participants list.
+     * The list is then updated using the adapter.
+     *
+     * @param participants The list of participants to be populated.
+     * @param adapter The adapter that binds data to the ListView.
+     */
     private void fetchInvitedParticipants(List<Participant> participants, ArrayAdapter<Participant> adapter) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -90,7 +110,7 @@ public class InvitedUser extends Fragment {
                             }
                         }
                     } else {
-                        Log.e("InvitedUser", "Error fetching confirmed participants", task.getException());
+                        Log.e("InvitedUser", "Error fetching invited participants", task.getException());
                         Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
                     }
                 });

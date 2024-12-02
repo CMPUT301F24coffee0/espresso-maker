@@ -17,9 +17,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Display all users on the app to the Admins, allows the admins to delete any of these users.
- */
 public class UsersFragment extends Fragment {
 
     private ListView usersListView;
@@ -60,7 +57,8 @@ public class UsersFragment extends Fragment {
     }
 
     /**
-     * Fetch the list of users from Firestore.
+     * Fetches the list of users from Firestore and populates the ListView.
+     * Clears the existing user list and refreshes it with the new data.
      */
     private void fetchUsersFromFirestore() {
         db.collection("users")
@@ -91,7 +89,11 @@ public class UsersFragment extends Fragment {
     }
 
     /**
-     * Show a confirmation dialog to delete the user.
+     * Displays a confirmation dialog before deleting a user.
+     * Provides options to confirm or cancel the deletion.
+     *
+     * @param context The context to display the dialog.
+     * @param user    The user object to be deleted.
      */
     private void showDeleteConfirmationDialog(Context context, User user) {
         new AlertDialog.Builder(context)
@@ -103,7 +105,10 @@ public class UsersFragment extends Fragment {
     }
 
     /**
-     * Delete the user from Firestore.
+     * Deletes the specified user from Firestore, including event participation records.
+     * Updates the UI after successful deletion.
+     *
+     * @param user The user object to be deleted.
      */
     private void deleteUser(User user) {
         String deviceID = user.getDeviceID();

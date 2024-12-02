@@ -203,6 +203,17 @@ public class AttendeeProfile extends Fragment {
         return view;
     }
 
+    /**
+     * Validates the user input fields for name, email, and phone number.
+     * Ensures that the name, email, and phone number are non-empty, that the email is in a valid format,
+     * and that the phone number contains only numeric characters.
+     *
+     * @param newName The new name entered by the user.
+     * @param newEmail The new email entered by the user.
+     * @param newPhone The new phone number entered by the user.
+     * @return true if all fields are valid, false otherwise.
+     */
+
     private boolean validateFields(String newName, String newEmail, String newPhone) {
         if (newName.isEmpty()) {
             name_text.setError("Name must be non-empty");

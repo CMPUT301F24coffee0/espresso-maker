@@ -28,7 +28,6 @@ public class Lottery {
      *
      * @param waitingList The list of entrants waiting for selection.
      * @param entrantList The list managing accepted and rejected entrants.
-     * @param notifications The notification manager for sending messages.
      * @param maxEntrants The maximum number of entrants to accept.
      */
     public Lottery(WaitingList waitingList, EntrantList entrantList, int maxEntrants) {

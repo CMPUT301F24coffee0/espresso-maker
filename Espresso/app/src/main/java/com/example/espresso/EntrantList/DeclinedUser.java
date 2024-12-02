@@ -23,15 +23,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Displays a fragment containing DeclinedUsers in the User Display tabs.
+ * Fragment that displays declined users for a given event. A declined user is one
+ * who has declined the event referenced by eventId.
  */
 public class DeclinedUser extends Fragment {
     private String eventId;
 
+    /**
+     * Constructor for DeclinedUser fragment, using the layout file fragment_declined_tab.
+     */
     public DeclinedUser() {
         super(R.layout.fragment_declined_tab);
     }
 
+    /**
+     * Called to create the fragment's view. Initializes the ListView and fetches declined participants.
+     *
+     * @param inflater The LayoutInflater object to inflate the fragment's view.
+     * @param container The ViewGroup in which the fragment's UI should be inserted.
+     * @param savedInstanceState The saved instance state of the fragment.
+     * @return The View representing the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,6 +70,12 @@ public class DeclinedUser extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches the list of declined participants from Firestore and updates the ListView.
+     *
+     * @param declinedEntrants The list to store participant names.
+     * @param adapter The adapter to notify when data changes.
+     */
     private void fetchDeclinedParticipants(List<String> declinedEntrants, ArrayAdapter<String> adapter) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 

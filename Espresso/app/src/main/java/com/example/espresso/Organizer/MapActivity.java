@@ -58,7 +58,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     /**
-     * Queries the Firestore database for user locations(tuples of longitudes and latitudes)
+     * Queries the Firestore database for user locations (tuples of longitudes and latitudes)
      * and marks them on the GoogleMap object.
      */
     private void fetchUserLocations() {
@@ -94,8 +94,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
     }
-
-
 
     @Override
     protected void onResume() {
