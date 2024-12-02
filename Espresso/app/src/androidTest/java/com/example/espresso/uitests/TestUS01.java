@@ -118,30 +118,30 @@ public class TestUS01 {
     public void testJoinLeaveWaitingList() throws InterruptedException {
         // join waiting list
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
 
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.enter_lottery_button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withText("Yes")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.events)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withText("Pending Events")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withText("Withdraw from the lottery")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
     }
 
     /**

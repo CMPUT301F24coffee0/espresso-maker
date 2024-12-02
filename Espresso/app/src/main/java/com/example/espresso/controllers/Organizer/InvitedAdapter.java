@@ -97,7 +97,22 @@ public class InvitedAdapter extends ArrayAdapter<Participant> {
                         participants.remove(position);
                         notifyDataSetChanged();
                         Log.d("InvitedAdapter", "Status updated to declined for: " + participant.getDeviceId());
-
+                        // Send notifications to the this participant
+                        db.collection("users").document(participant.getDeviceId()).get()
+                                .addOnCompleteListener(userTask -> {
+                                    if (userTask.isSuccessful()) {
+                                        DocumentSnapshot userDoc = userTask.getResult();
+                                        if (userDoc.exists()) {
+                                            String userToken = userDoc.getString("deviceToken");
+                                            HashMap<String, String> map = new HashMap<>();
+                                            map.put("eventID",eventId+"declined");
+                                            map.put("title", "New update from event " + name + "!");
+                                            map.put("msg", "Unfortunately, you were not selected for the event.");
+                                            assert userToken != null;
+                                            db.collection("notifications").document(userToken).set(map);
+                                        }
+                                    }
+                                });
                         // Select a new participant with status "not-invited"
                         db.collection("events").document(eventId).collection("participants")
                                 .whereEqualTo("status", "not-invited")

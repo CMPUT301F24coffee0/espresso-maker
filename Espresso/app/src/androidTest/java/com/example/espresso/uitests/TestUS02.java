@@ -281,24 +281,24 @@ public class TestUS02 {
     public void testUpdatePoster() throws InterruptedException {
         // Update an event poster
         onView(withText("Test Events")).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.edit_button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.location)).perform(click());
         onView(withText("Test Facility")).perform(click());
 
         onView(withId(R.id.next_button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.upload_poster_button)).check(matches(isDisplayed()));
         onView(withId(R.id.exit_form_button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
 
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(3000);
+        Thread.sleep(6000);
 
     }
 
