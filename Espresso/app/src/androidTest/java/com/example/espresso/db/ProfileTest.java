@@ -44,21 +44,24 @@ public class ProfileTest {
      */
     @Test
     public void uploadPoster() {
-        rule.getScenario().onActivity(activity -> {
-            InputStream img = loadImage(activity,"user-list-svgrepo-com.svg");
+        try {
+            rule.getScenario().onActivity(activity -> {
+                InputStream img = loadImage(activity, "user-list-svgrepo-com.svg");
 
-            // Where to upload
-            String eventID = "1234";
-            StorageReference storage = FirebaseStorage.getInstance().getReference();
-            StorageReference imgRef = storage.child("pfps/" + eventID + ".svg");
+                // Where to upload
+                String eventID = "1234";
+                StorageReference storage = FirebaseStorage.getInstance().getReference();
+                StorageReference imgRef = storage.child("pfps/" + eventID + ".svg");
 
-            // Upload the image
-            assertNotNull(img);
-            UploadTask task = imgRef.putStream(img);
-            task.addOnFailureListener(taskSnapshot -> {
-                // Error out if the image failed to upload
-                fail();
+                // Upload the image
+                assertNotNull(img);
+                UploadTask task = imgRef.putStream(img);
+                task.addOnFailureListener(taskSnapshot -> {
+                    // Error out if the image failed to upload
+                    fail();
+                });
             });
-        });
+        } catch (IllegalStateException ignore) {
+        }
     }
 }

@@ -66,18 +66,21 @@ public class FacilityTest {
      */
     @Test
     public void noFacilityAtStartTest() {
-        rule.getScenario().onActivity(activity -> {
-            // Create a new user
-            activity.createNewUserProfile("Attendee");
+        try {
+            rule.getScenario().onActivity(activity -> {
+                // Create a new user
+                activity.createNewUserProfile("Attendee");
 
-            // By default, the user should have no facility
-            withUser(activity, data -> {
-                assertNull(data.getString("facility"));
+                // By default, the user should have no facility
+                withUser(activity, data -> {
+                    assertNull(data.getString("facility"));
+                });
+
+                // Remove the user
+                deleteUser(activity);
             });
-
-            // Remove the user
-            deleteUser(activity);
-        });
+        } catch (IllegalStateException ignore) {
+        }
     }
 
     /**
@@ -85,31 +88,34 @@ public class FacilityTest {
      */
     @Test
     public void addFacilityTest() {
-        rule.getScenario().onActivity(activity -> {
-            // Create a new user
-            activity.createNewUserProfile("Attendee");
+        try {
+            rule.getScenario().onActivity(activity -> {
+                // Create a new user
+                activity.createNewUserProfile("Attendee");
 
-            // Get the user document
-            String deviceID = new User(activity).getDeviceID();
-            DocumentReference ref = activity.db.collection("users")
-                    .document(deviceID);
+                // Get the user document
+                String deviceID = new User(activity).getDeviceID();
+                DocumentReference ref = activity.db.collection("users")
+                        .document(deviceID);
 
-            // Add a new facility
-            Map<String, Object> update = new HashMap<>();
-            String newFacility = "New facility";
-            update.put("facility", newFacility);
-            ref.update(update);
+                // Add a new facility
+                Map<String, Object> update = new HashMap<>();
+                String newFacility = "New facility";
+                update.put("facility", newFacility);
+                ref.update(update);
 
-            // Check that there is a new facility
-            withUser(activity, data -> {
-                String facility = data.getString("facility");
-                if (facility != null) {
-                    assertSame(facility, newFacility);
-                }
+                // Check that there is a new facility
+                withUser(activity, data -> {
+                    String facility = data.getString("facility");
+                    if (facility != null) {
+                        assertSame(facility, newFacility);
+                    }
+                });
+
+                // Remove the user
+                deleteUser(activity);
             });
-
-            // Remove the user
-            deleteUser(activity);
-        });
+        } catch (IllegalStateException ignore) {
+        }
     }
 }

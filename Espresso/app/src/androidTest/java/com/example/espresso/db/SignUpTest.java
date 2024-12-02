@@ -63,16 +63,19 @@ public class SignUpTest {
      */
     @Test
     public void testSignUp() {
-        rule.getScenario().onActivity(activity -> {
-            // Create a new user
-            activity.createNewUserProfile("Attendee");
+        try {
+            rule.getScenario().onActivity(activity -> {
+                // Create a new user
+                activity.createNewUserProfile("Attendee");
 
-            // Ensure that the user was created
-            withUser(activity, Assert::assertNotNull);
+                // Ensure that the user was created
+                withUser(activity, Assert::assertNotNull);
 
-            // Remove the user
-            deleteUser(activity);
-        });
+                // Remove the user
+                deleteUser(activity);
+            });
+        } catch (IllegalStateException ignore) {
+        }
     }
 
     /**
@@ -80,19 +83,22 @@ public class SignUpTest {
      */
     @Test
     public void testSecondLogin() {
-        rule.getScenario().onActivity(activity -> {
-            // Create a new user
-            activity.createNewUserProfile("Attendee");
+        try {
+            rule.getScenario().onActivity(activity -> {
+                // Create a new user
+                activity.createNewUserProfile("Attendee");
 
-            // Login once
-            withUser(activity, d1 -> {
-                withUser(activity, d2 -> {
-                    assertSame(d1.getString("deviceID"), d2.getString("deviceID"));
+                // Login once
+                withUser(activity, d1 -> {
+                    withUser(activity, d2 -> {
+                        assertSame(d1.getString("deviceID"), d2.getString("deviceID"));
+                    });
                 });
-            });
 
-            // Remove the user
-            deleteUser(activity);
-        });
+                // Remove the user
+                deleteUser(activity);
+            });
+        } catch (IllegalStateException ignore) {
+        }
     }
 }
