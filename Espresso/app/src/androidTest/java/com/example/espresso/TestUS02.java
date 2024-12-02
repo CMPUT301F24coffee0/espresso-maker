@@ -229,7 +229,7 @@ public class TestUS02 {
         Thread.sleep(2000);
         onView(withId(R.id.draw_lottery)).perform(click());
         Thread.sleep(2000);
-        onView(withText("You already drawn the lottery!")).check(matches(isDisplayed()));
+        onView(withText("You've already drawn the lottery!")).check(matches(isDisplayed()));
 
     }
 

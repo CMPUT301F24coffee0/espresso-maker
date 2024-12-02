@@ -218,7 +218,7 @@ public class EventDetails extends AppCompatActivity {
                 drawLotteryButton.setVisibility(View.VISIBLE);
                 if (drawn == 1) {
                     drawLotteryButton.setEnabled(false);
-                    drawLotteryButton.setText("You already drawn the lottery!");
+                    drawLotteryButton.setText("You've already drawn the lottery!");
                     drawLotteryButton.setTextColor(Color.RED);
                     drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                 }
@@ -506,7 +506,7 @@ public class EventDetails extends AppCompatActivity {
                             db.collection("events").document(eventId).update("sample", sample - selectCount);
                             Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
                             drawLotteryButton.setEnabled(false);
-                            drawLotteryButton.setText("You already drawn the lottery!");
+                            drawLotteryButton.setText("You've already drawn the lottery!");
                             drawLotteryButton.setTextColor(Color.RED);
                             drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                         } else {
