@@ -44,7 +44,7 @@ import android.Manifest;
 public class MainActivity extends AppCompatActivity {
     public String deviceID;
     Button attendee_sign_in_btn, org_sign_in_btn, admin_sign_in_btn;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public FirebaseFirestore db = FirebaseFirestore.getInstance();
     boolean isLoggedIn;
     String deviceToken;
 
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param userType The type of user ("Attendee" or "Organizer") for the new profile.
      */
-    private void createNewUserProfile(String userType) {
+    public void createNewUserProfile(String userType) {
         // Create a new user document reference in Firestore
         DocumentReference newUser = db.collection("users").document(deviceID);
 
