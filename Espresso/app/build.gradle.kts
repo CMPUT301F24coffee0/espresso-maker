@@ -57,6 +57,7 @@ dependencies {
         exclude(module = "protolite-well-known-types")
         exclude(module = "protobuf-lite")
     }
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
