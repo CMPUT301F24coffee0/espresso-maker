@@ -54,17 +54,17 @@ public class TestUS03 {
     public void testRemoveEvent() throws InterruptedException {
         // Remove an event
         onView(ViewMatchers.withId(R.id.OrganizerSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.nav_facilities_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.add_facility)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withHint("Enter facility name")).perform(replaceText("Test Facility"));
         onView(withId(android.R.id.button1)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.nav_home_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.add_event_button)).perform(click());
         onView(withId(R.id.event_name)).perform(replaceText("Test Events"));
         onView(withId(R.id.location)).perform(click());
@@ -83,20 +83,20 @@ public class TestUS03 {
         onView(withId(R.id.registration_until)).perform(replaceText("2024-12-31"));
         onView(withId(R.id.attendee_sample_num)).perform(replaceText("50"));
         onView(withId(R.id.next_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.create_event_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(ViewMatchers.withId(R.id.AdminSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Events")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.remove_qr_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.remove_button)).perform(click());
     }
 
@@ -108,9 +108,9 @@ public class TestUS03 {
     public void testRemoveProfile() throws InterruptedException {
         // Remove a profile
         onView(withId(R.id.AdminSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.users)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onData(anything())
                 .inAdapterView(withId(R.id.user_list_view))
                 .atPosition(0)
@@ -128,18 +128,18 @@ public class TestUS03 {
     public void testBrowseEventsProfilesImages() throws InterruptedException {
         // Browse events
         onView(ViewMatchers.withId(R.id.OrganizerSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(ViewMatchers.withId(R.id.AdminSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.users)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.facilities)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     /**
@@ -150,26 +150,26 @@ public class TestUS03 {
     public void testRemoveFacility() throws InterruptedException {
         // Remove a facility
         onView(ViewMatchers.withId(R.id.OrganizerSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.nav_facilities_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.add_facility)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withHint("Enter facility name")).perform(replaceText("Test Facility"));
         onView(withId(android.R.id.button1)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(ViewMatchers.withId(R.id.AdminSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.facilities)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Facility")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("OK")).perform(click());
     }
 

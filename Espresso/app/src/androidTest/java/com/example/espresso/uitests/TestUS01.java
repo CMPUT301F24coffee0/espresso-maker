@@ -61,17 +61,17 @@ public class TestUS01 {
     @Before
     public void createEvent() throws InterruptedException {
         onView(ViewMatchers.withId(R.id.OrganizerSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.nav_facilities_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.add_facility)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withHint("Enter facility name")).perform(replaceText("Test Facility"));
         onView(withId(android.R.id.button1)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.nav_home_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.add_event_button)).perform(click());
         onView(withId(R.id.event_name)).perform(replaceText("Test Event"));
         onView(withId(R.id.location)).perform(click());
@@ -90,7 +90,7 @@ public class TestUS01 {
         onView(withId(R.id.registration_until)).perform(replaceText("2024-12-31"));
         onView(withId(R.id.attendee_sample_num)).perform(replaceText("50"));
         onView(withId(R.id.next_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.create_event_button)).perform(click());
         Thread.sleep(4000);
     }
@@ -98,18 +98,18 @@ public class TestUS01 {
     @After
     public void deleteEvent() throws InterruptedException {
         onView(ViewMatchers.withId(R.id.AdminSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.remove_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.users)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onData(anything())
                 .inAdapterView(withId(R.id.user_list_view))
                 .atPosition(0)
                 .perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Yes")).perform(click());
     }
 
@@ -123,33 +123,30 @@ public class TestUS01 {
     public void testJoinLeaveWaitingList() throws InterruptedException {
         // join waiting list
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.enter_lottery_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Yes")).perform(click());
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.events)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Pending Events")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Withdraw from the lottery")).perform(click());
-        Thread.sleep(2000);
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     /**
@@ -161,25 +158,25 @@ public class TestUS01 {
     @Test
     public void testProvidePersonalInformation() throws InterruptedException {
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.edit_profile_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.edit_name)).perform(replaceText("Test Name"));
         onView(withId(R.id.edit_email)).perform(replaceText("TestEmail@email.com"));
         onView(withId(R.id.edit_phone_number)).perform(replaceText("1234567890"));
         onView(withId(android.R.id.button1)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.removeProfilePicButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     /**
@@ -189,34 +186,31 @@ public class TestUS01 {
     @Test
     public void testOptOutOfNotifications() throws InterruptedException {
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.enter_lottery_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("No")).perform(click());
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.events)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Pending Events")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Withdraw from the lottery")).perform(click());
-        Thread.sleep(2000);
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
     /**
@@ -227,46 +221,43 @@ public class TestUS01 {
     public void testWarningForGeolocationRequiredWaitingList() throws InterruptedException {
         // Placeholder for future implementation
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.edit_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.next_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.geolocation_switch)).perform(click());
         onView(withId(R.id.create_event_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.nav_profile_organizer)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.enter_lottery_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withText("Yes")).perform(click());
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.events)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Pending Events")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Test Event")).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withText("Withdraw from the lottery")).perform(click());
-        Thread.sleep(2000);
-        onView(withId(R.id.go_back_button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
     }
 
 }
