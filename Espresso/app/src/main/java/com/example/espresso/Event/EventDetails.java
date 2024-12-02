@@ -468,7 +468,7 @@ public class EventDetails extends AppCompatActivity {
                                                                 if (userDoc.exists()) {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventId",eventId);
+                                                                    map.put("eventId",eventId+"invited");
                                                                     map.put("title", "New update from event " + name + "!");
                                                                     map.put("msg", "Congratulations! You have been invited to the event!");
                                                                     assert userToken != null;
@@ -493,7 +493,7 @@ public class EventDetails extends AppCompatActivity {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     String eventName = userDoc.getString("name");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId);
+                                                                    map.put("eventID",eventId+"not-invited");
                                                                     map.put("title", eventName);
                                                                     map.put("msg", "Unfortunately, you were not selected for the event. However, you still have a chance to participate!");
                                                                     assert userToken != null;
@@ -835,6 +835,8 @@ public class EventDetails extends AppCompatActivity {
                     .addOnSuccessListener(aVoid ->{
                         Toast.makeText(this, "You have accepted the invitation!", Toast.LENGTH_SHORT).show();
                         acceptInviteButton.setEnabled(false);
+                        // Subscribe to notifications
+                        FirebaseMessaging.getInstance().subscribeToTopic(eventId+"confirmed");
                     });
         });
 
