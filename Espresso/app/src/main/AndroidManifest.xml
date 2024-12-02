@@ -29,10 +29,10 @@
         android:theme="@style/Theme.Espresso"
         tools:targetApi="31">
         <activity
-            android:name=".views.MainActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".views.Organizer.MapActivity"
+            android:name=".Organizer.MapActivity"
             android:exported="false" />
 
         <meta-data
@@ -45,27 +45,27 @@
             android:label="@string/title_activity_entrant_list"
             android:theme="@style/Theme.Espresso.NoActionBar" />
         <activity
-            android:name=".views.Admin.AdminActivity"
+            android:name=".Admin.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".views.Attendee.AttendeeHomeFragment"
+            android:name=".Attendee.AttendeeHomeFragment"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".views.Attendee.ScanQR"
+            android:name=".Attendee.ScanQR"
             android:exported="false" />
         <activity
-            android:name=".views.Organizer.NewEventForm"
+            android:name=".Organizer.NewEventForm"
             android:exported="false" />
         <activity
-            android:name=".views.Attendee.AttendeeHomeActivity"
+            android:name=".Attendee.AttendeeHomeActivity"
             android:exported="false" />
         <activity
-            android:name=".views.Organizer.OrganizerHomeActivity"
+            android:name=".Organizer.OrganizerHomeActivity"
             android:exported="false"
             android:theme="@style/Theme.Espresso" />
         <activity
-            android:name=".views.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,24 +74,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.Attendee.AttendeeMyEvent"
+            android:name=".Attendee.AttendeeMyEvent"
             android:exported="false"
             android:label="@string/title_activity_attendee_my_event"
             android:theme="@style/Theme.Espresso.NoActionBar"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".views.EventDetails"
+            android:name=".Event.EventDetails"
             android:exported="false" />
         <activity
-            android:name=".views.Attendee.AttendeeProfile"
+            android:name=".Attendee.AttendeeProfile"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".models.EventItem"
+            android:name=".Event.EventItem"
             android:exported="true" />
 
         <service
-            android:name=".controllers.ReceivingNotifications"
+            android:name=".ReceivingNotifications"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -7,20 +7,20 @@
 
     <fragment
         android:id="@+id/nav_home_attendee"
-        android:name="com.example.espresso.views.Attendee.AttendeeHomeFragment"
+        android:name="com.example.espresso.Attendee.AttendeeHomeFragment"
         android:label="@string/menu_home_organizer"
         tools:layout="@layout/activity_attendee_home" />
 
     <fragment
         android:id="@+id/nav_my_event_attendee"
-        android:name="com.example.espresso.views.Attendee.AttendeeMyEvent"
+        android:name="com.example.espresso.Attendee.AttendeeMyEvent"
         android:label="@string/menu_facilities_organizer"
         tools:layout="@layout/activity_attendee_my_event" />
 
 
     <fragment
         android:id="@+id/nav_profile_attendee"
-        android:name="com.example.espresso.views.Attendee.AttendeeProfile"
+        android:name="com.example.espresso.Attendee.AttendeeProfile"
         android:label="@string/menu_profile_organizer"
         tools:layout="@layout/attendee_profile" />
 </navigation>

@@ -6,10 +6,10 @@ import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import com.example.espresso.models.Attendee.Entrant;
-import com.example.espresso.models.Attendee.EntrantList;
-import com.example.espresso.models.Organizer.Lottery;
-import com.example.espresso.models.Organizer.WaitingList;
+import com.example.espresso.Attendee.Entrant;
+import com.example.espresso.Attendee.EntrantList;
+import com.example.espresso.Organizer.Lottery;
+import com.example.espresso.Organizer.WaitingList;
 
 import org.junit.Before;
 import org.junit.Test;
