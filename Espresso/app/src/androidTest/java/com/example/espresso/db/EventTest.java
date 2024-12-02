@@ -15,15 +15,20 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Test event creation, deletion & modification.
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class EventTest {
     @Rule
     public ActivityScenarioRule<AttendeeHomeActivity> rule = new ActivityScenarioRule<AttendeeHomeActivity>(AttendeeHomeActivity.class);

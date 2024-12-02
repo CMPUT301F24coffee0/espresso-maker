@@ -11,9 +11,11 @@ import com.example.espresso.MainActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +23,7 @@ import java.util.Map;
 /**
  * Modify user attributes & check that the database is updated accordingly.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4.class)
 public class ModifyUsersTest {
     @Rule
