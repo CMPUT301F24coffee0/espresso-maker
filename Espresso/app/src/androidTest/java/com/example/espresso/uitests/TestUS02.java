@@ -5,6 +5,9 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.pressBack;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -27,7 +30,6 @@ import androidx.test.rule.GrantPermissionRule;
 
 
 import com.example.espresso.MainActivity;
-import com.example.espresso.Organizer.WaitingList;
 import com.example.espresso.R;
 
 import org.hamcrest.Matchers;
@@ -39,13 +41,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import java.util.UUID;
-
 
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @LargeTest
-public class TestUS01 {
+public class TestUS02 {
     @Rule
     public ActivityScenarioRule<MainActivity> activityRule = new ActivityScenarioRule<>(MainActivity.class);
 
@@ -60,6 +60,7 @@ public class TestUS01 {
 
     @Before
     public void createEvent() throws InterruptedException {
+
         onView(ViewMatchers.withId(R.id.OrganizerSignInButton)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.nav_facilities_organizer)).perform(click());
@@ -73,7 +74,7 @@ public class TestUS01 {
         onView(withId(R.id.nav_home_organizer)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.add_event_button)).perform(click());
-        onView(withId(R.id.event_name)).perform(replaceText("Test Event"));
+        onView(withId(R.id.event_name)).perform(replaceText("Test Events"));
         onView(withId(R.id.location)).perform(click());
         onView(withText("Test Facility")).perform(click());
 
@@ -99,7 +100,7 @@ public class TestUS01 {
     public void deleteEvent() throws InterruptedException {
         onView(ViewMatchers.withId(R.id.AdminSignInButton)).perform(click());
         Thread.sleep(3000);
-        onView(withText("Test Event")).perform(click());
+        onView(withText("Test Events")).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.remove_button)).perform(click());
         Thread.sleep(3000);
@@ -111,17 +112,16 @@ public class TestUS01 {
                 .perform(click());
         Thread.sleep(3000);
         onView(withText("Yes")).perform(click());
+
     }
 
     /**
-     * Tests for US 01.01.01, US 01.01.02, US 01.07.01
-     * As an entrant, I want to join the waiting list for a specific event.
-     * As an entrant, I want to leave the waiting list for a specific event.
-     * As an entrant, I want to be identified by my device, so that I don't have to use a username and password.
+     * Test for US 02.01.01
+     * As an organizer, I want to be able to create and manage events & generate a promo QR code
      */
     @Test
-    public void testJoinLeaveWaitingList() throws InterruptedException {
-        // join waiting list
+    public void testCreateEventAndGenerateQRCode() throws InterruptedException {
+        // Create a new event
         onView(withId(R.id.nav_profile_organizer)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
@@ -129,98 +129,92 @@ public class TestUS01 {
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
         Thread.sleep(3000);
 
-        onView(withText("Test Event")).perform(click());
+        onView(withText("Test Events")).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.enter_lottery_button)).perform(click());
+        onView(withId(R.id.share_button)).perform(click());
         Thread.sleep(3000);
-        onView(withText("Yes")).perform(click());
+        onView(withId(R.id.qr_code_image)).check(matches(isDisplayed()));
+        onView(withId(R.id.cancel_button)).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.events)).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Pending Events")).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Test Event")).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Withdraw from the lottery")).perform(click());
+        onView(withId(R.id.go_back_button)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.profile)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
         Thread.sleep(3000);
+
+
     }
 
     /**
-     * Tests for US 01.02.01, US 01.03.03, US 01.03.02
-     * As an entrant, I want to provide my personal information such as name, email, and optional phone number in the app.
-     * As an entrant, I want my profile picture to be deterministically generated from my profile name if I haven't uploaded a profile image yet.
-     * As an entrant, I want to remove profile picture if need be.
+     * Test for US 02.01.03
+     * As an organizer, I want to be able to create and manage my facility profile
      */
     @Test
-    public void testProvidePersonalInformation() throws InterruptedException {
-        onView(withId(R.id.nav_profile_organizer)).perform(click());
+    public void testCreateFacilityProfile() throws InterruptedException {
+        // Create a new facility profile
+        onView(withId(R.id.nav_facilities_organizer)).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.sign_out)).perform(click());
+        onView(withId(R.id.add_facility)).perform(click());
         Thread.sleep(3000);
-
-        onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.edit_profile_button)).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.edit_name)).perform(replaceText("Test Name"));
-        onView(withId(R.id.edit_email)).perform(replaceText("TestEmail@email.com"));
-        onView(withId(R.id.edit_phone_number)).perform(replaceText("1234567890"));
+        onView(withHint("Enter facility name")).perform(replaceText("Test Facility"));
         onView(withId(android.R.id.button1)).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.removeProfilePicButton)).perform(click());
+        onView(withText("Test Facility")).check(matches(isDisplayed()));
+        onView(withText("Test Facility")).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.button)).perform(click());
+        onView(withText("Delete Facility")).perform(click());
         Thread.sleep(3000);
-    }
 
-    /**
-     * test for US 01.04.03
-     * As an entrant, I want to opt out of receiving notifications from organizers and admin.
-     */
-    @Test
-    public void testOptOutOfNotifications() throws InterruptedException {
         onView(withId(R.id.nav_profile_organizer)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.sign_out)).perform(click());
         Thread.sleep(3000);
-        onView(withId(R.id.AttendeeSignInButton)).perform(click());
-        Thread.sleep(3000);
 
-        onView(withText("Test Event")).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.enter_lottery_button)).perform(click());
-        Thread.sleep(3000);
-        onView(withText("No")).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.events)).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Pending Events")).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Test Event")).perform(click());
-        Thread.sleep(3000);
-        onView(withText("Withdraw from the lottery")).perform(click());
-        Thread.sleep(3000);
 
-        onView(withId(R.id.profile)).perform(click());
-        Thread.sleep(3000);
-        onView(withId(R.id.button)).perform(click());
-        Thread.sleep(3000);
     }
 
     /**
-     * test for US 01.08.01
-     * As an entrant, I want to be warned before joining a waiting list that requires geolocation.
+     * US 02.02.01, 02.06.01, 02.06.02, 02.06.03
+     * As an organizer, I want to be able to view the list of entrants on the waiting list
+     * As an organizer I want to view a list of all chosen entrants who are invited to apply
+     * As an organizer I want to see a list of all the cancelled entrants
+     * As an organizer, I want to be able to view the final list of entrants who enrolled for the event
      */
     @Test
-    public void testWarningForGeolocationRequiredWaitingList() throws InterruptedException {
-        // Placeholder for future implementation
-        onView(withText("Test Event")).perform(click());
+    public void testViewWaitingList() throws InterruptedException {
+        // View the waiting list
+        onView(withText("Test Events")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.entrant_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withText("Invited")).perform(click());
+        Thread.sleep(3000);
+        onView(withText("Declined")).perform(click());
+        Thread.sleep(3000);
+        onView(withText("All")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.closeButton)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.go_back_button)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.nav_profile_organizer)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.sign_out)).perform(click());
+        Thread.sleep(3000);
+
+
+    }
+
+    /**
+     * Test for US 02.02.02
+     * As an organizer I want to see on a map where entrants joined my event waiting list from.
+     */
+    @Test
+    public void testMapEntrants() throws InterruptedException {
+        // Map entrants on the waiting list
+        onView(withText("Test Events")).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.edit_button)).perform(click());
         Thread.sleep(3000);
@@ -238,18 +232,39 @@ public class TestUS01 {
         onView(withId(R.id.AttendeeSignInButton)).perform(click());
         Thread.sleep(3000);
 
-        onView(withText("Test Event")).perform(click());
+        onView(withText("Test Events")).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.enter_lottery_button)).perform(click());
         Thread.sleep(3000);
-
         onView(withText("Yes")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.profile)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.button)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.OrganizerSignInButton)).perform(click());
+        Thread.sleep(3000);
+        onView(withText("Test Events")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.map_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.map_go_back_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.go_back_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.nav_profile_organizer)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.sign_out)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.AttendeeSignInButton)).perform(click());
         Thread.sleep(3000);
         onView(withId(R.id.events)).perform(click());
         Thread.sleep(3000);
         onView(withText("Pending Events")).perform(click());
         Thread.sleep(3000);
-        onView(withText("Test Event")).perform(click());
+        onView(withText("Test Events")).perform(click());
         Thread.sleep(3000);
         onView(withText("Withdraw from the lottery")).perform(click());
         Thread.sleep(3000);
@@ -258,7 +273,79 @@ public class TestUS01 {
         Thread.sleep(3000);
         onView(withId(R.id.button)).perform(click());
         Thread.sleep(3000);
+
+    }
+
+    /**
+     * Test for US 02.04.02
+     * As an organizer, I want to be able to update an event poster
+     */
+    @Test
+    public void testUpdatePoster() throws InterruptedException {
+        // Update an event poster
+        onView(withText("Test Events")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.edit_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.location)).perform(click());
+        onView(withText("Test Facility")).perform(click());
+
+        onView(withId(R.id.next_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.upload_poster_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.exit_form_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.go_back_button)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.nav_profile_organizer)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.sign_out)).perform(click());
+        Thread.sleep(3000);
+
+    }
+
+    /**
+     * Test for US 02.05.02
+     * As an organizer, I want to be able to perform the "lottery"
+     */
+    @Test
+    public void testLottery() throws InterruptedException {
+        // Perform the lottery
+        onView(withText("Test Events")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.draw_lottery)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.go_back_button)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.nav_profile_organizer)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.sign_out)).perform(click());
+        Thread.sleep(3000);
+
+    }
+
+    /**
+     * US 02.07.01 Allow organizers to send notifications to all entrants on the waiting list
+     */
+    @Test
+    public void testSendNotificationsWaitingList() throws InterruptedException {
+        // Send notifications to all entrants on the waiting list
+        onView(withText("Test Events")).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.notification)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.notification_message_input)).perform(replaceText("test notification"));
+        onView(withId(R.id.send_notification_button)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.go_back_button)).perform(click());
+        Thread.sleep(3000);
+
+        onView(withId(R.id.nav_profile_organizer)).perform(click());
+        Thread.sleep(3000);
+        onView(withId(R.id.sign_out)).perform(click());
+        Thread.sleep(3000);
     }
 
 }
-
