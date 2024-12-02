@@ -56,7 +56,7 @@ public class EventTest {
             }
         });
     }
-    
+
     /**
      * Add & delete a new event to the database.
      */
