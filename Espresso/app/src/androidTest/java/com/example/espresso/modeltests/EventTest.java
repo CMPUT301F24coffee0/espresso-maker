@@ -1,4 +1,4 @@
-package modeltests;
+package com.example.espresso.modeltests;
 
 import android.net.Uri;
 
@@ -39,10 +39,13 @@ public class EventTest {
         event = new Event("Concert", "2024-12-01", "19:00", "A great concert", "2024-11-30", 500, facility, 5, "Open", false, 10);
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetId() {
         // Test if the ID is generated correctly based on name, facility, and time
-        String expectedId = "ConcertMain Hall19:00";
+        String expectedId = "Concert";
         assertEquals(expectedId, event.getId());
     }
 

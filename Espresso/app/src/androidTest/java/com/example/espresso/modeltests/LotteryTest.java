@@ -1,4 +1,4 @@
-package modeltests;
+package com.example.espresso.modeltests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,6 +23,7 @@ public class LotteryTest {
 
     @Before
     public void setUp() {
+        // Initialize mock objects
         Context context = ApplicationProvider.getApplicationContext();
         entrant = new Entrant(context);
         entrant.setName("Test Name");
@@ -35,8 +36,12 @@ public class LotteryTest {
         lottery = new Lottery(waitingList, entrantList, maxEntrants);
     }
 
+    /**
+     * Test the Lottery model.
+     */
     @Test
     public void testConductLottery() {
+        // Test the lottery process
         lottery.conductLottery();
         assertEquals(0, waitingList.getEntrants().size());
     }
