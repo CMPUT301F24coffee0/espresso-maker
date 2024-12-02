@@ -66,7 +66,7 @@ import java.util.Set;
  * share the event via QR code, or navigate back to the home screen.
  */
 public class EventDetails extends AppCompatActivity {
-    Button enterLotteryButton, withdrawButton, drawLotteryButton, drawLotteryButton2, acceptInviteButton, declineInviteButton, sendNotificationButton, removeEventButton, removeQRButton;
+    Button enterLotteryButton, withdrawButton, drawLotteryButton, acceptInviteButton, declineInviteButton, sendNotificationButton, removeEventButton, removeQRButton;
     ImageButton editButton, notificationButton, shareBtn, goBackBtn, mapButton, entrantButton;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -164,7 +164,6 @@ public class EventDetails extends AppCompatActivity {
         notificationButton = findViewById(R.id.notification_button);
         shareBtn = findViewById(R.id.share_button);
         goBackBtn = findViewById(R.id.go_back_button);
-        drawLotteryButton2 = findViewById(R.id.draw_lottery_2);
         mapButton = findViewById(R.id.map_button);
         entrantButton = findViewById(R.id.entrant_button);
         removeEventButton = findViewById(R.id.remove_button);
