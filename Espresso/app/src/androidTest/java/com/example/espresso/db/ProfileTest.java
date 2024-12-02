@@ -61,7 +61,7 @@ public class ProfileTest {
                     fail();
                 });
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 }

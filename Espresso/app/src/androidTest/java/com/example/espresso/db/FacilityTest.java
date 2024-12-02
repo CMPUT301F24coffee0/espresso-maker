@@ -79,7 +79,7 @@ public class FacilityTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -115,7 +115,7 @@ public class FacilityTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 }

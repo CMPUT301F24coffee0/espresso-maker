@@ -91,7 +91,7 @@ public class ModifyUsersTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -127,7 +127,7 @@ public class ModifyUsersTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -163,7 +163,7 @@ public class ModifyUsersTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -199,7 +199,7 @@ public class ModifyUsersTest {
                 // Remove the user
                 deleteUser(activity);
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 }

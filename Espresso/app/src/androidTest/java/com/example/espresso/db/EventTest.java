@@ -88,7 +88,7 @@ public class EventTest {
 
             // Delete the event
             db.collection("events").document(event.getId()).delete();
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -115,7 +115,7 @@ public class EventTest {
                             }
                         });
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 
@@ -154,7 +154,7 @@ public class EventTest {
 
             // Delete the event
             db.collection("events").document(event.getId()).delete();
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 }

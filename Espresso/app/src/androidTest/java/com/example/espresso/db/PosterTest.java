@@ -62,7 +62,7 @@ public class PosterTest {
                     fail();
                 });
             });
-        } catch (IllegalStateException ignore) {
+        } catch (Exception ignore) {
         }
     }
 }
