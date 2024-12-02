@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.espresso.Admin.AdminActivity;
+import com.example.espresso.Attendee.AttendeeMyEvent;
 import com.example.espresso.Organizer.MapActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.SetOptions;
@@ -29,6 +30,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.espresso.Attendee.AttendeeHomeActivity;
 import com.example.espresso.Attendee.QRCode;
@@ -218,7 +221,7 @@ public class EventDetails extends AppCompatActivity {
                 drawLotteryButton.setVisibility(View.VISIBLE);
                 if (drawn == 1) {
                     drawLotteryButton.setEnabled(false);
-                    drawLotteryButton.setText("You already drawn the lottery!");
+                    drawLotteryButton.setText("You've already drawn the lottery!");
                     drawLotteryButton.setTextColor(Color.RED);
                     drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                 }
@@ -506,7 +509,7 @@ public class EventDetails extends AppCompatActivity {
                             db.collection("events").document(eventId).update("sample", sample - selectCount);
                             Toast.makeText(this, "Lottery drawn successfully!", Toast.LENGTH_SHORT).show();
                             drawLotteryButton.setEnabled(false);
-                            drawLotteryButton.setText("You already drawn the lottery!");
+                            drawLotteryButton.setText("You've already drawn the lottery!");
                             drawLotteryButton.setTextColor(Color.RED);
                             drawLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
                         } else {
@@ -616,6 +619,9 @@ public class EventDetails extends AppCompatActivity {
                                                                                 notificationData.put("notif", true);
                                                                                 db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                                                         .set(notificationData, SetOptions.merge());
+                                                                                // Navigate user back to home
+                                                                                Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                                                                                startActivity(intent2);
                                                                             }
                                                                             Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
                                                                         });
@@ -627,6 +633,9 @@ public class EventDetails extends AppCompatActivity {
                                                                 db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                                         .set(notificationData, SetOptions.merge());
                                                                 Toast.makeText(EventDetails.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+                                                                // Navigate user back to home
+                                                                Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                                                                startActivity(intent2);
                                                             })
                                                             .create()
                                                             .show();
@@ -676,6 +685,9 @@ public class EventDetails extends AppCompatActivity {
                                                             notificationButton.setImageResource(R.drawable.ic_notif);
                                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                                     .set(notificationData, SetOptions.merge());
+                                                            // Navigate user back to home
+                                                            Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                                                            startActivity(intent2);
                                                         }
                                                         Toast.makeText(EventDetails.this, msg, Toast.LENGTH_SHORT).show();
                                                     });
@@ -688,6 +700,9 @@ public class EventDetails extends AppCompatActivity {
                                             db.collection("events").document(eventId).collection("participants").document(deviceID)
                                                     .set(notificationData, SetOptions.merge());
                                             Toast.makeText(EventDetails.this, "Notifications disabled", Toast.LENGTH_SHORT).show();
+                                            // Navigate user back to home
+                                            Intent intent2 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                                            startActivity(intent2);
                                         })
                                         .create()
                                         .show();
@@ -697,6 +712,7 @@ public class EventDetails extends AppCompatActivity {
                                 enterLotteryButton.setText("You have entered the lottery!");
                                 enterLotteryButton.setTextColor(Color.WHITE);
                                 enterLotteryButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("grey")));
+
                             } else {
                                 Toast.makeText(this, "Failed to enter the lottery.", Toast.LENGTH_SHORT).show();
                             }
@@ -705,15 +721,17 @@ public class EventDetails extends AppCompatActivity {
         });
 
         withdrawButton.setOnClickListener(v -> {
-            // Remove the user from the event's participant list and their event data
             db.collection("users").document(deviceID).collection("events").document(eventId).delete();
             db.collection("events").document(eventId).collection("participants").document(deviceID).delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    // Lottery withdrawn successfully
-                    Toast.makeText(this, "You have successfully withdrawn from the lottery!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventDetails.this, "You have successfully withdrawn from the lottery!", Toast.LENGTH_SHORT).show();
+
+                    // Pass targetFragment information to AttendeeHomeActivity
+                    Intent intent3 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                    intent3.putExtra("targetFragment", "AttendeeMyEvent");
+                    startActivity(intent3);
                 } else {
-                    // Lottery withdrawal failed
-                    Toast.makeText(this, "Failed to withdraw from the lottery.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventDetails.this, "Failed to withdraw from the lottery.", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -727,6 +745,10 @@ public class EventDetails extends AppCompatActivity {
                         acceptInviteButton.setEnabled(false);
                         // Subscribe to notifications
                         FirebaseMessaging.getInstance().subscribeToTopic(eventId+"confirmed");
+                        // Navigate user back to home
+                        Intent intent3 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                        intent3.putExtra("targetFragment", "AttendeeMyEvent");
+                        startActivity(intent3);
                     });
         });
 
@@ -734,7 +756,7 @@ public class EventDetails extends AppCompatActivity {
             // Decline the invitation
             db.collection("users").document(deviceID).collection("events").document(eventId).update("status", "declined");
             db.collection("events").document(eventId).collection("participants").document(deviceID).update("status", "declined")
-                    .addOnSuccessListener(aVoid ->{
+                    .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "You have declined the invitation!", Toast.LENGTH_SHORT).show();
                         declineInviteButton.setEnabled(false);
 
@@ -755,7 +777,7 @@ public class EventDetails extends AppCompatActivity {
                                         db.collection("users").document(selectedParticipantId).collection("events").document(eventId).update("status", "invited");
                                         db.collection("events").document(eventId).collection("participants").document(selectedParticipantId)
                                                 .update("status", "invited")
-                                                .addOnSuccessListener(bvoid -> {
+                                                .addOnSuccessListener(bVoid -> {
                                                     // Notify the new participant
                                                     db.collection("users").document(selectedParticipantId).get()
                                                             .addOnCompleteListener(userTask -> {
@@ -781,6 +803,11 @@ public class EventDetails extends AppCompatActivity {
                                     } else {
                                         Log.e("update", "No eligible participants found.");
                                     }
+
+                                    // Navigate user back to home after everything is complete
+                                    Intent intent3 = new Intent(EventDetails.this, AttendeeHomeActivity.class);
+                                    intent3.putExtra("targetFragment", "AttendeeMyEvent");
+                                    startActivity(intent3);
                                 });
                     });
         });

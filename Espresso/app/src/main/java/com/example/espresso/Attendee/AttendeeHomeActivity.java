@@ -41,8 +41,16 @@ public class AttendeeHomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        // Load the default fragment if no saved instance state
-        if (savedInstanceState == null) loadFragment(new AttendeeHomeFragment());
+        // Check if there is a target fragment passed in the Intent
+        if (savedInstanceState == null) {
+            String targetFragment = getIntent().getStringExtra("targetFragment");
+            if ("AttendeeMyEvent".equals(targetFragment)) {
+                bottomNav.setSelectedItemId(R.id.events); // Update the BottomNavigationView selection
+                loadFragment(new AttendeeMyEvent());
+            } else {
+                loadFragment(new AttendeeHomeFragment()); // Default fragment
+            }
+        }
     }
 
     /**
