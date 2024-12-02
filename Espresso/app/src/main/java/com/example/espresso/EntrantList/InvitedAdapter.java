@@ -104,7 +104,7 @@ public class InvitedAdapter extends ArrayAdapter<Participant> {
                                         if (userDoc.exists()) {
                                             String userToken = userDoc.getString("deviceToken");
                                             HashMap<String, String> map = new HashMap<>();
-                                            map.put("eventID",eventId+"declined");
+                                            map.put("eventId",eventId+"declined");
                                             map.put("title", "New update from event " + name + "!");
                                             map.put("msg", "Unfortunately, you were not selected for the event.");
                                             assert userToken != null;

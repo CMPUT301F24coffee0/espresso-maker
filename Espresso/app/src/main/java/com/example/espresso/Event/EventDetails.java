@@ -491,7 +491,7 @@ public class EventDetails extends AppCompatActivity {
                                                                 if (userDoc.exists()) {
                                                                     String userToken = userDoc.getString("deviceToken");
                                                                     HashMap<String, String> map = new HashMap<>();
-                                                                    map.put("eventID",eventId+"not-invited");
+                                                                    map.put("eventId",eventId+"not-invited");
                                                                     map.put("title", "New update from event " + name + "!");
                                                                     map.put("msg", "Unfortunately, you were not selected for the event. However, you still have a chance to participate!");
                                                                     assert userToken != null;
@@ -578,6 +578,7 @@ public class EventDetails extends AppCompatActivity {
         });
 
         enterLotteryButton.setOnClickListener(v -> {
+
             if (geolocation) {
                 // Check for location permissions
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

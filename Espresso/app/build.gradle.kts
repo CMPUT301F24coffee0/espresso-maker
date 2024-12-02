@@ -74,4 +74,5 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.0.0")
     implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.23")
     androidTestImplementation(libs.junit.junit)
+
 }
