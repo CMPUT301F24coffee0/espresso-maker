@@ -1,7 +1,7 @@
 package com.example.espresso.modeltests;
 
-import com.example.espresso.models.Event;
-import com.example.espresso.models.Organizer.Facility;
+import com.example.espresso.Event.Event;
+import com.example.espresso.Organizer.Facility;
 import org.junit.Test;
 
 

@@ -3,7 +3,9 @@ package com.example.espresso.uitests;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.pressBack;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -14,6 +16,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.anything;
 
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
@@ -26,7 +29,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
 
 
-import com.example.espresso.views.MainActivity;
+import com.example.espresso.MainActivity;
 import com.example.espresso.R;
 
 import org.hamcrest.Matchers;

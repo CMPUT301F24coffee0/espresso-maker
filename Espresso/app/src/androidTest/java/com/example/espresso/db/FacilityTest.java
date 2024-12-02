@@ -7,8 +7,8 @@ import static org.junit.Assert.assertSame;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
-import com.example.espresso.models.Attendee.User;
-import com.example.espresso.views.MainActivity;
+import com.example.espresso.Attendee.User;
+import com.example.espresso.MainActivity;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
