@@ -7,10 +7,10 @@ import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Test;
 
-import com.example.espresso.Attendee.Entrant;
-import com.example.espresso.Attendee.User;
-import com.example.espresso.EntrantList.AllUserModel;
-import com.example.espresso.EntrantList.Participant;
+import com.example.espresso.models.Attendee.Entrant;
+import com.example.espresso.models.Attendee.User;
+import com.example.espresso.models.Organizer.AllUserModel;
+import com.example.espresso.models.Organizer.Participant;
 
 import java.util.Optional;
 import java.util.UUID;

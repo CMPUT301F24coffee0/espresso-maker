@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Attendee.DeclinedEvents"
+    tools:context=".views.Attendee.DeclinedEvents"
     android:background="@color/white">
 
     <ListView

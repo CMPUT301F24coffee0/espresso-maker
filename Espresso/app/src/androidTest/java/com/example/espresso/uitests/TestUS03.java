@@ -23,7 +23,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.GrantPermissionRule;
 
 
-import com.example.espresso.MainActivity;
+import com.example.espresso.views.MainActivity;
 import com.example.espresso.R;
 
 import org.hamcrest.Matchers;

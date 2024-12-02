@@ -5,14 +5,14 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Attendee.AttendeeHomeActivity"
+    tools:context=".views.Attendee.AttendeeHomeActivity"
     android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".Attendee.AttendeeMyEvent"
+        tools:context=".views.Attendee.AttendeeMyEvent"
         android:id="@+id/attendee_my_event">
 
         <com.google.android.material.appbar.AppBarLayout

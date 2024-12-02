@@ -7,31 +7,31 @@
 
     <fragment
         android:id="@+id/nav_home_admin"
-        android:name="com.example.espresso.Admin.HomeFragment"
+        android:name="com.example.espresso.views.Admin.HomeFragment"
         android:label="@string/menu_home_admin"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_users_admin"
-        android:name="com.example.espresso.Admin.UsersFragment"
+        android:name="com.example.espresso.views.Admin.UsersFragment"
         android:label="@string/menu_users_admin"
         tools:layout="@layout/fragment_users" />
 
     <fragment
         android:id="@+id/nav_facilities_admin"
-        android:name="com.example.espresso.Admin.FacilitiesFragment"
+        android:name="com.example.espresso.views.Admin.FacilitiesFragment"
         android:label="@string/menu_facilities_admin"
         tools:layout="@layout/fragment_facilities" />
 
     <fragment
         android:id="@+id/nav_images_admin"
-        android:name="com.example.espresso.Admin.ImagesFragment"
+        android:name="com.example.espresso.views.Admin.ImagesFragment"
         android:label="@string/menu_images_admin"
         tools:layout="@layout/fragment_images" />
 
     <fragment
         android:id="@+id/nav_profile_admin"
-        android:name="com.example.espresso.Admin.ProfileFragment"
+        android:name="com.example.espresso.views.Admin.ProfileFragment"
         android:label="@string/menu_profile_admin"
         tools:layout="@layout/fragment_profile" />
 </navigation>

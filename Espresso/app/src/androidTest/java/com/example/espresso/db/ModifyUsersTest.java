@@ -4,10 +4,9 @@ import static org.junit.Assert.assertSame;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
 
-import com.example.espresso.Attendee.User;
-import com.example.espresso.MainActivity;
+import com.example.espresso.models.Attendee.User;
+import com.example.espresso.views.MainActivity;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
