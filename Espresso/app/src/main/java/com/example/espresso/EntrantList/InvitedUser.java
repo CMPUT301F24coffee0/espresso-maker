@@ -22,6 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This fragment shows a ListView containing Invented participants. An invited participant is one that has won the lottery. This allows organizers to view a list of invited participants
+ */
 public class InvitedUser extends Fragment {
     private String eventId;
 

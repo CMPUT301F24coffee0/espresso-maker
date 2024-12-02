@@ -8,6 +8,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+/**
+ * This event model class holds essential information about a given event referenced with primary key eventID(id)
+ * This class is used to store, collect, or display, events through the Firebase DB onto different fragments or activities
+ * viewed by Attendees, Organizers, and Admins.
+ */
 public class Event {
     private final String id;
     private Facility facility;

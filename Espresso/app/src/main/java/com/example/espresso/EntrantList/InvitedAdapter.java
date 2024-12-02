@@ -17,6 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * This object extends ArrayAdapter to provide a custom view for Invited participants. An invited participant is one that has won the lottery.
+ */
 public class InvitedAdapter extends ArrayAdapter<Participant> {
     private final List<Participant> participants;
     private final LayoutInflater inflater;

@@ -19,16 +19,16 @@ import com.example.espresso.Attendee.User;
 import com.example.espresso.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This object creates a Fragment for displaying, editing, adding, or deleting different facilities that belong
+ * to an organizer with given deviceID. Each organizer must have a single facility which is stored as a field in different documents
+ * in "users" collection.
+ */
 public class OrganizerFacility extends Fragment {
     private FirebaseFirestore db;
     private ArrayAdapter<String> facilityAdapter;
@@ -59,6 +59,9 @@ public class OrganizerFacility extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches different facilities that belong to a given deviceID
+     */
     private void fetchUserFacilities() {
         db.collection("users").document(deviceID)
                 .get()
@@ -76,6 +79,9 @@ public class OrganizerFacility extends Fragment {
                 });
     }
 
+    /**
+     * Shows the dialog box that enables organizers to add new facilities.
+     */
     private void showAddFacilityDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Add New Facility");
@@ -95,6 +101,10 @@ public class OrganizerFacility extends Fragment {
         builder.show();
     }
 
+    /**
+     * Adds a given facility referencing a deviceID to that specific document in the Firestore database.
+     * @param facilityName Name of the newly added facility
+     */
     private void addFacilityToDatabase(String facilityName) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("facility", facilityName);
@@ -113,6 +123,10 @@ public class OrganizerFacility extends Fragment {
                 });
     }
 
+    /**
+     * Allow Organizers to Edit or Delete a certain facility by showing a dialog box
+     * @param position Index of the facility in the ListView
+     */
     private void showEditConfirmationDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Facility Options");
@@ -133,6 +147,10 @@ public class OrganizerFacility extends Fragment {
         builder.show();
     }
 
+    /**
+     * Allows Organizers to change the name of a selected facility
+     * @param position Index of the facility in the ListView
+     */
     private void showEditFacilityDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Edit Facility");
@@ -155,6 +173,10 @@ public class OrganizerFacility extends Fragment {
         builder.show();
     }
 
+    /**
+     * Updates the name of the selected facility in the Firestore database
+     * @param newFacilityName Name of the newly added facility
+     */
     private void updateFacilityInDatabase(String newFacilityName) {
         String oldFacilityName = facilities.get(0);
 
@@ -188,6 +210,10 @@ public class OrganizerFacility extends Fragment {
                 });
     }
 
+    /**
+     * Deletes a given facility from the Firestore database. Since Organizer only have a single facility, it automatically deletes
+     * the item at the zero index in the ListView
+     */
     private void deleteFacility() {
         String currentFacilityName = facilities.get(0);
 

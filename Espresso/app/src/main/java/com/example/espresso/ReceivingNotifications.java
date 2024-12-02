@@ -14,18 +14,22 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.espresso.Attendee.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * This object extends FirebaseMessagingService in order to deliver notifications to a user.
+ */
 public class ReceivingNotifications extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
-    // [START receive_message]
+    /**
+     * This function overrides onMessageReceived to initiate START message protocol
+     * @param remoteMessage Remote message that has been received.
+     */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -48,17 +52,13 @@ public class ReceivingNotifications extends FirebaseMessagingService {
         sendNotification(title, body);
     }
 
-
-    // [END receive_message]
-
-    // [START on_new_token]
     /**
      * There are two scenarios when onNewToken is called:
      * 1) When a new token is generated on initial app startup
      * 2) Whenever an existing token is changed
      * Under #2, there are three scenarios when the existing token is changed:
      * A) App is restored to a new device
-     * B) User uninstalls/reinstalls the app
+     * B) User uninstalls/re-installs the app
      * C) User clears app data
      */
     @Override
@@ -72,8 +72,12 @@ public class ReceivingNotifications extends FirebaseMessagingService {
     }
     // [END on_new_token]
 
+
+    /**
+     * This method sends a registration reference for a given registration token for a specific event and deviceID
+     * @param token Used for obtaining deviceToken object from Firebase
+     */
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Retrieve device ID for the current user
         String deviceID = new User(this).getDeviceID();
@@ -81,20 +85,15 @@ public class ReceivingNotifications extends FirebaseMessagingService {
         // Reference to the user document in Firestore
         DocumentReference docRef = db.collection("users").document(deviceID);
         docRef.update("deviceToken", token)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "DocumentSnapshot successfully updated!");
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document", e);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully updated!"))
+                .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 
+    /**
+     * This method sends notification with a given title and a body for a particular request code. The minimum SDK required for this function is Oreo
+     * @param messageTitle Title showed in the notification
+     * @param messageBody Body of the notification
+     */
     private void sendNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

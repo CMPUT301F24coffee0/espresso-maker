@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -24,8 +23,6 @@ import com.example.espresso.Admin.AdminActivity;
 import com.example.espresso.Attendee.AttendeeHomeActivity;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.Organizer.OrganizerHomeActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.Manifest;
 
@@ -54,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
     String role;
 
+    /**
+     * Prompts the user for setting notification permissions. The user can either choose to allow
+     * or disallow notifications. The app takes this choice into account before sending notifications
+     * for event decisions.
+     */
     private void showNotificationPermissionDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set dialog width and height
         WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.copyFrom(dialog.getWindow().getAttributes());
+        params.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
         params.width = WindowManager.LayoutParams.WRAP_CONTENT;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
@@ -91,17 +92,24 @@ public class MainActivity extends AppCompatActivity {
         dialog.getWindow().setAttributes(params);
     }
 
-    // Declare the launcher at the top of your Activity/Fragment:
+    /**
+     * Declare the launcher at the top of your Activity/Fragment for Notification permissions.
+     */
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     // FCM SDK (and your app) can post notifications.
                     Log.d("notification", "Notification permission granted");
                 } else {
-                    // TODO: Inform user that that your app will not show notifications.
+                    Toast.makeText(this, "Notifications disabled", Toast.LENGTH_LONG).show();
                 }
             });
 
+
+    /**
+     * Notify the user about their selected notification permissions. The app require a minimum "Tiramisu" SDK
+     * for this action.
+     */
     private void askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
@@ -118,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Check subscribed topic
+
+    /**
+     * Handle notification subscriptions for a particular eventID
+     * @param eventId EventID belonging to the Event Object in Firebase Database
+     */
     public void checkSubscribedTopic(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("users").document(deviceID).collection("events").document(eventId);
@@ -125,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    if (document.getString("status").equals("confirmed")) {
+                    if (Objects.equals(document.getString("status"), "confirmed")) {
                         // Subscribe to the topic
                         FirebaseMessaging.getInstance().subscribeToTopic(eventId+"confirmed");
                     }
@@ -138,29 +151,27 @@ public class MainActivity extends AppCompatActivity {
         }});
     }
 
-    public interface TokenCallback {
-        void onTokenReceived(String token);
-    }
+    public interface TokenCallback { void onTokenReceived(String token);}
 
-    // Get current registration token
+    /**
+     * Retain a registration token for a given TokenCallback object.
+     * @param callback Used for fetching FCM registration
+     */
     public void getRegistrationToken(TokenCallback callback) {
         FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("fcm", "Fetching FCM registration token failed", task.getException());
-                            callback.onTokenReceived(null); // Notify callback of failure
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-                        Log.d("fcm", "Token: " + token);
-
-                        // Notify the callback of the token
-                        callback.onTokenReceived(token);
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w("fcm", "Fetching FCM registration token failed", task.getException());
+                        callback.onTokenReceived(null); // Notify callback of failure
+                        return;
                     }
+
+                    // Get new FCM registration token
+                    String token = task.getResult();
+                    Log.d("fcm", "Token: " + token);
+
+                    // Notify the callback of the token
+                    callback.onTokenReceived(token);
                 });
     }
 
@@ -187,16 +198,13 @@ public class MainActivity extends AppCompatActivity {
         // Ask for notification permission
         askNotificationPermission();
         // Get registration token
-        getRegistrationToken(new TokenCallback() {
-            @Override
-            public void onTokenReceived(String token) {
-                if (token != null) {
-                    Log.d("Token", "Received token: " + token);
-                    //Toast.makeText(MainActivity.this, "Token: " + token, Toast.LENGTH_SHORT).show();
-                    deviceToken = token;
-                } else {
-                    Log.w("Token", "Failed to retrieve token.");
-                }
+        getRegistrationToken(token -> {
+            if (token != null) {
+                Log.d("Token", "Received token: " + token);
+                //Toast.makeText(MainActivity.this, "Token: " + token, Toast.LENGTH_SHORT).show();
+                deviceToken = token;
+            } else {
+                Log.w("Token", "Failed to retrieve token.");
             }
         });
 
@@ -226,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 if (document.exists()) {
                     isLoggedIn = true;
                     Log.d("auth", "User exists: " + document.getData());
-                    role = document.getData().get("type").toString();
+                    role = Objects.requireNonNull(Objects.requireNonNull(document.getData()).get("type")).toString();
                 } else {
                     isLoggedIn = false;
                     Log.d("auth", "User does not exist");

@@ -18,6 +18,9 @@ import com.example.espresso.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+/**
+ * Shows different tabs to launch Confirmed, Invited, Declined, or All user fragments. This allows organizers to pick a certain view for a specific type of Entrants.
+ */
 public class TabbedDialogFragment extends DialogFragment {
     String eventId;
 

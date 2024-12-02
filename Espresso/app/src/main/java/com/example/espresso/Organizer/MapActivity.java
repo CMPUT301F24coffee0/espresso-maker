@@ -17,6 +17,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This activity is used to view a map containing the locations of different participants that have
+ * signed up for a given eventID. This class uses Google Maps API to display the longitudes and latitudes
+ * of different attendees.
+ */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private MapView mapView;
@@ -52,6 +57,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         fetchUserLocations();
     }
 
+    /**
+     * Queries the Firestore database for user locations(tuples of longitudes and latitudes)
+     * and marks them on the GoogleMap object.
+     */
     private void fetchUserLocations() {
         db.collection("events").document(eventId).collection("participants")
                 .get()

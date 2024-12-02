@@ -17,6 +17,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Display all users on the app to the Admins, allows the admins to delete any of these users.
+ */
 public class UsersFragment extends Fragment {
 
     private ListView usersListView;
@@ -69,7 +72,7 @@ public class UsersFragment extends Fragment {
 
                         // Process the results and add each user to the list
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            User user = new User(getContext());
+                            User user = new User(requireContext());
                             String deviceID = document.getString("deviceID");
 
                             if (deviceID != null) {

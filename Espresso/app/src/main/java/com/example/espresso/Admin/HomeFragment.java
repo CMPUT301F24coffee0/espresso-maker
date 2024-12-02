@@ -1,5 +1,6 @@
 package com.example.espresso.Admin;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Used to display the Home page for Admins. This page includes a ListView containing all events on the App.
+ */
 public class HomeFragment extends Fragment {
     View view;
     private List<Event> events;  // Declare the events list here.
@@ -37,6 +41,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    @SuppressLint("SetTextI18n")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -223,10 +228,5 @@ public class HomeFragment extends Fragment {
                 Log.e("AdminHomeFragment", "Error loading events", task.getException());
             }
         });
-
-
     }
-
-
-
 }

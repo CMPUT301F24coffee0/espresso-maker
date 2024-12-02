@@ -14,6 +14,9 @@ import com.example.espresso.R;
 
 import java.util.List;
 
+/**
+ * Overrides ArrayAdapter to display different users and their status pertaining to a given eventID
+ */
 public class AllUserAdapter extends ArrayAdapter<AllUserModel> {
     private final List<AllUserModel> users;
     private final LayoutInflater inflater;

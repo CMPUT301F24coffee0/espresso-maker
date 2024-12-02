@@ -19,8 +19,6 @@ import android.widget.Toast;
 import com.example.espresso.Attendee.User;
 import com.example.espresso.MainActivity;
 import com.example.espresso.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -35,20 +33,12 @@ import java.util.Objects;
  */
 public class ProfileFragment extends Fragment {
     Button logout;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     EditText name_text;
     EditText email_text;
 
     String name;
     String email;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String deviceID;
@@ -61,16 +51,11 @@ public class ProfileFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,12 +63,21 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
+    /**
+     * Handles all actions inside ProfileFragment including showing user email and name, and editing user email and name
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return View Object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,10 +90,9 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
 
-        String deviceID = new User(requireContext()).getDeviceID();
+        deviceID = new User(requireContext()).getDeviceID();
 
         ImageView edit = view.findViewById(R.id.imageView);
-
 
         DocumentReference docRef = db.collection("users").document(deviceID);
         docRef.addSnapshotListener((documentSnapshot, e) -> {
@@ -187,13 +180,8 @@ public class ProfileFragment extends Fragment {
                                         });
                             }
                         });
-                    });
-
-                    dialog.show();
+                    }); dialog.show();
                 }
-        );
-
-
-        return view;
+        ); return view;
     }
 }
