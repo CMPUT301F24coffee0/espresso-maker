@@ -1,2 +1,2 @@
-# espresso-maker
+# Espresso Maker
 INVALIDATE CACHE BEFORE RUNNING TESTS PLEASE
