@@ -3,6 +3,8 @@
 ## Overview
 Espresso Maker is an Android application developed for **CMPUT 301 - Fall 2024**. The app allows users to participate in an **Event Lottery System** where they can sign up for events at community centers through a fair lottery-based selection system.
 
+For more information, visit the (wiki)[https://github.com/CMPUT301F24coffee0/espresso-maker/wiki/User-Interface-Mockup-and-Storyboard]
+
 ## Features
 - **User Authentication**: Users can sign up and log in.
 - **Event Registration**: Join events via a lottery system.
